@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  
+  <!-- Mobile WebView Optimizations -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#000000">
+  
+  <title>Mission Mischief - Dashboard</title>
+  <meta content="Your Mission Mischief dashboard - track missions, badges, and honor score" name="description">
+  
+  <!-- Favicons -->
+  <link href="assets/images/ui/favicon.png" rel="icon">
+  <link href="assets/images/ui/apple-touch-icon.png" rel="apple-touch-icon">
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+  
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+  
+  <!-- CSS Files -->
+  <link href="assets/css/main.css" rel="stylesheet">
+  <link href="assets/css/components.css" rel="stylesheet">
+</head>
+
+<body class="customBody">
+
+  <!-- Header -->
+  <header id="header" class="fixed-top">
+    <div class="container d-flex align-items-center justify-content-between">
+      <div class="logo">
+        <a href="index.html">Mission <span>Mischief</span></a>
+      </div>
+      <div class="user-info" id="userInfo" style="color: #04aa6d; font-weight: bold;"></div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main id="main">
+    
+    <!-- User Setup Section (shown if no user) -->
+    <section id="userSetup" class="section-bg" style="display: none; padding-top: 100px;">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-6">
+            <div class="mission-card">
+              <h2 class="text-center mb-4">Welcome to Mission Mischief!</h2>
+              <form id="setupForm">
+                <div class="mb-3">
+                  <label for="userName" class="form-label">Your Name:</label>
+                  <input type="text" id="userName" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                  <label for="userHandle" class="form-label">Social Media Handle:</label>
+                  <input type="text" id="userHandle" class="form-control" placeholder="@username" required>
+                </div>
+                <div class="mb-3">
+                  <label for="qrCode" class="form-label">Upload Your Social Media QR Code:</label>
+                  <input type="file" id="qrCode" class="form-control" accept="image/*" required>
+                  <small class="form-text" style="color: #999;">Upload your existing social media QR code</small>
+                </div>
+                <button type="submit" class="mission-btn w-100">START MISCHIEF</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Buy-in Section -->
+    <section id="buyinSection" style="display: none; padding-top: 100px;">
+      <div class="container">
+        <div class="section-title text-center">
+          <h2>Choose Your Path</h2>
+          <p>Select a buy-in to unlock all missions, or start with limited access</p>
+        </div>
+        
+        <div class="row" id="buyinOptions">
+          <!-- Buy-in options will be loaded here -->
+        </div>
+        
+        <div class="text-center mt-4">
+          <button id="skipBuyin" class="mission-btn">Skip - Start with Limited Access</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section id="dashboard" style="display: none; padding-top: 100px;">
+      <div class="container">
+        
+        <!-- User Stats -->
+        <div class="user-stats" id="userStats">
+          <!-- Stats will be loaded here -->
+        </div>
+
+        <!-- Badges -->
+        <div class="badges-container" id="badgesContainer">
+          <!-- Badges will be loaded here -->
+        </div>
+
+        <!-- Mission Filter -->
+        <div class="text-center mb-4">
+          <button class="mission-btn" id="showAll">All Missions</button>
+          <button class="mission-btn" id="showAvailable">Available</button>
+          <button class="mission-btn" id="showCompleted">Completed</button>
+        </div>
+
+        <!-- Missions Container -->
+        <div id="missionsContainer">
+          <!-- Missions will be loaded here -->
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer id="footer">
+    <div class="container">
+      <div class="copyright">
+        &copy; Copyright <strong><span>Mission Mischief</span></strong>. All Rights Reserved
+      </div>
+    </div>
+  </footer>
+
+  <!-- Back to top button -->
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- CSS Files -->
+  <link href="assets/css/overlay.css" rel="stylesheet">
+  
+  <!-- JS Files -->
+  <script src="assets/js/storage.js"></script>
+  <script src="assets/js/missions.js"></script>
+  <script src="assets/js/social.js"></script>
+  <script src="assets/js/camera.js"></script>
+  <script src="assets/js/print.js"></script>
+  <script src="assets/js/main.js"></script>
+  
+  <script>
+    // App initialization
+    document.addEventListener('DOMContentLoaded', function() {
+      initApp();
+    });
+
+    function initApp() {
+      const user = Storage.getUser();
+      
+      if (!user.userName) {
+        showUserSetup();
+      } else if (!user.currentBuyIn && user.badges.length === 0) {
+        showBuyinSection();
+      } else {
+        showDashboard();
+      }
+    }
+
+    function showUserSetup() {
+      document.getElementById('userSetup').style.display = 'block';
+      
+      document.getElementById('setupForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const userName = document.getElementById('userName').value.trim();
+        const userHandle = document.getElementById('userHandle').value.trim();
+        const qrCodeFile = document.getElementById('qrCode').files[0];
+        
+        if (userName && userHandle && qrCodeFile) {
+          // Convert QR code to base64 for storage
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            const user = Storage.initUser(userName, userHandle);
+            user.qrCodeData = e.target.result;
+            Storage.saveUser(user);
+            showBuyinSection();
+          };
+          reader.readAsDataURL(qrCodeFile);
+        } else {
+          showToast('Please fill all fields and upload your QR code', 'error');
+        }
+      });
+    }
+
+    function showBuyinSection() {
+      document.getElementById('userSetup').style.display = 'none';
+      document.getElementById('buyinSection').style.display = 'block';
+      
+      loadBuyinOptions();
+      
+      document.getElementById('skipBuyin').addEventListener('click', function() {
+        showDashboard();
+      });
+    }
+
+    function loadBuyinOptions() {
+      const container = document.getElementById('buyinOptions');
+      const user = Storage.getUser();
+      const availableBuyIns = Missions.getAvailableBuyIns(user);
+      const completedBuyIns = user.completedBuyIns || [];
+      
+      container.innerHTML = '';
+      
+      Object.values(availableBuyIns).forEach(buyin => {
+        const isCompleted = completedBuyIns.includes(buyin.id);
+        const isGoldPrompt = completedBuyIns.length === 1 && buyin.id !== 'nothing';
+        
+        const card = document.createElement('div');
+        card.className = 'col-lg-4 mb-4';
+        card.innerHTML = `
+          <div class="buyin-card ${isCompleted ? 'completed' : ''} ${isGoldPrompt ? 'gold-prompt' : ''}">
+            <div class="buyin-title">${buyin.title}</div>
+            <div class="buyin-description">${buyin.description}</div>
+            <div class="buyin-proof">Proof: ${buyin.proof}</div>
+            ${!isCompleted ? `
+              <button class="mission-btn" onclick="selectBuyin('${buyin.id}')">
+                ${isGoldPrompt ? '🏆 COMPLETE FOR CROWN 🏆' : 'Choose This Path'}
+              </button>
+            ` : `
+              <div class="completed-badge">✅ COMPLETED</div>
+              <button class="mission-btn" onclick="completeBuyinProof('${buyin.id}')">
+                Mark as Completed
+              </button>
+            `}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+      
+      // Show crown of chaos message if eligible
+      if (Missions.hasCrownOfChaos(user)) {
+        const crownMessage = document.createElement('div');
+        crownMessage.className = 'col-lg-12 text-center';
+        crownMessage.innerHTML = `
+          <div class="crown-message">
+            <h2>🏆 CROWN OF CHAOS UNLOCKED! 🏆</h2>
+            <p>You have achieved the ultimate secret level!</p>
+          </div>
+        `;
+        container.appendChild(crownMessage);
+      }
+    }
+
+    function selectBuyin(buyinId) {
+      const user = Storage.getUser();
+      user.currentBuyIn = buyinId;
+      Storage.saveUser(user);
+      showToast(`Selected ${Missions.buyIns[buyinId].title} path!`, 'success');
+      showDashboard();
+    }
+    
+    function completeBuyinProof(buyinId) {
+      const user = Storage.completeBuyIn(buyinId);
+      showToast(`${Missions.buyIns[buyinId].title} completed! 🎉`, 'success');
+      
+      // Check for crown of chaos
+      if (Missions.hasCrownOfChaos(user)) {
+        showToast('🏆 CROWN OF CHAOS UNLOCKED! 🏆', 'success');
+      }
+      
+      loadBuyinOptions();
+      Camera.updateBuyInBadge();
+    }
+
+    function showDashboard() {
+      document.getElementById('userSetup').style.display = 'none';
+      document.getElementById('buyinSection').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      
+      loadUserInfo();
+      loadUserStats();
+      loadBadges();
+      loadMissions();
+      setupFilters();
+      
+      // Initialize camera overlay
+      Camera.initOverlay();
+    }
+
+    function loadUserInfo() {
+      const user = Storage.getUser();
+      document.getElementById('userInfo').textContent = `${user.userName} (${user.userHandle})`;
+    }
+
+    function loadUserStats() {
+      const user = Storage.getUser();
+      const available = Missions.getAvailableMissions(user);
+      const badgeStates = Missions.getAllBadgeStates(user);
+      const completedBadges = Object.values(badgeStates).filter(state => state !== 'locked').length;
+      
+      document.getElementById('userStats').innerHTML = `
+        <div class="stat-card">
+          <span class="stat-number">${user.completedMissions.length}</span>
+          <span class="stat-label">Completed</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">${available.length}</span>
+          <span class="stat-label">Available</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">${completedBadges}</span>
+          <span class="stat-label">Badges</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">${user.honorScore}</span>
+          <span class="stat-label">Honor Score</span>
+        </div>
+      `;
+    }
+
+    function loadBadges() {
+      const user = Storage.getUser();
+      const container = document.getElementById('badgesContainer');
+      
+      if (user.badges.length === 0) {
+        container.innerHTML = '<p style="color: #666;">No badges earned yet</p>';
+        return;
+      }
+      
+      container.innerHTML = user.badges.map(badge => 
+        `<span class="badge">${badge.toUpperCase()}</span>`
+      ).join('');
+    }
+
+    function loadMissions(filter = 'all') {
+      const user = Storage.getUser();
+      const available = Missions.getAvailableMissions(user);
+      let missions = available;
+      
+      if (filter === 'available') {
+        missions = available.filter(m => !Missions.isMissionCompleted(m.id, user));
+      } else if (filter === 'completed') {
+        missions = available.filter(m => Missions.isMissionCompleted(m.id, user));
+      }
+      
+      const container = document.getElementById('missionsContainer');
+      container.innerHTML = missions.map(mission => createMissionCard(mission, user)).join('');
+    }
+
+    function createMissionCard(mission, user) {
+      const isCompleted = Missions.isMissionCompleted(mission.id, user);
+      const statusClass = isCompleted ? 'completed' : '';
+      const statusText = isCompleted ? 'completed' : 'available';
+      const badgeState = mission.badgeId ? Missions.getBadgeState(mission.badgeId, user) : 'locked';
+      const typeClass = mission.type === 'prank' ? 'prank-mission' : 'goodwill-mission';
+      
+      return `
+        <div class="mission-card ${statusClass} ${typeClass}">
+          <div class="mission-header">
+            <div class="mission-number">${mission.id}</div>
+            <div class="mission-type ${mission.type}">${mission.type.toUpperCase()}</div>
+            <div class="mission-status ${statusClass}">${statusText}</div>
+          </div>
+          <div class="mission-title">${mission.title}</div>
+          <div class="mission-location">${mission.location}</div>
+          ${mission.badgeId ? `
+            <div class="mission-badge-info">
+              <span class="badge-name">${Missions.badges[mission.badgeId].name} Badge</span>
+              <span class="badge-state ${badgeState}">${badgeState.toUpperCase()}</span>
+            </div>
+          ` : ''}
+          <div class="mission-description">${mission.description}</div>
+          <div class="mission-actions">
+            ${!isCompleted ? `
+              ${mission.type === 'setup' ? `
+                <button class="mission-btn" onclick="printCard()">
+                  Print Card
+                </button>
+              ` : `
+                <button class="mission-btn" onclick="startMissionCapture(${mission.id})">
+                  Start Mission
+                </button>
+              `}
+              <button class="mission-btn" onclick="completeMission(${mission.id})">
+                Mark Complete
+              </button>
+            ` : ''}
+            <button class="mission-btn" onclick="shareMission(${mission.id})">
+              Share
+            </button>
+            <button class="mission-btn" onclick="Social.copyHashtag('${mission.hashtag}')">
+              Copy Hashtag
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function setupFilters() {
+      document.getElementById('showAll').addEventListener('click', () => {
+        loadMissions('all');
+        updateFilterButtons('showAll');
+      });
+      
+      document.getElementById('showAvailable').addEventListener('click', () => {
+        loadMissions('available');
+        updateFilterButtons('showAvailable');
+      });
+      
+      document.getElementById('showCompleted').addEventListener('click', () => {
+        loadMissions('completed');
+        updateFilterButtons('showCompleted');
+      });
+    }
+
+    function updateFilterButtons(activeId) {
+      ['showAll', 'showAvailable', 'showCompleted'].forEach(id => {
+        const btn = document.getElementById(id);
+        if (id === activeId) {
+          btn.classList.add('completed');
+        } else {
+          btn.classList.remove('completed');
+        }
+      });
+    }
+
+    function startMissionCapture(missionId) {
+      // Start camera with overlay
+      Camera.onCameraStart(missionId);
+      showToast('Camera overlay activated! Start recording/taking photos', 'info');
+      
+      // Auto-hide after 30 seconds
+      setTimeout(() => {
+        Camera.onCameraStop();
+      }, 30000);
+    }
+    
+    function completeMission(missionId) {
+      const user = Storage.completeMission(missionId);
+      Camera.onMissionComplete(missionId);
+      showToast('Mission completed! 🎉', 'success');
+      loadUserStats();
+      loadMissions();
+    }
+
+    function shareMission(missionId) {
+      const mission = Missions.getMission(missionId);
+      const user = Storage.getUser();
+      Social.shareMissionComplete(mission, user.userHandle);
+    }
+    
+    function printCard() {
+      const user = Storage.getUser();
+      if (user.userName && user.userHandle && user.qrCodeData) {
+        PrintHandler.printCard(user);
+        showToast('Card sent to printer! 🖨️', 'success');
+      } else {
+        showToast('Complete your profile first!', 'error');
+      }
+    }
+
+    // Initialize app
+    window.addEventListener('load', function() {
+      document.body.classList.remove('page-transitioning');
+    });
+  </script>
+
+</body>
+</html>
