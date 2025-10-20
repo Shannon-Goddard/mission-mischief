@@ -236,22 +236,40 @@ const Camera = {
 
   // Get mascot expression based on context
   getMascotExpression(user) {
-    // Crown expression if user has crown of chaos
-    if (Missions.hasCrownOfChaos(user)) {
-      return 'crown';
-    }
+    const hasCrown = Missions.hasCrownOfChaos(user);
+    const prefix = hasCrown ? 'mayhem-crown-' : 'mayhem-';
     
     // Mission-specific expressions
     if (this.activeMissionId) {
       const mission = Missions.getMission(this.activeMissionId);
       if (mission) {
-        if (mission.type === 'prank') return 'evil';
-        if (mission.type === 'goodwill') return 'angel';
+        if (mission.type === 'prank') return prefix + 'excited';
+        if (mission.type === 'goodwill') return prefix + 'halo';
+        if (mission.badgeId === 'blood') return prefix + 'vampire';
       }
-      return 'winking'; // Default for active missions
+      return prefix + 'excited'; // Default for active missions
     }
     
-    return 'default'; // Classic mischievous smirk
+    // Random expressions for variety
+    const expressions = ['blank', 'excited', 'worried'];
+    const randomExpression = expressions[Math.floor(Math.random() * expressions.length)];
+    
+    return prefix + randomExpression;
+  },
+
+  // Set specific mascot expression
+  setMascotExpression(expression, user) {
+    const hasCrown = Missions.hasCrownOfChaos(user);
+    const prefix = hasCrown ? 'mayhem-crown-' : 'mayhem-';
+    
+    const mascotArea = document.querySelector('.mascot-area');
+    if (mascotArea) {
+      mascotArea.innerHTML = `
+        <div class="mascot">
+          <img src="assets/images/ui/${prefix}${expression}.png" alt="Mayhem ${expression}" />
+        </div>
+      `;
+    }
   },
 
   // Update mascot expression
@@ -261,6 +279,32 @@ const Camera = {
     if (mascotArea) {
       mascotArea.innerHTML = this.generateMascotHTML(user);
     }
+  },
+
+  // Trigger specific expressions for events
+  celebrateMission() {
+    const user = Storage.getUser();
+    this.setMascotExpression('excited', user);
+    
+    // Return to normal after celebration
+    setTimeout(() => {
+      this.updateMascot();
+    }, 3000);
+  },
+
+  showWorried() {
+    const user = Storage.getUser();
+    this.setMascotExpression('worried', user);
+  },
+
+  showCrying() {
+    const user = Storage.getUser();
+    this.setMascotExpression('crying', user);
+  },
+
+  showVampire() {
+    const user = Storage.getUser();
+    this.setMascotExpression('vampire', user);
   },
 
   // Update buy-in badge when buy-in completed
