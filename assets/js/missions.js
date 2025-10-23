@@ -9,7 +9,7 @@ const Missions = {
       id: 'recycling',
       title: 'Green Warrior',
       description: 'Recycle two 50 gallon trash bags of cans/bottles',
-      badge: 'recycling',
+      badge: 'captain-planet-color.png',
       hashtag: '#missionmischiefgreen',
       proof: 'Recycling voucher with card'
     },
@@ -17,7 +17,7 @@ const Missions = {
       id: 'cleanup', 
       title: 'Oscar the Grouch',
       description: 'Public clean-up of two 50 gallon trash bags',
-      badge: 'oscar',
+      badge: 'oscar-the-grouch-color.png',
       hashtag: '#missionmischiefoscar',
       proof: 'Pose as Oscar the grouch'
     },
@@ -25,7 +25,7 @@ const Missions = {
       id: 'referral',
       title: 'Bye Bye Bye',
       description: 'Sign up three users for Mission Mischief',
-      badge: 'nsync',
+      badge: 'justin-timberlake-color.png',
       hashtag: '#missionmischiefbuybuybuy', 
       proof: 'All 4 users do Nsync\'s bye-bye-bye'
     },
@@ -39,30 +39,36 @@ const Missions = {
     }
   },
 
-  // Badge definitions (22 badges, each with prank/goodwill missions)
+  // Badge definitions mapped to actual badge files
   badges: {
-    setup: { name: 'Setup', icon: 'setup.png' },
-    book: { name: 'Book', icon: 'book.png' },
-    coffee: { name: 'Coffee', icon: 'coffee.png' },
-    library: { name: 'Library', icon: 'library.png' },
-    bear: { name: 'Bear', icon: 'bear.png' },
-    plant: { name: 'Plant', icon: 'plant.png' },
-    towel: { name: 'Towel', icon: 'towel.png' },
-    blood: { name: 'Blood', icon: 'blood.png' },
-    recycle: { name: 'Recycle', icon: 'recycle.png' },
-    treasure: { name: 'Treasure', icon: 'treasure.png' },
-    thrift: { name: 'Thrift', icon: 'thrift.png' },
-    pants: { name: 'Pants', icon: 'pants.png' },
-    dance: { name: 'Dance', icon: 'dance.png' },
-    bigfoot: { name: 'Bigfoot', icon: 'bigfoot.png' },
-    diner: { name: 'Diner', icon: 'diner.png' },
-    liger: { name: 'Liger', icon: 'liger.png' },
-    netflix: { name: 'Netflix', icon: 'netflix.png' },
-    slide: { name: 'Slide', icon: 'slide.png' },
-    daddy: { name: 'Daddy', icon: 'daddy.png' },
-    catfish: { name: 'Catfish', icon: 'catfish.png' },
-    ghost: { name: 'Ghost', icon: 'ghost.png' },
-    thirsty: { name: 'Thirsty', icon: 'thirsty.png' }
+    setup: { name: 'Setup', icon: 'note-color.png' },
+    book: { name: 'Book', icon: 'book-for-dummies-color.png' },
+    coffee: { name: 'Coffee', icon: 'coffee-color.png' },
+    library: { name: 'Library', icon: 'book-for-dummies-color.png' },
+    bear: { name: 'Bear', icon: 'teddy-bear-color.png' },
+    plant: { name: 'Plant', icon: 'green-leaf-color.png' },
+    towel: { name: 'Towel', icon: 'towlie-color.png' },
+    blood: { name: 'Blood', icon: 'red-hot-chili-pepper-color.png' },
+    recycle: { name: 'Recycle', icon: 'recycle-symbol-color.png' },
+    treasure: { name: 'Treasure', icon: 'tag-color.png' },
+    thrift: { name: 'Thrift', icon: 'salvation-army-logo-color.png' },
+    pants: { name: 'Pants', icon: 'big-red-shoe-color.png' },
+    dance: { name: 'Dance', icon: 'rocky-horror-lips-color.png' },
+    bigfoot: { name: 'Bigfoot', icon: 'big-red-shoe-color.png' },
+    diner: { name: 'Diner', icon: 'apple-pie-color.png' },
+    liger: { name: 'Liger', icon: 'liger-color.png' },
+    netflix: { name: 'Netflix', icon: 'netflix-color.png' },
+    slide: { name: 'Slide', icon: 'googly-eyes-color.png' },
+    daddy: { name: 'Daddy', icon: 'hammer-color.png' },
+    catfish: { name: 'Catfish', icon: 'catfish-color.png' },
+    ghost: { name: 'Ghost', icon: 'ghost-color.png' },
+    thirsty: { name: 'Thirsty', icon: '40oz-color.png' }
+  },
+
+  // Special overlay badges
+  specialBadges: {
+    cheater: { name: 'Cheater', icon: 'clown.png' }, // For exposed cheaters
+    bountyHunter: { name: 'Bounty Hunter', icon: 'bounty-hunter-badge-color.png' } // For finding cards/exposing cheaters
   },
 
   // Mission data (38+ hilarious missions with prank/goodwill pairs)
@@ -499,17 +505,22 @@ const Missions = {
 
   // Get available missions based on user status
   getAvailableMissions(user) {
+    // FAFO (Mission 1) must be completed first
+    if (!user.fafoCompleted) {
+      return []; // No missions available until FAFO is done
+    }
+    
     const completedBuyIns = user.completedBuyIns || [];
     
     if (!user.currentBuyIn && completedBuyIns.length === 0) {
-      // No buy-in: only first mission available
-      return this.missionData.slice(0, 1);
+      // No buy-in: only setup missions available (M2-M4)
+      return this.missionData.slice(0, 3); // License to Ill, Buy Me Beer, Choose Destiny
     }
     
     if (user.currentBuyIn === 'nothing' && completedBuyIns.length === 0) {
       // 'Nothing' buy-in: unlock one mission at a time
       const completedCount = user.completedMissions.length;
-      return this.missionData.slice(0, completedCount + 1);
+      return this.missionData.slice(0, Math.min(completedCount + 1, this.missionData.length));
     }
     
     // Has real buy-in or completed buy-ins: all missions available
@@ -540,9 +551,27 @@ const Missions = {
   getAllBadgeStates(user) {
     const badgeStates = {};
     Object.keys(this.badges).forEach(badgeId => {
-      badgeStates[badgeId] = this.getBadgeState(badgeId, user);
+      const state = this.getBadgeState(badgeId, user);
+      const badge = this.badges[badgeId];
+      badgeStates[badgeId] = {
+        state: state,
+        icon: this.getBadgeIcon(badgeId, state)
+      };
     });
     return badgeStates;
+  },
+
+  // Get badge icon based on state
+  getBadgeIcon(badgeId, state) {
+    const badge = this.badges[badgeId];
+    const baseName = badge.icon.replace('-color.png', '');
+    
+    switch(state) {
+      case 'gold': return `assets/images/badges/${baseName}-gold.png`;
+      case 'vibrant': return `assets/images/badges/${baseName}-color.png`;
+      case 'silhouette': return `assets/images/badges/${baseName}-black.png`;
+      default: return `assets/images/badges/${baseName}-black.png`; // locked state
+    }
   },
 
   // Get buy-in badge state for overlay
@@ -550,17 +579,12 @@ const Missions = {
     const completedBuyIns = user.completedBuyIns || [];
     const activeBuyIn = user.currentBuyIn;
     
-    // Crown of Chaos: All 4 buy-ins completed
-    if (completedBuyIns.length >= 3 && activeBuyIn && activeBuyIn !== 'nothing') {
+    // Crown of Chaos: All 3 buy-ins completed
+    if (completedBuyIns.length >= 3) {
       return 'crown-of-chaos';
     }
     
-    // Second buy-in completed: Show gold prompt for remaining
-    if (completedBuyIns.length === 1 && activeBuyIn && activeBuyIn !== 'nothing') {
-      return 'gold-prompt';
-    }
-    
-    // First/current buy-in
+    // Show current buy-in badge
     if (activeBuyIn && this.buyIns[activeBuyIn].badge) {
       return activeBuyIn;
     }
@@ -568,10 +592,41 @@ const Missions = {
     return null;
   },
 
+  // Get special overlay state (cheater, bounty hunter, etc)
+  getSpecialOverlayState(user) {
+    if (user.isCheater) return 'cheater';
+    if (user.bountyHunterCount > 0) return 'bountyHunter';
+    return null;
+  },
+
   // Check if user has crown of chaos
   hasCrownOfChaos(user) {
     const completedBuyIns = user.completedBuyIns || [];
     return completedBuyIns.length >= 3;
+  },
+
+  // Get mascot expression based on user state
+  getMascotExpression(user) {
+    if (user.isCheater) return 'worried';
+    if (this.hasCrownOfChaos(user)) return 'excited';
+    if (user.bountyHunterCount > 0) return 'vampire';
+    if (user.completedMissions.length === 0) return 'blank-stare';
+    if (user.completedMissions.length < 5) return 'halo';
+    return 'excited';
+  },
+
+  // Get mascot image path
+  getMascotImagePath(expression, hasCrown = false) {
+    const prefix = hasCrown ? 'crown-of-chaos' : 'mayhem';
+    // Remove any existing prefix from expression
+    const cleanExpression = expression.replace(/^(mayhem-|crown-of-chaos-)/, '');
+    return `assets/images/mascot/${prefix}-${cleanExpression}.png`;
+  },
+
+  // Get buy-in badge image path
+  getBuyInBadgeImagePath(buyInId) {
+    const buyIn = this.buyIns[buyInId];
+    return buyIn && buyIn.badge ? `assets/images/badges/${buyIn.badge}` : null;
   },
 
   // Get available buy-ins (hide 'nothing' after second buy-in)

@@ -66,7 +66,7 @@ const PrintHandler = {
         <style>
           body { font-family: Arial, sans-serif; margin: 20px; }
           .card { border: 2px solid #04aa6d; padding: 20px; border-radius: 8px; }
-          .qr-code { width: 100px; height: 100px; float: right; }
+          .qr-code { width: 100px; height: auto; float: right; object-fit: contain; }
           h1 { color: #04aa6d; margin: 0; }
           .handle { font-size: 18px; margin: 10px 0; }
         </style>

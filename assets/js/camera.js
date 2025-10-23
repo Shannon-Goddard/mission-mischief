@@ -44,8 +44,8 @@ const Camera = {
       const isActive = this.isActiveMissionBadge(badgeId);
       
       html += `
-        <div class="badge-item ${state} ${isActive ? 'smoldering' : ''}" data-badge="${badgeId}">
-          <img src="assets/images/badges/${badge.icon}" alt="${badge.name}" />
+        <div class="badge-item ${state.state} ${isActive ? 'smoldering' : ''}" data-badge="${badgeId}">
+          <img src="${state.icon}" alt="${badge.name}" />
           <div class="badge-smoke"></div>
           <div class="badge-glow"></div>
         </div>
@@ -63,7 +63,7 @@ const Camera = {
     if (buyInState === 'crown-of-chaos') {
       return `
         <div class="buyin-badge crown-of-chaos">
-          <img src="assets/images/badges/crown-of-chaos.png" alt="Crown of Chaos" />
+          <img src="assets/images/mascot/c-o-c.png" alt="Crown of Chaos" />
           <div class="crown-glow"></div>
         </div>
       `;
@@ -73,7 +73,7 @@ const Camera = {
       const remainingBuyIn = this.getRemainingBuyIn(user);
       return `
         <div class="buyin-badge gold-prompt">
-          <img src="assets/images/badges/${Missions.buyIns[remainingBuyIn].badge}.png" alt="${remainingBuyIn}" />
+          <img src="assets/images/badges/${Missions.buyIns[remainingBuyIn].badge}" alt="${remainingBuyIn}" />
           <div class="gold-glow"></div>
         </div>
       `;
@@ -84,7 +84,7 @@ const Camera = {
     if (buyIn && buyIn.badge) {
       return `
         <div class="buyin-badge">
-          <img src="assets/images/badges/${buyIn.badge}.png" alt="${buyIn.title}" />
+          <img src="assets/images/badges/${buyIn.badge}" alt="${buyIn.title}" />
         </div>
       `;
     }
@@ -227,9 +227,12 @@ const Camera = {
   // Generate mascot HTML with dynamic expressions
   generateMascotHTML(user) {
     const expression = this.getMascotExpression(user);
+    const hasCrown = Missions.hasCrownOfChaos(user);
+    const imagePath = Missions.getMascotImagePath(expression, hasCrown);
+    
     return `
       <div class="mascot">
-        <img src="assets/images/ui/mascot-${expression}.png" alt="Mohawk Mischief Smiley" />
+        <img src="${imagePath}" alt="Mayhem ${expression}" />
       </div>
     `;
   },
@@ -251,7 +254,7 @@ const Camera = {
     }
     
     // Random expressions for variety
-    const expressions = ['blank', 'excited', 'worried'];
+    const expressions = ['blank-stare', 'excited', 'worried'];
     const randomExpression = expressions[Math.floor(Math.random() * expressions.length)];
     
     return prefix + randomExpression;
@@ -266,7 +269,7 @@ const Camera = {
     if (mascotArea) {
       mascotArea.innerHTML = `
         <div class="mascot">
-          <img src="assets/images/ui/${prefix}${expression}.png" alt="Mayhem ${expression}" />
+          <img src="${Missions.getMascotImagePath(expression, hasCrown)}" alt="Mayhem ${expression}" />
         </div>
       `;
     }

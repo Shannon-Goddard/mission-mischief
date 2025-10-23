@@ -9,8 +9,11 @@ const Storage = {
     userHandle: '',
     qrCodeData: '', // Their existing social media QR code data
     completedMissions: [],
+    badges: [], // User's earned badges
     badgeStates: {}, // Track badge completion states
     completedBuyIns: [], // Track completed buy-ins for crown of chaos
+    fafoCompleted: false, // Mission 1: FAFO completion status
+    fafoCompletedDate: null, // When they agreed to ToS
     honorScore: 100,
     exposedBy: [],
     currentBuyIn: null,
@@ -50,9 +53,25 @@ const Storage = {
     return user;
   },
 
+  // Complete FAFO (Mission 1) - unlocks all other missions
+  completeFAFO() {
+    const user = this.getUser();
+    user.fafoCompleted = true;
+    user.fafoCompletedDate = new Date().toISOString();
+    this.saveUser(user);
+    return user;
+  },
+
+  // Check if FAFO is completed
+  isFAFOCompleted() {
+    const user = this.getUser();
+    return user.fafoCompleted === true;
+  },
+
   // Add badge
   addBadge(badgeId) {
     const user = this.getUser();
+    if (!user.badges) user.badges = [];
     if (!user.badges.includes(badgeId)) {
       user.badges.push(badgeId);
       this.saveUser(user);

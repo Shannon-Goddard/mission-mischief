@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mission Mischief - FAFO (Mission 1)</title>
+    <link href="assets/css/mugshot.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #000;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #04aa6d;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .mission-header {
+            background: linear-gradient(45deg, #04aa6d, #02885a);
+            color: #000;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .funny-tos {
+            background: #111;
+            padding: 25px;
+            border-radius: 8px;
+            border: 2px solid #04aa6d;
+            margin-bottom: 30px;
+        }
+        
+        .important {
+            background: rgba(4, 170, 109, 0.1);
+            border-left: 4px solid #04aa6d;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .warning {
+            background: rgba(255, 107, 107, 0.1);
+            border-left: 4px solid #ff6b6b;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .hashtag-box {
+            background: #222;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #04aa6d;
+            word-break: break-all;
+            margin: 20px 0;
+        }
+        
+        .checkbox-container {
+            background: rgba(4, 170, 109, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .checkbox-container input[type="checkbox"] {
+            transform: scale(2);
+            margin-right: 15px;
+        }
+        
+        .checkbox-container label {
+            font-size: 18px;
+            font-weight: bold;
+            color: #04aa6d;
+            cursor: pointer;
+        }
+        
+        .camera-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            padding: 20px;
+        }
+        
+        .mugshot-guide {
+            color: #04aa6d;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .mugshot-frame {
+            border: 3px solid #04aa6d;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            background: rgba(4, 170, 109, 0.1);
+            margin: 20px auto;
+            max-width: 400px;
+        }
+        
+        .date-time {
+            background: #04aa6d;
+            color: #000;
+            padding: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .close-overlay {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #ff6b6b;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        a {
+            color: #04aa6d;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="mission-header">
+            <h1>🎭 MISSION 1: FAFO 🎭</h1>
+            <p><strong>F*** Around and Find Out</strong></p>
+            <p>Welcome to the most legally binding comedy show on Earth!</p>
+        </div>
+        
+        <div class="funny-tos">
+            <h2 style="color: #04aa6d; text-align: center;">📋 Our Lawyer Made Us Do This 📋</h2>
+            
+            <p><strong>Hey there, future chaos agent!</strong> 👋</p>
+            
+            <p>Our lawyer said we had to have a Terms of Service. So here's the deal:</p>
+            
+            <div class="important">
+                <h3>🎮 THE GAME BASICS:</h3>
+                <ul>
+                    <li><strong>Social Media Uploads:</strong> Every mission needs proof via photo/video posted to social media with the mission hashtag</li>
+                    <li><strong>Respect Privacy:</strong> Don't post videos or pictures of people without their permission (seriously, don't be creepy)</li>
+                    <li><strong>Age Limit:</strong> Must be 18+ (we don't want angry parents calling us)</li>
+                    <li><strong>Don't Break Laws:</strong> Creative mischief ≠ criminal activity (use your brain)</li>
+                    <li><strong>Proof Required:</strong> No pic/vid with hashtag = mission doesn't count</li>
+                </ul>
+            </div>
+            
+            <div class="warning">
+                <h3>⚖️ LEGAL STUFF (The Boring But Important Part):</h3>
+                <p><strong>Long story short:</strong> DON'T BE A DICK.</p>
+                <p><strong>Long story long:</strong> Read our legal docs:</p>
+                <ul style="margin: 10px 0;">
+                    <li><a href="terms-of-service.html" target="_blank">Terms of Service</a></li>
+                    <li><a href="privacy-policy.html" target="_blank">Privacy Policy</a></li>
+                    <li><a href="eula.html" target="_blank">End User License Agreement</a></li>
+                    <li><a href="liability-waiver.html" target="_blank">Liability Waiver</a></li>
+                </ul>
+            </div>
+            
+            <h3 style="color: #04aa6d;">🤝 THE AGREEMENT:</h3>
+            <p>By playing Mission Mischief, you agree to:</p>
+            <ul>
+                <li>Not sue us (seriously, don't)</li>
+                <li>Not be a dick to other players</li>
+                <li>Follow all laws and respect others</li>
+                <li>Take responsibility for your own actions</li>
+                <li>Have fun while being a decent human being</li>
+                <li>All terms in our <a href="terms-of-service.html" target="_blank">comprehensive legal documents</a></li>
+            </ul>
+        </div>
+        
+        <div class="important">
+            <h3>📸 MISSION 1 COMPLETION:</h3>
+            <p>To complete this mission and prove you're not going to sue us or be a dick, you must:</p>
+            <ol>
+                <li>Check the box below acknowledging you've read and accept our Terms</li>
+                <li>Take a mugshot-style selfie holding a sign with today's date and time</li>
+                <li>Post it to social media with the hashtag below</li>
+            </ol>
+        </div>
+        
+        <div class="hashtag-box">
+            <strong>Required Hashtag:</strong><br>
+            #iwillnotsuemissionmischieforitsaffiliatedteambecausedoingsowouldbeadickmoveandisignaconsentformpromisingtonotbeadickandtakeaselfieandpostitwithmelookinglikeacriminalholdingasignwithtodaysdateandtimeinamugshotandifithinkimsmarterthanthembynottakingaselfiebutuploadingapictureofanythingotherthanmeornopictureatalltheniwilloweallplayersexposingmefivedollarsandnotlimitedtotheonlybeingexposedoncerulebecauseiobviouslyamadick
+            <br><br>
+            <strong>Shortened version:</strong> #iwillnotsuemissionmischief
+        </div>
+        
+        <div class="checkbox-container">
+            <input type="checkbox" id="tosAccept" onchange="toggleCamera()">
+            <label for="tosAccept">
+                ✅ I acknowledge that I have read and accept the Terms of Service, promise not to be a dick, and am ready to take my criminal mugshot!
+            </label>
+        </div>
+        
+        <div id="cameraInstructions" style="display: none; text-align: center; margin-top: 20px;">
+            <div class="important">
+                <h3>📸 MUGSHOT TIME!</h3>
+                <p>Camera overlay activated! Time to look like a criminal mastermind!</p>
+                <button onclick="showMugshotOverlay()" style="background: #04aa6d; color: #000; padding: 15px 30px; border: none; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer;">
+                    ACTIVATE MUGSHOT MODE
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Enhanced Mugshot Camera Overlay -->
+    <div id="mugshotCameraOverlay" class="mugshot-camera-overlay">
+        <!-- Jailhouse Background -->
+        <div class="jailhouse-background"></div>
+        
+        <!-- Camera Controls -->
+        <div class="mugshot-controls">
+            <button class="mugshot-btn" onclick="requestCameraPermission()">
+                📹 START CAMERA
+            </button>
+            <button class="mugshot-btn" onclick="takeMugshotPhoto()">
+                📸 TAKE MUGSHOT
+            </button>
+            <button class="mugshot-btn" onclick="copyHashtag()">
+                📋 COPY HASHTAG
+            </button>
+            <button class="mugshot-btn danger" onclick="completeFAFOAndContinue()">
+                ✕ CONTINUE TO GAME
+            </button>
+        </div>
+        
+        <!-- Instructions -->
+        <div class="mugshot-instructions">
+            <strong>🚨 BOOKING INSTRUCTIONS 🚨</strong><br>
+            Look directly at camera • Serious expression • Hold sign with date/time
+        </div>
+        
+        <!-- Main Camera View -->
+        <div class="mugshot-camera-view">
+            <!-- Mugshot Frame -->
+            <div class="mugshot-frame-overlay">
+                <!-- Height measurement lines -->
+                <div class="height-lines"></div>
+                <div class="height-numbers">
+                    <span>6'0"</span>
+                    <span>5'6"</span>
+                    <span>5'0"</span>
+                    <span>4'6"</span>
+                </div>
+            </div>
+            
+            <!-- Booking Board with Live Date/Time -->
+            <div class="booking-board">
+                <div class="booking-header">Mission Mischief Booking</div>
+                <div class="booking-info">
+                    <span class="booking-label">Crime:</span>
+                    <span class="booking-value">Agreeing to ToS</span>
+                    <span class="booking-label">Sentence:</span>
+                    <span class="booking-value">50 Missions</span>
+                    <span class="booking-label">Status:</span>
+                    <span class="booking-value">Dangerous</span>
+                </div>
+                <div class="live-datetime" id="liveMugshotDateTime"></div>
+            </div>
+        </div>
+        
+        <!-- Camera Flash Effect -->
+        <div class="camera-flash" id="cameraFlash"></div>
+    </div>
+    
+    <script src="assets/js/storage.js"></script>
+    <script src="assets/js/camera-capture.js"></script>
+    <script>
+        function toggleCamera() {
+            const checkbox = document.getElementById('tosAccept');
+            const instructions = document.getElementById('cameraInstructions');
+            
+            if (checkbox.checked) {
+                instructions.style.display = 'block';
+            } else {
+                instructions.style.display = 'none';
+                closeMugshotOverlay();
+            }
+        }
+        
+        function showMugshotOverlay() {
+            document.getElementById('mugshotCameraOverlay').style.display = 'block';
+            startLiveClock();
+        }
+        
+        function closeMugshotCamera() {
+            document.getElementById('mugshotCameraOverlay').style.display = 'none';
+            stopLiveClock();
+        }
+        
+        function completeFAFOAndContinue() {
+            if (typeof Storage !== 'undefined' && Storage.completeFAFO) {
+                Storage.completeFAFO();
+                window.location.href = 'app.html';
+            }
+        }
+        
+        let clockInterval;
+        
+        function startLiveClock() {
+            updateMugshotDateTime();
+            clockInterval = setInterval(updateMugshotDateTime, 1000);
+        }
+        
+        function stopLiveClock() {
+            if (clockInterval) {
+                clearInterval(clockInterval);
+            }
+        }
+        
+        function updateMugshotDateTime() {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString();
+            const timeStr = now.toLocaleTimeString();
+            document.getElementById('liveMugshotDateTime').innerHTML = `${dateStr}<br>${timeStr}`;
+        }
+        
+        // Flash effect function (called by camera-capture.js)
+        function triggerFlash() {
+            const flash = document.getElementById('cameraFlash');
+            flash.classList.add('active');
+            setTimeout(() => flash.classList.remove('active'), 300);
+        }
+        
+        // Complete FAFO after successful photo
+        function completeFAFOMission() {
+            if (typeof Storage !== 'undefined') {
+                Storage.completeFAFO();
+                setTimeout(() => {
+                    alert('🎉 FAFO COMPLETED! You can now access Mission 2 and beyond!');
+                    // Redirect to main app
+                    window.location.href = 'app.html';
+                }, 2000);
+            }
+        }
+        
+        function copyHashtag() {
+            const hashtag = '#iwillnotsuemissionmischieforitsaffiliatedteambecausedoingsowouldbeadickmoveandisignaconsentformpromisingtonotbeadickandtakeaselfieandpostitwithmelookinglikeacriminalholdingasignwithtodaysdateandtimeinamugshotandifithinkimsmarterthanthembynottakingaselfiebutuploadingapictureofanythingotherthanmeornopictureatalltheniwilloweallplayersexposingmefivedollarsandnotlimitedtotheonlybeingexposedoncerulebecauseiobviouslyamadick';
+            
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(hashtag).then(() => {
+                    alert('📋 Hashtag copied! Now go take that mugshot!');
+                });
+            } else {
+                // Fallback
+                const textArea = document.createElement('textarea');
+                textArea.value = hashtag;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('📋 Hashtag copied! Now go take that mugshot!');
+            }
+        }
+        
+        // Update date/time every second
+        setInterval(updateMugshotDateTime, 1000);
+    </script>
+</body>
+</html>

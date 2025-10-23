@@ -62,8 +62,23 @@
                 </div>
                 <div class="mb-3">
                   <label for="qrCode" class="form-label">Upload Your Social Media QR Code:</label>
-                  <input type="file" id="qrCode" class="form-control" accept="image/*" required>
+                  <input type="file" id="qrCode" class="form-control" accept="image/*" required onchange="showQRPreview(this)">
                   <small class="form-text" style="color: #999;">Upload your existing social media QR code</small>
+                  
+                  <!-- QR Code Preview and Alignment -->
+                  <div id="qrPreview" style="display: none; margin-top: 15px;">
+                    <div id="qrContainer" style="position: relative; width: 200px; height: 200px; margin: 0 auto; border: 2px solid #04aa6d; border-radius: 8px; overflow: hidden; background: #222;">
+                      <img id="qrImage" style="position: absolute; cursor: move; transition: transform 0.1s;" draggable="false">
+                      <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: 2px dashed rgba(4, 170, 109, 0.5); pointer-events: none;"></div>
+                      <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: rgba(4, 170, 109, 0.7); font-size: 12px; pointer-events: none;">QR CODE AREA</div>
+                    </div>
+                    <div style="text-align: center; margin-top: 10px;">
+                      <button type="button" onclick="zoomQR(-0.1)" style="background: #04aa6d; color: #000; border: none; padding: 5px 10px; margin: 0 5px; border-radius: 4px; cursor: pointer;">🔍-</button>
+                      <button type="button" onclick="zoomQR(0.1)" style="background: #04aa6d; color: #000; border: none; padding: 5px 10px; margin: 0 5px; border-radius: 4px; cursor: pointer;">🔍+</button>
+                      <button type="button" onclick="resetQR()" style="background: #666; color: #fff; border: none; padding: 5px 10px; margin: 0 5px; border-radius: 4px; cursor: pointer;">Reset</button>
+                    </div>
+                    <p style="text-align: center; color: #999; font-size: 12px; margin-top: 5px;">Drag to position • Use zoom buttons to resize</p>
+                  </div>
                 </div>
                 <button type="submit" class="mission-btn w-100">START MISCHIEF</button>
               </form>
@@ -154,9 +169,15 @@
     function initApp() {
       const user = Storage.getUser();
       
+      // Check if FAFO (Mission 1) is completed first
+      if (!Storage.isFAFOCompleted()) {
+        window.location.href = 'funny-tos.html';
+        return;
+      }
+      
       if (!user.userName) {
         showUserSetup();
-      } else if (!user.currentBuyIn && user.badges.length === 0) {
+      } else if (!user.currentBuyIn && user.completedBuyIns.length === 0) {
         showBuyinSection();
       } else {
         showDashboard();
@@ -173,19 +194,138 @@
         const qrCodeFile = document.getElementById('qrCode').files[0];
         
         if (userName && userHandle && qrCodeFile) {
-          // Convert QR code to base64 for storage
-          const reader = new FileReader();
-          reader.onload = function(e) {
+          // Use the positioned QR code data if available
+          const qrImage = document.getElementById('qrImage');
+          const qrData = qrImage ? qrImage.src : null;
+          
+          if (qrData) {
             const user = Storage.initUser(userName, userHandle);
-            user.qrCodeData = e.target.result;
+            user.qrCodeData = qrData;
             Storage.saveUser(user);
             showBuyinSection();
-          };
-          reader.readAsDataURL(qrCodeFile);
+          } else {
+            // Fallback to original file
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              const user = Storage.initUser(userName, userHandle);
+              user.qrCodeData = e.target.result;
+              Storage.saveUser(user);
+              showBuyinSection();
+            };
+            reader.readAsDataURL(qrCodeFile);
+          }
         } else {
           showToast('Please fill all fields and upload your QR code', 'error');
         }
       });
+      
+      // QR Code preview and positioning
+      let qrScale = 1;
+      let qrX = 0;
+      let qrY = 0;
+      
+      window.showQRPreview = function(input) {
+        if (input.files && input.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            const preview = document.getElementById('qrPreview');
+            const img = document.getElementById('qrImage');
+            img.src = e.target.result;
+            preview.style.display = 'block';
+            
+            // Reset positioning
+            qrScale = 1;
+            qrX = 0;
+            qrY = 0;
+            
+            // Set initial size to fit container
+            img.onload = function() {
+              const container = document.getElementById('qrContainer');
+              const containerWidth = container.offsetWidth;
+              const containerHeight = container.offsetHeight;
+              
+              // Scale to fit container initially
+              const scaleX = containerWidth / img.naturalWidth;
+              const scaleY = containerHeight / img.naturalHeight;
+              qrScale = Math.max(scaleX, scaleY);
+              
+              // Center the image
+              qrX = (containerWidth - img.naturalWidth * qrScale) / 2;
+              qrY = (containerHeight - img.naturalHeight * qrScale) / 2;
+              
+              updateQRTransform();
+            };
+            
+            // Trigger onload if image is already cached
+            if (img.complete) {
+              img.onload();
+            }
+            
+            // Make image draggable for positioning
+            let isDragging = false;
+            let startX, startY;
+            
+            img.addEventListener('mousedown', function(e) {
+              isDragging = true;
+              startX = e.clientX;
+              startY = e.clientY;
+              img.style.cursor = 'grabbing';
+            });
+            
+            document.addEventListener('mousemove', function(e) {
+              if (!isDragging) return;
+              const deltaX = e.clientX - startX;
+              const deltaY = e.clientY - startY;
+              qrX += deltaX;
+              qrY += deltaY;
+              startX = e.clientX;
+              startY = e.clientY;
+              updateQRTransform();
+            });
+            
+            document.addEventListener('mouseup', function() {
+              if (isDragging) {
+                isDragging = false;
+                img.style.cursor = 'move';
+              }
+            });
+          };
+          reader.readAsDataURL(input.files[0]);
+        }
+      };
+      
+      function updateQRTransform() {
+        const img = document.getElementById('qrImage');
+        if (img) {
+          img.style.transform = `translate(${qrX}px, ${qrY}px) scale(${qrScale})`;
+          img.style.transformOrigin = 'top left';
+        }
+      }
+      
+      window.zoomQR = function(delta) {
+        qrScale = Math.max(0.1, Math.min(3, qrScale + delta));
+        updateQRTransform();
+      };
+      
+      window.resetQR = function() {
+        const img = document.getElementById('qrImage');
+        const container = document.getElementById('qrContainer');
+        
+        qrX = 0;
+        qrY = 0;
+        
+        if (img.naturalWidth && img.naturalHeight) {
+          const containerWidth = container.offsetWidth;
+          const containerHeight = container.offsetHeight;
+          const scaleX = containerWidth / img.naturalWidth;
+          const scaleY = containerHeight / img.naturalHeight;
+          qrScale = Math.max(scaleX, scaleY);
+        } else {
+          qrScale = 1;
+        }
+        
+        updateQRTransform();
+      };
     }
 
     function showBuyinSection() {
@@ -265,7 +405,9 @@
       }
       
       loadBuyinOptions();
-      Camera.updateBuyInBadge();
+      if (window.Camera) {
+        Camera.updateBuyInBadge();
+      }
     }
 
     function showDashboard() {
@@ -280,7 +422,9 @@
       setupFilters();
       
       // Initialize camera overlay
-      Camera.initOverlay();
+      if (window.Camera) {
+        Camera.initOverlay();
+      }
     }
 
     function loadUserInfo() {
@@ -318,7 +462,7 @@
       const user = Storage.getUser();
       const container = document.getElementById('badgesContainer');
       
-      if (user.badges.length === 0) {
+      if (!user.badges || user.badges.length === 0) {
         container.innerHTML = '<p style="color: #666;">No badges earned yet</p>';
         return;
       }
@@ -421,19 +565,174 @@
     }
 
     function startMissionCapture(missionId) {
-      // Start camera with overlay
-      Camera.onCameraStart(missionId);
-      showToast('Camera overlay activated! Start recording/taking photos', 'info');
-      
-      // Auto-hide after 30 seconds
-      setTimeout(() => {
-        Camera.onCameraStop();
-      }, 30000);
+      // Show mission camera modal
+      showMissionCamera(missionId);
     }
+    
+    function showMissionCamera(missionId) {
+      const mission = Missions.getMission(missionId);
+      
+      // Create camera modal
+      const modal = document.createElement('div');
+      modal.id = 'missionCameraModal';
+      modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.95);
+        z-index: 2000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      `;
+      
+      modal.innerHTML = `
+        <div style="text-align: center; color: #04aa6d; margin-bottom: 20px;">
+          <h2>Mission ${mission.id}: ${mission.title}</h2>
+          <p>${mission.description}</p>
+          <p><strong>Hashtag:</strong> ${mission.hashtag}</p>
+        </div>
+        
+        <div style="position: relative; width: 90%; max-width: 500px; height: 60%; background: #222; border-radius: 8px; overflow: hidden;">
+          <video id="missionVideo" autoplay playsinline muted style="width: 100%; height: 100%; object-fit: cover;"></video>
+        </div>
+        
+        <div style="margin-top: 20px; text-align: center;">
+          <button onclick="startMissionVideo()" style="background: #04aa6d; color: #000; padding: 10px 20px; margin: 5px; border: none; border-radius: 4px; cursor: pointer;">📹 START CAMERA</button>
+          <button onclick="takeMissionPhoto()" style="background: #04aa6d; color: #000; padding: 10px 20px; margin: 5px; border: none; border-radius: 4px; cursor: pointer;">📸 TAKE PHOTO</button>
+          <button onclick="closeMissionCamera()" style="background: #666; color: #fff; padding: 10px 20px; margin: 5px; border: none; border-radius: 4px; cursor: pointer;">❌ CLOSE</button>
+        </div>
+        
+        <div style="color: #04aa6d; text-align: center; margin-top: 15px; padding: 10px; background: rgba(4, 170, 109, 0.1); border-radius: 4px; font-size: 13px;">
+          <strong>📱 FOR VIDEO WITH OVERLAYS:</strong><br>
+          Use your device's screen recording feature while this modal is open<br>
+          <span style="font-size: 11px; color: #999;">iOS: Control Center → Screen Recording | Android: Quick Settings → Screen Recorder</span>
+        </div>
+        
+        <div style="color: #999; text-align: center; margin-top: 10px; font-size: 12px;">
+          Photos automatically include badge overlays • Videos require screen recording
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+      
+      // Start camera overlay
+      if (window.Camera) {
+        Camera.onCameraStart(missionId);
+      }
+    }
+    
+    window.startMissionVideo = async function() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        const video = document.getElementById('missionVideo');
+        video.srcObject = stream;
+      } catch (error) {
+        showToast('Camera access denied', 'error');
+      }
+    };
+    
+    window.takeMissionPhoto = function() {
+      const video = document.getElementById('missionVideo');
+      if (!video.srcObject) {
+        showToast('Start camera first', 'error');
+        return;
+      }
+      
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      
+      // Draw video frame
+      ctx.drawImage(video, 0, 0);
+      
+      // Add badge overlays to photo
+      addOverlaysToCanvas(ctx, canvas.width, canvas.height);
+      
+      // Download photo
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `mission-${Date.now()}.jpg`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('Photo saved with overlays!', 'success');
+      });
+    };
+    
+    function addOverlaysToCanvas(ctx, width, height) {
+      const overlay = document.getElementById('badgeOverlay');
+      if (!overlay) return;
+      
+      // Scale factors
+      const scaleX = width / window.innerWidth;
+      const scaleY = height / window.innerHeight;
+      
+      // Draw badges using existing DOM images
+      const badges = overlay.querySelectorAll('.badge-item img');
+      badges.forEach(badge => {
+        if (badge.complete && badge.naturalWidth > 0) {
+          const rect = badge.getBoundingClientRect();
+          try {
+            ctx.drawImage(badge, rect.left * scaleX, rect.top * scaleY, rect.width * scaleX, rect.height * scaleY);
+          } catch (e) {
+            console.log('Badge draw failed:', e);
+          }
+        }
+      });
+      
+      // Draw mascot
+      const mascot = overlay.querySelector('.mascot img');
+      if (mascot && mascot.complete && mascot.naturalWidth > 0) {
+        const rect = mascot.getBoundingClientRect();
+        try {
+          ctx.drawImage(mascot, rect.left * scaleX, rect.top * scaleY, rect.width * scaleX, rect.height * scaleY);
+        } catch (e) {
+          console.log('Mascot draw failed:', e);
+        }
+      }
+      
+      // Draw buy-in badge
+      const buyinBadge = overlay.querySelector('.buyin-badge img');
+      if (buyinBadge && buyinBadge.complete && buyinBadge.naturalWidth > 0) {
+        const rect = buyinBadge.getBoundingClientRect();
+        try {
+          ctx.drawImage(buyinBadge, rect.left * scaleX, rect.top * scaleY, rect.width * scaleX, rect.height * scaleY);
+        } catch (e) {
+          console.log('Buy-in badge draw failed:', e);
+        }
+      }
+    }
+    
+    window.closeMissionCamera = function() {
+      const modal = document.getElementById('missionCameraModal');
+      if (modal) {
+        // Stop camera stream
+        const video = document.getElementById('missionVideo');
+        if (video && video.srcObject) {
+          video.srcObject.getTracks().forEach(track => track.stop());
+        }
+        
+        modal.remove();
+      }
+      
+      // Stop camera overlay
+      if (window.Camera) {
+        Camera.onCameraStop();
+      }
+    };
     
     function completeMission(missionId) {
       const user = Storage.completeMission(missionId);
-      Camera.onMissionComplete(missionId);
+      if (window.Camera) {
+        Camera.onMissionComplete(missionId);
+      }
       showToast('Mission completed! 🎉', 'success');
       loadUserStats();
       loadMissions();
