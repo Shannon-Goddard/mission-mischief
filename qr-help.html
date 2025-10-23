@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Help - Mission Mischief</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #000;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .back-button {
+            display: inline-block;
+            background: #04aa6d;
+            color: #000;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+        
+        .back-button:hover {
+            background: #038a5a;
+        }
+        
+        h1 {
+            color: #04aa6d;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #ccc;
+            margin-bottom: 40px;
+        }
+        
+        .platform {
+            background: #111;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #04aa6d;
+        }
+        
+        .platform h2 {
+            color: #04aa6d;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .platform-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+        }
+        
+        .steps {
+            counter-reset: step-counter;
+        }
+        
+        .step {
+            counter-increment: step-counter;
+            background: #222;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 50px;
+        }
+        
+        .step::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 15px;
+            top: 15px;
+            background: #04aa6d;
+            color: #000;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .screenshot {
+            width: 100%;
+            max-width: 300px;
+            border: 2px solid #04aa6d;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        
+        .tip {
+            background: rgba(4, 170, 109, 0.1);
+            border-left: 4px solid #04aa6d;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .tip h3 {
+            color: #04aa6d;
+            margin-top: 0;
+        }
+        
+        .warning {
+            background: rgba(255, 107, 107, 0.1);
+            border-left: 4px solid #ff6b6b;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .warning h3 {
+            color: #ff6b6b;
+            margin-top: 0;
+        }
+        
+        @media (max-width: 600px) {
+            .screenshot {
+                max-width: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="app.html" class="back-button">← Back to Setup</a>
+        
+        <h1>QR Code Help</h1>
+        <p class="subtitle">Get your social media QR codes for Mission Mischief</p>
+        
+        <div class="tip">
+            <h3>💡 Why Do I Need This?</h3>
+            <p>Your QR code gets printed on business cards that you'll drop during missions. When people find your card and scan it, they discover Mission Mischief and can join the game!</p>
+        </div>
+        
+        <!-- Instagram -->
+        <div class="platform">
+            <h2>
+                <img src="assets/images/qr-help/instagram-icon.png" alt="Instagram" class="platform-icon">
+                Instagram QR Code
+            </h2>
+            
+            <div class="steps">
+                <div class="step">
+                    Open Instagram app and go to your profile
+                </div>
+                <div class="step">
+                    Tap the hamburger menu (☰) in the top right
+                    <img src="assets/images/qr-help/instagram-step1.png" alt="Instagram menu" class="screenshot">
+                </div>
+                <div class="step">
+                    Select "QR code" from the menu
+                    <img src="assets/images/qr-help/instagram-step2.png" alt="Instagram QR option" class="screenshot">
+                </div>
+                <div class="step">
+                    Tap "Save" to download your QR code
+                    <img src="assets/images/qr-help/instagram-step3.png" alt="Instagram save QR" class="screenshot">
+                </div>
+            </div>
+        </div>
+        
+        <!-- TikTok -->
+        <div class="platform">
+            <h2>
+                <img src="assets/images/qr-help/tiktok-icon.png" alt="TikTok" class="platform-icon">
+                TikTok QR Code
+            </h2>
+            
+            <div class="steps">
+                <div class="step">
+                    Open TikTok app and go to your profile
+                </div>
+                <div class="step">
+                    Tap the hamburger menu (☰) in the top right
+                    <img src="assets/images/qr-help/tiktok-step1.png" alt="TikTok menu" class="screenshot">
+                </div>
+                <div class="step">
+                    Select "QR code" from the menu
+                    <img src="assets/images/qr-help/tiktok-step2.png" alt="TikTok QR option" class="screenshot">
+                </div>
+                <div class="step">
+                    Tap the download icon to save your QR code
+                    <img src="assets/images/qr-help/tiktok-step3.png" alt="TikTok save QR" class="screenshot">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Facebook -->
+        <div class="platform">
+            <h2>
+                <img src="assets/images/qr-help/facebook-icon.png" alt="Facebook" class="platform-icon">
+                Facebook QR Code
+            </h2>
+            
+            <div class="steps">
+                <div class="step">
+                    Open Facebook app and go to your profile
+                </div>
+                <div class="step">
+                    Tap "More" below your profile picture
+                    <img src="assets/images/qr-help/facebook-step1.png" alt="Facebook more button" class="screenshot">
+                </div>
+                <div class="step">
+                    Select "QR Code" from the options
+                    <img src="assets/images/qr-help/facebook-step2.png" alt="Facebook QR option" class="screenshot">
+                </div>
+                <div class="step">
+                    Tap "Save" to download your QR code
+                    <img src="assets/images/qr-help/facebook-step3.png" alt="Facebook save QR" class="screenshot">
+                </div>
+            </div>
+        </div>
+        
+        <!-- X (Twitter) -->
+        <div class="platform">
+            <h2>
+                <img src="assets/images/qr-help/x-icon.png" alt="X" class="platform-icon">
+                X (Twitter) QR Code
+            </h2>
+            
+            <div class="steps">
+                <div class="step">
+                    Open X app and go to your profile
+                </div>
+                <div class="step">
+                    Tap the QR code icon next to the share button
+                    <img src="assets/images/qr-help/x-step1.png" alt="X QR icon" class="screenshot">
+                </div>
+                <div class="step">
+                    Tap "Save" to download your QR code
+                    <img src="assets/images/qr-help/x-step2.png" alt="X save QR" class="screenshot">
+                </div>
+            </div>
+        </div>
+        
+        <div class="warning">
+            <h3>⚠️ Important Notes</h3>
+            <ul>
+                <li><strong>Use your personal account</strong> - Not the Mission Mischief official accounts</li>
+                <li><strong>Make sure your profile is public</strong> - People need to see your posts</li>
+                <li><strong>Keep your QR code safe</strong> - You'll need it for card printing</li>
+            </ul>
+        </div>
+        
+        <div class="tip">
+            <h3>🎯 Pro Tips</h3>
+            <ul>
+                <li><strong>Rectangular QR codes:</strong> Use the zoom/drag feature in setup to position properly</li>
+                <li><strong>Multiple platforms:</strong> Choose your most active social media platform</li>
+                <li><strong>Test your QR:</strong> Scan it yourself to make sure it works</li>
+            </ul>
+        </div>
+        
+        <div style="text-align: center; margin-top: 40px;">
+            <a href="app.html" class="back-button">Continue Setup</a>
+        </div>
+        
+        <div style="text-align: center; margin-top: 40px; color: #666; font-size: 12px;">
+            <p>&copy; 2024 Loyal9 LLC. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

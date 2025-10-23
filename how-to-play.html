@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How To Play - Mission Mischief</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #000;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .back-button {
+            display: inline-block;
+            background: #04aa6d;
+            color: #000;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+        
+        .back-button:hover {
+            background: #038a5a;
+        }
+        
+        h1 {
+            color: #04aa6d;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #04aa6d;
+            font-style: italic;
+            margin-bottom: 40px;
+        }
+        
+        .quick-start {
+            background: linear-gradient(45deg, #04aa6d, #02885a);
+            color: #000;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .quick-start h2 {
+            margin-top: 0;
+            font-size: 1.5em;
+        }
+        
+        .steps {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .step {
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+            border-radius: 5px;
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+        }
+        
+        .section {
+            background: #111;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #04aa6d;
+        }
+        
+        .section h2 {
+            color: #04aa6d;
+            margin-top: 0;
+        }
+        
+        .mission-types {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .mission-type {
+            background: #222;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .prank {
+            border-top: 3px solid #ff6b6b;
+        }
+        
+        .goodwill {
+            border-top: 3px solid #4ecdc4;
+        }
+        
+        .badge-states {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        
+        .badge-state {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .badge-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .locked { background: #333; color: #666; }
+        .silhouette { background: #666; color: #000; }
+        .vibrant { background: #04aa6d; color: #000; }
+        .gold { background: gold; color: #000; }
+        
+        .warning {
+            background: #2a1a1a;
+            border: 2px solid #ff6b6b;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .warning h3 {
+            color: #ff6b6b;
+            margin-top: 0;
+        }
+        
+        @media (max-width: 600px) {
+            .mission-types {
+                grid-template-columns: 1fr;
+            }
+            
+            .steps {
+                flex-direction: column;
+            }
+            
+            .badge-states {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">← Back to Game</a>
+        
+        <h1>How To Play</h1>
+        <p class="subtitle">Mission Mischief: The World's Most Sociopathic Scavenger Hunt</p>
+        
+        <div class="quick-start">
+            <h2>🚀 Quick Start (30 seconds)</h2>
+            <div class="steps">
+                <div class="step">
+                    <strong>1. FAFO</strong><br>
+                    Take mugshot
+                </div>
+                <div class="step">
+                    <strong>2. Setup</strong><br>
+                    Add details & QR
+                </div>
+                <div class="step">
+                    <strong>3. Buy-in</strong><br>
+                    Choose path
+                </div>
+                <div class="step">
+                    <strong>4. Missions</strong><br>
+                    Complete & post
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>🎭 What Is Mission Mischief?</h2>
+            <p>A real-world social scavenger hunt where <strong>chaos meets community service</strong>. Complete hilarious missions, earn badges, and prove you're not a total sociopath by balancing pranks with good deeds.</p>
+            
+            <p><strong>Key Features:</strong></p>
+            <ul>
+                <li>50+ real-world missions</li>
+                <li>Badge collection system with 3 states</li>
+                <li>Social media verification</li>
+                <li>$5 bounties for exposing cheaters</li>
+                <li>Crown of Chaos secret achievement</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <h2>📋 Mission Types</h2>
+            <p>Missions come in pairs - complete both to earn gold badges!</p>
+            
+            <div class="mission-types">
+                <div class="mission-type prank">
+                    <h3>😈 PRANK MISSIONS</h3>
+                    <p>Harmless chaos and mischief</p>
+                    <p><em>Example: Order coffee as "Bueller"</em></p>
+                </div>
+                <div class="mission-type goodwill">
+                    <h3>😇 GOODWILL MISSIONS</h3>
+                    <p>Community service and kindness</p>
+                    <p><em>Example: Give coffee to stranger</em></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>🏆 Badge System</h2>
+            <p>Earn badges by completing missions. Each badge has 4 states:</p>
+            
+            <div class="badge-states">
+                <div class="badge-state">
+                    <div class="badge-icon locked">🔒</div>
+                    <strong>Locked</strong><br>
+                    Not started
+                </div>
+                <div class="badge-state">
+                    <div class="badge-icon silhouette">👤</div>
+                    <strong>Silhouette</strong><br>
+                    Prank only
+                </div>
+                <div class="badge-state">
+                    <div class="badge-icon vibrant">✨</div>
+                    <strong>Vibrant</strong><br>
+                    Goodwill only
+                </div>
+                <div class="badge-state">
+                    <div class="badge-icon gold">👑</div>
+                    <strong>Gold</strong><br>
+                    Both complete
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>💰 Buy-in System</h2>
+            <p>Choose your path to unlock missions:</p>
+            <ul>
+                <li><strong>Green Warrior:</strong> Recycle 2 bags of cans/bottles</li>
+                <li><strong>Oscar the Grouch:</strong> Clean up 2 bags of public trash</li>
+                <li><strong>Bye Bye Bye:</strong> Refer 3 new players</li>
+                <li><strong>License to Ill:</strong> No buy-in, missions unlock one at a time</li>
+            </ul>
+            <p><strong>Crown of Chaos:</strong> Complete all 3 buy-ins for the ultimate secret level!</p>
+        </div>
+        
+        <div class="section">
+            <h2>📱 Social Media Proof</h2>
+            <p>Every mission requires social media proof:</p>
+            <ul>
+                <li>Post photo/video of mission completion</li>
+                <li>Include the specific mission hashtag</li>
+                <li>Tag @missionmischief_official</li>
+                <li>Keep posts public for verification</li>
+            </ul>
+            <p><strong>Bounty System:</strong> Find dropped cards or expose cheaters for $5 rewards!</p>
+        </div>
+        
+        <div class="section">
+            <h2>🎯 Scoring System</h2>
+            <p>Earn honor points for mission completion:</p>
+            <ul>
+                <li><strong>Basic Effort (1 point):</strong> Minimal completion</li>
+                <li><strong>Full Effort (3 points):</strong> Creative execution</li>
+                <li><strong>Bonus Points:</strong> Special achievements and easter eggs</li>
+            </ul>
+        </div>
+        
+        <div class="warning">
+            <h3>⚠️ Important Rules</h3>
+            <ul>
+                <li><strong>Ages 18+ only</strong> - Legal agreement required</li>
+                <li><strong>Don't break laws</strong> - Creative mischief ≠ criminal activity</li>
+                <li><strong>Respect privacy</strong> - No photos/videos of people without permission</li>
+                <li><strong>Don't be a dick</strong> - Seriously, just don't</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <h2>🚀 Ready to Start?</h2>
+            <p>Download Mission Mischief and begin with <strong>FAFO (Mission 1)</strong> - our hilarious legal agreement disguised as comedy. Take your criminal mugshot and join the chaos!</p>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="index.html" class="back-button">Start Playing Now</a>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 40px; color: #666; font-size: 12px;">
+            <p>&copy; 2024 Loyal9 LLC. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

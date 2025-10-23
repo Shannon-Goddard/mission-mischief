@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mission Mischief - The World's Most Sociopathic Scavenger Hunt</title>
+    <meta name="description" content="The world's most sociopathic scavenger hunt where chaos meets community service. Complete hilarious missions, earn badges, and prove you're not a total sociopath.">
+    
+    <!-- Mobile optimizations -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#04aa6d">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #000 0%, #111 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .hero-image {
+            width: 200px;
+            height: 150px;
+            margin: 0 auto 20px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+        
+        .title {
+            color: #04aa6d;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+        
+        .subtitle {
+            color: #04aa6d;
+            font-size: 14px;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        
+        .description {
+            color: #ccc;
+            font-size: 16px;
+            line-height: 1.4;
+            margin-bottom: 30px;
+        }
+        
+        .app-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .app-button {
+            display: inline-block;
+            transition: transform 0.2s ease;
+        }
+        
+        .app-button:hover {
+            transform: scale(1.05);
+        }
+        
+        .app-button img {
+            height: 50px;
+            width: auto;
+        }
+        
+        .footer {
+            color: #666;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+        
+        .social-links {
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            color: #04aa6d;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 14px;
+        }
+        
+        .social-links a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (min-width: 480px) {
+            .app-buttons {
+                flex-direction: row;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="assets/images/social/mayhem-hero.png" alt="Mayhem - Mission Mischief Mascot" class="hero-image">
+        
+        <h1 class="title">Mission Mischief</h1>
+        <p class="subtitle">The World's Most Sociopathic Scavenger Hunt</p>
+        
+        <p class="description">
+            The world's most sociopathic scavenger hunt where chaos meets community service. Complete hilarious missions, earn badges, and prove you're not a total sociopath.
+        </p>
+        
+        <div class="app-buttons">
+            <a href="#" class="app-button" id="appStoreBtn">
+                <img src="assets/images/social/app-store-badge.svg" alt="Download on the App Store">
+            </a>
+            <a href="#" class="app-button" id="googlePlayBtn">
+                <img src="assets/images/social/google-play-badge.svg" alt="Get it on Google Play">
+            </a>
+        </div>
+        
+        <div class="social-links">
+            <a href="https://www.instagram.com/missionmischief_official" target="_blank">Instagram</a>
+            <a href="https://www.tiktok.com/@missionmischief_official" target="_blank">TikTok</a>
+            <a href="https://www.facebook.com/profile.php?id=61582651835720" target="_blank">Facebook</a>
+            <a href="https://x.com/Missio_Mischief" target="_blank">X</a>
+        </div>
+        
+        <div class="footer">
+            <p>&copy; 2024 Loyal9 LLC. All rights reserved.</p>
+            <p>Ages 18+ only. Don't be a dick.</p>
+        </div>
+    </div>
+    
+    <script>
+        // Track button clicks for analytics
+        document.getElementById('appStoreBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            // Add App Store URL when available
+            console.log('App Store button clicked');
+        });
+        
+        document.getElementById('googlePlayBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            // Add Google Play URL when available
+            console.log('Google Play button clicked');
+        });
+    </script>
+</body>
+</html>
