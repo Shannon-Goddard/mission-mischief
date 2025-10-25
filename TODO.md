@@ -40,6 +40,10 @@
 
 ### Social Verification Core
 - [ ] Create Bounty Hunter page with mission hashtag verification
+  - [ ] Phase 1: Manual hashtag search links for each platform (Instagram, TikTok, Facebook, X, YouTube)
+  - [ ] Add "Last Updated: [Date] 2:00 AM PST" disclaimer
+  - [ ] Create mission difficulty rankings section (🔥 HARDEST, 🟡 MEDIUM, 🟢 EASIEST)
+  - [ ] Phase 2: Simple Python web scraping script (runs daily at 2am, updates JSON file)
 - [ ] Add social platform buttons for hashtag search (Facebook, Instagram, TikTok, X, YouTube)
 - [ ] Add "Report Cheater" functionality with $5 reward system
 - [ ] Add bounty hunter badge system and leaderboard

@@ -37,19 +37,22 @@ Comprehensive real-world social scavenger hunt game with 50+ missions, badge sys
 ## File Structure
 
 ### Core JavaScript Files
-- `assets/js/storage.js` - localStorage management, user data structure
-- `assets/js/missions.js` - 38+ missions, badge system, buy-in logic
-- `assets/js/camera.js` - Badge overlay system, mascot expressions
-- `assets/js/camera-capture.js` - Live camera feed, photo capture
+- `assets/js/storage.js` - localStorage management, user data structure, mission completion tracking, FAFO completion status, added missing badges array
+- `assets/js/missions.js` - Complete mission system with 51 missions (M1-M51), variable point systems, badge mapping, buy-in logic, Crown of Chaos mechanics, helper functions for image paths
+- `assets/js/camera.js` - Badge overlay system with dynamic Mayhem expressions, smoldering effects, buy-in badge management, fixed image path references
+- `assets/js/camera-capture.js` - Live camera feed, photo capture with booking overlay, device-only saving, mugshot preview with retake/continue options
 - `assets/js/print.js` - Cross-platform card printing
 - `assets/js/main.js` - Utilities, toast notifications
 - `assets/js/social.js` - Social media integration
 
 ### HTML Pages
 - `index.html` - Landing page
-- `app.html` - Main game interface with user setup, buy-in selection, mission dashboard
-- `funny-tos.html` - FAFO Mission 1 with mugshot system
-- Legal documents: `terms-of-service.html`, `privacy-policy.html`, `eula.html`, `liability-waiver.html`
+- `app.html` - Main game interface with user setup, buy-in selection, mission dashboard, QR code alignment system with zoom/drag functionality, mission camera modal with overlay compositing
+- `funny-tos.html` - FAFO Mission 1 with hilarious legal agreement and mugshot system
+- `mobile-landing.html` - Mobile-optimized landing page with social media links and app store badges
+- `how-to-play.html` - Comprehensive game guide with quick start, mission types, badge system, and rules
+- `qr-help.html` - Step-by-step QR code extraction guide for Instagram, TikTok, Facebook, and X
+- Legal documents: `terms-of-service.html`, `privacy-policy.html`, `eula.html`, `liability-waiver.html` for Loyal9 LLC with copyright notices
 
 ### Assets
 - `assets/images/mascot/` - 96px mascot images (mayhem-*.png, crown-of-chaos-*.png)
@@ -82,19 +85,32 @@ Comprehensive real-world social scavenger hunt game with 50+ missions, badge sys
 5. **Crown of Chaos** - Ultimate achievement for completing all buy-ins
 
 ## Recent Fixes & Improvements
-- Fixed image path 404 errors with proper helper functions
-- Implemented overlay compositing in photo capture (requires HTTP serving)
-- Added mission camera modal with live video feed
-- Enhanced QR code alignment system with drag/zoom
-- Fixed mascot expression path generation
-- Added screen recording instructions for video with overlays
-- Fixed QR code aspect ratio in print output
+- **Mission System Implementation**: Successfully implemented complete 51-mission system from final-mission-reference.html into missions.js, resolved syntax errors caused by duplicate mission entries
+- **Image Path Resolution**: Fixed 404 errors for badge and mascot images by correcting file paths and implementing proper helper functions
+- **Social Media Setup**: Created accounts on Instagram, TikTok, Facebook, and X with consistent branding
+- **QR Code Alignment System**: Added drag-and-zoom positioning for business card QR codes to handle rectangular Instagram formats
+- **Camera Integration**: Built mugshot capture system with live camera feed, flash effects, and device-only photo saving
+- **Badge & Overlay System**: Implemented 22 badges with 3 states (silhouette/vibrant/gold) and responsive camera overlay with Mayhem mascot expressions
+- **Crown of Chaos System**: Designed secret level unlocked by completing all 3 buy-ins, with Mayhem wearing crown
+- **Legal Framework**: Created comprehensive Terms of Service and FAFO (Mission 1) system with binding legal agreement disguised as comedy
 
 ## Development Notes
 - **CORS Issue**: Must serve over HTTP (not file://) for overlay compositing to work
 - **Image Loading**: Badge and mascot images must be properly loaded before overlay compositing
 - **Security**: Canvas taint occurs with file:// protocol, resolved with HTTP serving
 - **Mobile**: Responsive design with orientation detection for overlays
+
+## Social Media Accounts
+- **Instagram**: @missionmischief_official
+- **TikTok**: @missionmischief_official
+- **Facebook**: Mission Mischief page
+- **X**: @Missio_Mischief
+
+## Key Insights
+- **INCLUSIVE DESIGN**: Variable point system (1pt basic, 3pts full effort) allows participation regardless of budget while rewarding creativity
+- **VIRAL MECHANICS**: Epic hashtag system, social media proof requirements, $5 bounties for found cards/exposed cheaters
+- **LEGAL STRATEGY**: Device-only photo storage eliminates data liability, FAFO mission creates binding legal agreement through comedy
+- **IMAGE ORGANIZATION**: 96px mascot images in assets/images/mascot/, 128px badges in assets/images/badges/, proper path helper functions implemented
 
 ## Next Steps / Known Issues
 - Overlay positioning and sizing needs refinement

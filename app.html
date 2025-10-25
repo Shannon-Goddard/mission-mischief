@@ -167,21 +167,24 @@
     });
 
     function initApp() {
-      const user = Storage.getUser();
-      
-      // Check if FAFO (Mission 1) is completed first
-      if (!Storage.isFAFOCompleted()) {
-        window.location.href = 'funny-tos.html';
-        return;
-      }
-      
-      if (!user.userName) {
-        showUserSetup();
-      } else if (!user.currentBuyIn && user.completedBuyIns.length === 0) {
-        showBuyinSection();
-      } else {
-        showDashboard();
-      }
+      // Add small delay to ensure localStorage is fully loaded
+      setTimeout(() => {
+        const user = Storage.getUser();
+        
+        // Check if FAFO (Mission 1) is completed first
+        if (!Storage.isFAFOCompleted()) {
+          window.location.href = 'funny-tos.html';
+          return;
+        }
+        
+        if (!user.userName) {
+          showUserSetup();
+        } else if (!user.currentBuyIn && user.completedBuyIns.length === 0) {
+          showBuyinSection();
+        } else {
+          showDashboard();
+        }
+      }, 100);
     }
 
     function showUserSetup() {
@@ -199,7 +202,11 @@
           const qrData = qrImage ? qrImage.src : null;
           
           if (qrData) {
+            const existingUser = Storage.getUser();
             const user = Storage.initUser(userName, userHandle);
+            // Preserve FAFO completion status
+            user.fafoCompleted = existingUser.fafoCompleted || false;
+            user.fafoCompletedDate = existingUser.fafoCompletedDate || null;
             user.qrCodeData = qrData;
             Storage.saveUser(user);
             showBuyinSection();
@@ -207,7 +214,11 @@
             // Fallback to original file
             const reader = new FileReader();
             reader.onload = function(e) {
+              const existingUser = Storage.getUser();
               const user = Storage.initUser(userName, userHandle);
+              // Preserve FAFO completion status
+              user.fafoCompleted = existingUser.fafoCompleted || false;
+              user.fafoCompletedDate = existingUser.fafoCompletedDate || null;
               user.qrCodeData = e.target.result;
               Storage.saveUser(user);
               showBuyinSection();
@@ -474,7 +485,14 @@
 
     function loadMissions(filter = 'all') {
       const user = Storage.getUser();
+      console.log('Loading missions for user:', user);
+      console.log('FAFO completed:', user.fafoCompleted);
+      console.log('Current buy-in:', user.currentBuyIn);
+      console.log('Completed buy-ins:', user.completedBuyIns);
+      
       const available = Missions.getAvailableMissions(user);
+      console.log('Available missions:', available.length, available.map(m => m.id));
+      
       let missions = available;
       
       if (filter === 'available') {
@@ -483,8 +501,14 @@
         missions = available.filter(m => Missions.isMissionCompleted(m.id, user));
       }
       
+      console.log('Final missions to display:', missions.length);
+      
       const container = document.getElementById('missionsContainer');
-      container.innerHTML = missions.map(mission => createMissionCard(mission, user)).join('');
+      if (missions.length === 0) {
+        container.innerHTML = '<p style="color: #666; text-align: center; padding: 20px;">No missions available. Check console for debugging info.</p>';
+      } else {
+        container.innerHTML = missions.map(mission => createMissionCard(mission, user)).join('');
+      }
     }
 
     function createMissionCard(mission, user) {
@@ -496,41 +520,49 @@
       
       return `
         <div class="mission-card ${statusClass} ${typeClass}">
-          <div class="mission-header">
-            <div class="mission-number">${mission.id}</div>
-            <div class="mission-type ${mission.type}">${mission.type.toUpperCase()}</div>
-            <div class="mission-status ${statusClass}">${statusText}</div>
-          </div>
-          <div class="mission-title">${mission.title}</div>
-          <div class="mission-location">${mission.location}</div>
-          ${mission.badgeId ? `
-            <div class="mission-badge-info">
-              <span class="badge-name">${Missions.badges[mission.badgeId].name} Badge</span>
-              <span class="badge-state ${badgeState}">${badgeState.toUpperCase()}</span>
+          <div class="mission-header" onclick="toggleMissionDetails(${mission.id})" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <div class="mission-number">${mission.id}</div>
+              <div class="mission-type ${mission.type}">${mission.type.toUpperCase()}</div>
+              <div class="mission-status ${statusClass}">${statusText}</div>
             </div>
-          ` : ''}
+            <div class="expand-icon" id="expand-${mission.id}" style="color: #04aa6d; font-size: 12px; transition: transform 0.2s;">▼</div>
+          </div>
+          <div class="mission-title" onclick="toggleMissionDetails(${mission.id})" style="cursor: pointer;">${mission.title}</div>
+          <div class="mission-location">${mission.location}</div>
           <div class="mission-description">${mission.description}</div>
-          <div class="mission-actions">
-            ${!isCompleted ? `
-              ${mission.type === 'setup' ? `
-                <button class="mission-btn" onclick="printCard()">
-                  Print Card
-                </button>
-              ` : `
-                <button class="mission-btn" onclick="startMissionCapture(${mission.id})">
-                  Start Mission
-                </button>
-              `}
-              <button class="mission-btn" onclick="completeMission(${mission.id})">
-                Mark Complete
-              </button>
+          
+          <div class="mission-details" id="details-${mission.id}" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid #333;">
+            ${mission.badgeId && Missions.badges[mission.badgeId] ? `
+              <div class="mission-badge-info" style="margin-bottom: 10px;">
+                <span class="badge-name">${Missions.badges[mission.badgeId].name} Badge</span>
+                <span class="badge-state ${badgeState}">${badgeState.toUpperCase()}</span>
+              </div>
             ` : ''}
-            <button class="mission-btn" onclick="shareMission(${mission.id})">
-              Share
-            </button>
-            <button class="mission-btn" onclick="Social.copyHashtag('${mission.hashtag}')">
-              Copy Hashtag
-            </button>
+            ${mission.proof ? `<div class="mission-proof" style="margin-bottom: 10px; padding: 8px; background: rgba(4, 170, 109, 0.1); border-radius: 4px; font-size: 13px;"><strong>Proof:</strong> ${mission.proof}</div>` : ''}
+            <div class="mission-hashtag" style="margin-bottom: 10px; font-family: monospace; color: #04aa6d; font-size: 12px;">${mission.hashtag}</div>
+            <div class="mission-actions">
+              ${!isCompleted ? `
+                ${mission.type === 'setup' ? `
+                  <button class="mission-btn" onclick="printCard()">
+                    Print Card
+                  </button>
+                ` : `
+                  <button class="mission-btn" onclick="startMissionCapture(${mission.id})">
+                    Start Mission
+                  </button>
+                `}
+                <button class="mission-btn" onclick="completeMission(${mission.id})">
+                  Mark Complete
+                </button>
+              ` : ''}
+              <button class="mission-btn" onclick="shareMission(${mission.id})">
+                Share
+              </button>
+              <button class="mission-btn" onclick="Social.copyHashtag('${mission.hashtag}')">
+                Copy Hashtag
+              </button>
+            </div>
           </div>
         </div>
       `;
@@ -572,9 +604,9 @@
     function showMissionCamera(missionId) {
       const mission = Missions.getMission(missionId);
       
-      // Create camera modal
+      // Create upload modal
       const modal = document.createElement('div');
-      modal.id = 'missionCameraModal';
+      modal.id = 'missionUploadModal';
       modal.style.cssText = `
         position: fixed;
         top: 0;
@@ -588,6 +620,7 @@
         align-items: center;
         justify-content: center;
         padding: 20px;
+        overflow-y: auto;
       `;
       
       modal.innerHTML = `
@@ -597,73 +630,193 @@
           <p><strong>Hashtag:</strong> ${mission.hashtag}</p>
         </div>
         
-        <div style="position: relative; width: 90%; max-width: 500px; height: 60%; background: #222; border-radius: 8px; overflow: hidden;">
-          <video id="missionVideo" autoplay playsinline muted style="width: 100%; height: 100%; object-fit: cover;"></video>
+        <div style="background: #222; border-radius: 8px; padding: 20px; max-width: 500px; width: 100%;">
+          <div style="margin-bottom: 20px;">
+            <label style="display: block; color: #04aa6d; margin-bottom: 10px; font-weight: bold;">📁 Upload Your Photo/Video:</label>
+            <input type="file" id="missionFile" accept="image/*,video/*" style="width: 100%; padding: 10px; background: #333; color: #fff; border: 1px solid #04aa6d; border-radius: 4px;">
+          </div>
+          
+          <div id="previewContainer" style="display: none; margin-bottom: 20px;">
+            <div style="position: relative; background: #111; border-radius: 4px; overflow: hidden;">
+              <img id="previewImage" style="width: 100%; height: auto; display: none;">
+              <video id="previewVideo" controls style="width: 100%; height: auto; display: none;"></video>
+              <div id="overlayPreview" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; opacity: 0; transition: opacity 0.3s;"></div>
+            </div>
+            <div style="text-align: center; margin-top: 10px;">
+              <button onclick="toggleOverlayPreview()" id="previewToggle" style="background: #04aa6d; color: #000; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">👁️ PREVIEW OVERLAYS</button>
+            </div>
+          </div>
+          
+          <div style="text-align: center;">
+            <button onclick="processUpload()" id="processBtn" disabled style="background: #666; color: #fff; padding: 10px 20px; margin: 5px; border: none; border-radius: 4px; cursor: not-allowed;">🎭 PROCESS WITH OVERLAYS</button>
+            <button onclick="downloadResult()" id="downloadBtn" disabled style="background: #666; color: #fff; padding: 10px 20px; margin: 5px; border: none; border-radius: 4px; cursor: not-allowed; display: none;">💾 DOWNLOAD</button>
+            <button onclick="closeMissionUpload()" style="background: #666; color: #fff; padding: 10px 20px; margin: 5px; border: none; border-radius: 4px; cursor: pointer;">❌ CLOSE</button>
+          </div>
         </div>
         
-        <div style="margin-top: 20px; text-align: center;">
-          <button onclick="startMissionVideo()" style="background: #04aa6d; color: #000; padding: 10px 20px; margin: 5px; border: none; border-radius: 4px; cursor: pointer;">📹 START CAMERA</button>
-          <button onclick="takeMissionPhoto()" style="background: #04aa6d; color: #000; padding: 10px 20px; margin: 5px; border: none; border-radius: 4px; cursor: pointer;">📸 TAKE PHOTO</button>
-          <button onclick="closeMissionCamera()" style="background: #666; color: #fff; padding: 10px 20px; margin: 5px; border: none; border-radius: 4px; cursor: pointer;">❌ CLOSE</button>
-        </div>
-        
-        <div style="color: #04aa6d; text-align: center; margin-top: 15px; padding: 10px; background: rgba(4, 170, 109, 0.1); border-radius: 4px; font-size: 13px;">
-          <strong>📱 FOR VIDEO WITH OVERLAYS:</strong><br>
-          Use your device's screen recording feature while this modal is open<br>
-          <span style="font-size: 11px; color: #999;">iOS: Control Center → Screen Recording | Android: Quick Settings → Screen Recorder</span>
-        </div>
-        
-        <div style="color: #999; text-align: center; margin-top: 10px; font-size: 12px;">
-          Photos automatically include badge overlays • Videos require screen recording
+        <div style="color: #04aa6d; text-align: center; margin-top: 15px; padding: 10px; background: rgba(4, 170, 109, 0.1); border-radius: 4px; font-size: 13px; max-width: 500px;">
+          <strong>📱 HOW IT WORKS:</strong><br>
+          1. Take photo/video with your device camera<br>
+          2. Upload it here to add Mission Mischief overlays<br>
+          3. Download the result to post on social media<br>
+          <span style="font-size: 11px; color: #999;">Supports photos and videos • Overlays added automatically</span>
         </div>
       `;
       
       document.body.appendChild(modal);
       
-      // Start camera overlay
+      // Setup file upload handler
+      document.getElementById('missionFile').addEventListener('change', handleFileUpload);
+      
+      // Start camera overlay for preview
       if (window.Camera) {
         Camera.onCameraStart(missionId);
       }
     }
     
-    window.startMissionVideo = async function() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        const video = document.getElementById('missionVideo');
-        video.srcObject = stream;
-      } catch (error) {
-        showToast('Camera access denied', 'error');
+    let uploadedFile = null;
+    let processedResult = null;
+    
+    let overlayPreviewVisible = false;
+    
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      uploadedFile = file;
+      const previewContainer = document.getElementById('previewContainer');
+      const previewImage = document.getElementById('previewImage');
+      const previewVideo = document.getElementById('previewVideo');
+      const processBtn = document.getElementById('processBtn');
+      
+      // Show preview
+      previewContainer.style.display = 'block';
+      
+      if (file.type.startsWith('image/')) {
+        previewImage.style.display = 'block';
+        previewVideo.style.display = 'none';
+        previewImage.src = URL.createObjectURL(file);
+        previewImage.onload = () => setupOverlayPreview();
+      } else if (file.type.startsWith('video/')) {
+        previewImage.style.display = 'none';
+        previewVideo.style.display = 'block';
+        previewVideo.src = URL.createObjectURL(file);
+        previewVideo.onloadedmetadata = () => setupOverlayPreview();
+      }
+      
+      // Enable process button
+      processBtn.disabled = false;
+      processBtn.style.background = '#04aa6d';
+      processBtn.style.color = '#000';
+      processBtn.style.cursor = 'pointer';
+    }
+    
+    function setupOverlayPreview() {
+      const overlayPreview = document.getElementById('overlayPreview');
+      const previewContainer = overlayPreview.parentElement;
+      const rect = previewContainer.getBoundingClientRect();
+      
+      // Create overlay elements
+      overlayPreview.innerHTML = `
+        <div style="position: absolute; top: 10px; right: 10px; width: 60px; height: 60px; background: url('assets/images/mascot/mayhem-excited.png') center/contain no-repeat;"></div>
+        <div style="position: absolute; bottom: 10px; left: 10px; display: flex; gap: 5px;">
+          <div style="width: 30px; height: 30px; background: url('assets/images/badges/book-for-dummies-color.png') center/contain no-repeat; opacity: 0.9;"></div>
+          <div style="width: 30px; height: 30px; background: url('assets/images/badges/coffee-color.png') center/contain no-repeat; opacity: 0.9;"></div>
+        </div>
+        <div style="position: absolute; top: 10px; left: 10px; background: rgba(4, 170, 109, 0.9); color: #000; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">MISSION MISCHIEF</div>
+      `;
+    }
+    
+    window.toggleOverlayPreview = function() {
+      const overlayPreview = document.getElementById('overlayPreview');
+      const toggleBtn = document.getElementById('previewToggle');
+      
+      overlayPreviewVisible = !overlayPreviewVisible;
+      
+      if (overlayPreviewVisible) {
+        overlayPreview.style.opacity = '1';
+        toggleBtn.textContent = '🙈 HIDE OVERLAYS';
+        toggleBtn.style.background = '#666';
+      } else {
+        overlayPreview.style.opacity = '0';
+        toggleBtn.textContent = '👁️ PREVIEW OVERLAYS';
+        toggleBtn.style.background = '#04aa6d';
       }
     };
     
-    window.takeMissionPhoto = function() {
-      const video = document.getElementById('missionVideo');
-      if (!video.srcObject) {
-        showToast('Start camera first', 'error');
-        return;
-      }
+    window.processUpload = function() {
+      if (!uploadedFile) return;
       
+      if (uploadedFile.type.startsWith('image/')) {
+        processImage();
+      } else if (uploadedFile.type.startsWith('video/')) {
+        processVideo();
+      }
+    };
+    
+    function processImage() {
+      const img = document.getElementById('previewImage');
       const canvas = document.createElement('canvas');
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
       const ctx = canvas.getContext('2d');
       
-      // Draw video frame
-      ctx.drawImage(video, 0, 0);
+      // Draw original image
+      ctx.drawImage(img, 0, 0);
       
-      // Add badge overlays to photo
+      // Add overlays
       addOverlaysToCanvas(ctx, canvas.width, canvas.height);
       
-      // Download photo
+      // Store result
       canvas.toBlob((blob) => {
-        const url = URL.createObjectURL(blob);
+        processedResult = blob;
+        enableDownload('mission-photo-' + Date.now() + '.jpg');
+      });
+    }
+    
+    function processVideo() {
+      // For videos, we'll create an overlay instruction
+      showToast('Video processing: Use screen recording while overlays are visible', 'info');
+      enableDownload('mission-video-' + Date.now() + '.mp4', true);
+    }
+    
+    function enableDownload(filename, isVideo = false) {
+      const downloadBtn = document.getElementById('downloadBtn');
+      downloadBtn.disabled = false;
+      downloadBtn.style.background = '#04aa6d';
+      downloadBtn.style.color = '#000';
+      downloadBtn.style.cursor = 'pointer';
+      downloadBtn.style.display = 'inline-block';
+      downloadBtn.setAttribute('data-filename', filename);
+      downloadBtn.setAttribute('data-is-video', isVideo);
+      
+      showToast('Ready to download!', 'success');
+    }
+    
+    window.downloadResult = function() {
+      const downloadBtn = document.getElementById('downloadBtn');
+      const filename = downloadBtn.getAttribute('data-filename');
+      const isVideo = downloadBtn.getAttribute('data-is-video') === 'true';
+      
+      if (isVideo) {
+        // For videos, download original and show overlay instructions
+        const url = URL.createObjectURL(uploadedFile);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `mission-${Date.now()}.jpg`;
+        a.download = filename;
         a.click();
         URL.revokeObjectURL(url);
-        showToast('Photo saved with overlays!', 'success');
-      });
+        showToast('Video downloaded! Add overlays using screen recording', 'info');
+      } else if (processedResult) {
+        // For images, download processed version
+        const url = URL.createObjectURL(processedResult);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('Photo with overlays downloaded!', 'success');
+      }
     };
     
     function addOverlaysToCanvas(ctx, width, height) {
@@ -710,17 +863,15 @@
       }
     }
     
-    window.closeMissionCamera = function() {
-      const modal = document.getElementById('missionCameraModal');
+    window.closeMissionUpload = function() {
+      const modal = document.getElementById('missionUploadModal');
       if (modal) {
-        // Stop camera stream
-        const video = document.getElementById('missionVideo');
-        if (video && video.srcObject) {
-          video.srcObject.getTracks().forEach(track => track.stop());
-        }
-        
         modal.remove();
       }
+      
+      // Clean up
+      uploadedFile = null;
+      processedResult = null;
       
       // Stop camera overlay
       if (window.Camera) {
@@ -753,6 +904,20 @@
         showToast('Complete your profile first!', 'error');
       }
     }
+
+    // Toggle mission details
+    window.toggleMissionDetails = function(missionId) {
+      const details = document.getElementById(`details-${missionId}`);
+      const icon = document.getElementById(`expand-${missionId}`);
+      
+      if (details.style.display === 'none') {
+        details.style.display = 'block';
+        icon.textContent = '▲';
+      } else {
+        details.style.display = 'none';
+        icon.textContent = '▼';
+      }
+    };
 
     // Initialize app
     window.addEventListener('load', function() {
