@@ -138,8 +138,11 @@ class MugshotCamera {
       <button class="mugshot-btn" onclick="retakeMugshot()">
         🔄 RETAKE MUGSHOT
       </button>
+      <button class="mugshot-btn" onclick="shareWithHashtags()">
+        📤 SHARE
+      </button>
       <button class="mugshot-btn" onclick="saveMugshotAndContinue()">
-        ✅ READY TO START MISSIONS
+        ✅ CONTINUE TO GAME
       </button>
     `;
   }
@@ -228,12 +231,6 @@ window.retakeMugshot = function() {
     </button>
     <button class="mugshot-btn" onclick="takeMugshotPhoto()">
       📸 TAKE MUGSHOT
-    </button>
-    <button class="mugshot-btn" onclick="copyHashtag()">
-      📋 COPY HASHTAG
-    </button>
-    <button class="mugshot-btn danger" onclick="completeFAFOAndContinue()">
-      ✕ CONTINUE TO GAME
     </button>
   `;
 };

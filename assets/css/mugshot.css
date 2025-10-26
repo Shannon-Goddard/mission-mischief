@@ -223,6 +223,15 @@
     right: 35px;
     font-size: 10px;
   }
+  
+  .mugshot-controls {
+    gap: 8px;
+  }
+  
+  .mugshot-btn {
+    padding: 8px 12px;
+    font-size: 11px;
+  }
 }
 
 /* Flash Effect for Photo */

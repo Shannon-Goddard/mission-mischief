@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   
   <!-- Mobile WebView Optimizations -->
@@ -27,6 +26,34 @@
   <!-- CSS Files -->
   <link href="assets/css/main.css" rel="stylesheet">
   <link href="assets/css/components.css" rel="stylesheet">
+  
+  <style>
+    /* Mobile-First Responsive Design */
+    @media (max-width: 768px) {
+      .container { padding: 0 15px; }
+      .mission-card { margin-bottom: 15px; font-size: 14px; }
+      .mission-btn { padding: 8px 12px; font-size: 12px; margin: 2px; word-wrap: break-word; max-width: 100%; }
+      .mission-actions { display: flex; flex-wrap: wrap; gap: 5px; }
+      .mission-actions .mission-btn { flex: 1; min-width: 80px; text-align: center; }
+      .user-stats { flex-wrap: wrap; gap: 10px; }
+      .stat-card { min-width: calc(50% - 5px); }
+      .feature-cards { flex-direction: column; }
+      .buyin-card { margin-bottom: 15px; }
+      #missionUploadModal { padding: 10px; }
+      #missionUploadModal > div { max-width: 95vw; padding: 15px; }
+    }
+    
+    /* Loading States */
+    .loading { opacity: 0.6; pointer-events: none; }
+    .loading::after {
+      content: '⏳';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 24px;
+    }
+  </style>
 </head>
 
 <body class="customBody">
@@ -59,6 +86,32 @@
                 <div class="mb-3">
                   <label for="userHandle" class="form-label">Social Media Handle:</label>
                   <input type="text" id="userHandle" class="form-control" placeholder="@username" required>
+                </div>
+                <div class="mb-3">
+                  <label for="userCountry" class="form-label">Country:</label>
+                  <select id="userCountry" class="form-control" required onchange="loadStates(); toggleCountryOther();">
+                    <option value="">Select Country</option>
+                    <option value="US">United States</option>
+                    <option value="CA">Canada</option>
+                    <option value="UK">United Kingdom</option>
+                    <option value="AU">Australia</option>
+                    <option value="OTHER">Other</option>
+                  </select>
+                  <input type="text" id="userCountryOther" class="form-control" placeholder="Enter country" style="display: none; margin-top: 10px;">
+                </div>
+                <div class="mb-3">
+                  <label for="userState" class="form-label">State/Province:</label>
+                  <select id="userState" class="form-control" required onchange="loadCities(); toggleStateOther();" disabled>
+                    <option value="">Select State/Province</option>
+                  </select>
+                  <input type="text" id="userStateOther" class="form-control" placeholder="Enter state/province" style="display: none; margin-top: 10px;">
+                </div>
+                <div class="mb-3">
+                  <label for="userCity" class="form-label">City:</label>
+                  <select id="userCity" class="form-control" required disabled onchange="toggleCityOther()">
+                    <option value="">Select City</option>
+                  </select>
+                  <input type="text" id="userCityOther" class="form-control" placeholder="Enter city" style="display: none; margin-top: 10px;">
                 </div>
                 <div class="mb-3">
                   <label for="qrCode" class="form-label">Upload Your Social Media QR Code:</label>
@@ -194,9 +247,15 @@
         e.preventDefault();
         const userName = document.getElementById('userName').value.trim();
         const userHandle = document.getElementById('userHandle').value.trim();
+        const userCountry = document.getElementById('userCountry').value === 'OTHER' ? 
+          document.getElementById('userCountryOther').value.trim() : document.getElementById('userCountry').value;
+        const userState = document.getElementById('userState').value === 'OTHER' ? 
+          document.getElementById('userStateOther').value.trim() : document.getElementById('userState').value;
+        const userCity = document.getElementById('userCity').value === 'OTHER' ? 
+          document.getElementById('userCityOther').value.trim() : document.getElementById('userCity').value;
         const qrCodeFile = document.getElementById('qrCode').files[0];
         
-        if (userName && userHandle && qrCodeFile) {
+        if (userName && userHandle && userCountry && userState && userCity && qrCodeFile) {
           // Use the positioned QR code data if available
           const qrImage = document.getElementById('qrImage');
           const qrData = qrImage ? qrImage.src : null;
@@ -208,6 +267,9 @@
             user.fafoCompleted = existingUser.fafoCompleted || false;
             user.fafoCompletedDate = existingUser.fafoCompletedDate || null;
             user.qrCodeData = qrData;
+            user.country = userCountry;
+            user.state = userState;
+            user.city = userCity;
             Storage.saveUser(user);
             showBuyinSection();
           } else {
@@ -220,13 +282,16 @@
               user.fafoCompleted = existingUser.fafoCompleted || false;
               user.fafoCompletedDate = existingUser.fafoCompletedDate || null;
               user.qrCodeData = e.target.result;
+              user.country = userCountry;
+              user.state = userState;
+              user.city = userCity;
               Storage.saveUser(user);
               showBuyinSection();
             };
             reader.readAsDataURL(qrCodeFile);
           }
         } else {
-          showToast('Please fill all fields and upload your QR code', 'error');
+          showToast('Please fill all fields including location and upload your QR code', 'error');
         }
       });
       
@@ -336,6 +401,143 @@
         }
         
         updateQRTransform();
+      };
+      
+      // Location data for cascading dropdowns
+      const locationData = {
+        US: {
+          'California': ['Los Angeles', 'San Francisco', 'San Diego', 'Sacramento'],
+          'New York': ['New York City', 'Buffalo', 'Rochester', 'Syracuse'],
+          'Texas': ['Houston', 'Dallas', 'Austin', 'San Antonio'],
+          'Florida': ['Miami', 'Orlando', 'Tampa', 'Jacksonville']
+        },
+        CA: {
+          'Ontario': ['Toronto', 'Ottawa', 'Hamilton', 'London'],
+          'Quebec': ['Montreal', 'Quebec City', 'Laval', 'Gatineau'],
+          'British Columbia': ['Vancouver', 'Victoria', 'Surrey', 'Burnaby']
+        },
+        UK: {
+          'England': ['London', 'Manchester', 'Birmingham', 'Liverpool'],
+          'Scotland': ['Edinburgh', 'Glasgow', 'Aberdeen', 'Dundee'],
+          'Wales': ['Cardiff', 'Swansea', 'Newport', 'Wrexham']
+        },
+        AU: {
+          'New South Wales': ['Sydney', 'Newcastle', 'Wollongong', 'Wagga Wagga'],
+          'Victoria': ['Melbourne', 'Geelong', 'Ballarat', 'Bendigo'],
+          'Queensland': ['Brisbane', 'Gold Coast', 'Townsville', 'Cairns']
+        }
+      };
+      
+      window.loadStates = function() {
+        const country = document.getElementById('userCountry').value;
+        const stateSelect = document.getElementById('userState');
+        const stateOther = document.getElementById('userStateOther');
+        const citySelect = document.getElementById('userCity');
+        const cityOther = document.getElementById('userCityOther');
+        
+        // Reset state and city
+        stateSelect.innerHTML = '<option value="">Select State/Province</option>';
+        citySelect.innerHTML = '<option value="">Select City</option>';
+        citySelect.disabled = true;
+        stateOther.style.display = 'none';
+        cityOther.style.display = 'none';
+        
+        if (country === 'OTHER') {
+          stateSelect.disabled = true;
+          stateOther.style.display = 'block';
+          stateOther.required = true;
+          cityOther.style.display = 'block';
+          cityOther.required = true;
+        } else if (country && locationData[country]) {
+          stateSelect.disabled = false;
+          stateOther.required = false;
+          cityOther.required = false;
+          Object.keys(locationData[country]).forEach(state => {
+            const option = document.createElement('option');
+            option.value = state;
+            option.textContent = state;
+            stateSelect.appendChild(option);
+          });
+          // Add Other option
+          const otherOption = document.createElement('option');
+          otherOption.value = 'OTHER';
+          otherOption.textContent = 'Other';
+          stateSelect.appendChild(otherOption);
+        } else {
+          stateSelect.disabled = true;
+        }
+      };
+      
+      window.loadCities = function() {
+        const country = document.getElementById('userCountry').value;
+        const state = document.getElementById('userState').value;
+        const citySelect = document.getElementById('userCity');
+        const cityOther = document.getElementById('userCityOther');
+        
+        // Reset cities
+        citySelect.innerHTML = '<option value="">Select City</option>';
+        cityOther.style.display = 'none';
+        
+        if (state === 'OTHER') {
+          citySelect.disabled = true;
+          cityOther.style.display = 'block';
+          cityOther.required = true;
+        } else if (country && state && locationData[country] && locationData[country][state]) {
+          citySelect.disabled = false;
+          cityOther.required = false;
+          locationData[country][state].forEach(city => {
+            const option = document.createElement('option');
+            option.value = city;
+            option.textContent = city;
+            citySelect.appendChild(option);
+          });
+          // Add Other option
+          const otherOption = document.createElement('option');
+          otherOption.value = 'OTHER';
+          otherOption.textContent = 'Other';
+          citySelect.appendChild(otherOption);
+        } else {
+          citySelect.disabled = true;
+        }
+      };
+      
+      window.toggleCountryOther = function() {
+        const countrySelect = document.getElementById('userCountry');
+        const countryOther = document.getElementById('userCountryOther');
+        
+        if (countrySelect.value === 'OTHER') {
+          countryOther.style.display = 'block';
+          countryOther.required = true;
+        } else {
+          countryOther.style.display = 'none';
+          countryOther.required = false;
+        }
+      };
+      
+      window.toggleStateOther = function() {
+        const stateSelect = document.getElementById('userState');
+        const stateOther = document.getElementById('userStateOther');
+        
+        if (stateSelect.value === 'OTHER') {
+          stateOther.style.display = 'block';
+          stateOther.required = true;
+        } else {
+          stateOther.style.display = 'none';
+          stateOther.required = false;
+        }
+      };
+      
+      window.toggleCityOther = function() {
+        const citySelect = document.getElementById('userCity');
+        const cityOther = document.getElementById('userCityOther');
+        
+        if (citySelect.value === 'OTHER') {
+          cityOther.style.display = 'block';
+          cityOther.required = true;
+        } else {
+          cityOther.style.display = 'none';
+          cityOther.required = false;
+        }
       };
     }
 
@@ -449,13 +651,18 @@
       const badgeStates = Missions.getAllBadgeStates(user);
       const completedBadges = Object.values(badgeStates).filter(state => state !== 'locked').length;
       
+      // Exclude completed setup missions from available count
+      const setupMissions = [1, 2, 3, 4]; // First 4 missions are setup
+      const completedSetupMissions = setupMissions.filter(id => user.completedMissions.includes(id));
+      const availableCount = available.length - completedSetupMissions.length;
+      
       document.getElementById('userStats').innerHTML = `
         <div class="stat-card">
           <span class="stat-number">${user.completedMissions.length}</span>
           <span class="stat-label">Completed</span>
         </div>
         <div class="stat-card">
-          <span class="stat-number">${available.length}</span>
+          <span class="stat-number">${availableCount}</span>
           <span class="stat-label">Available</span>
         </div>
         <div class="stat-card">
@@ -465,6 +672,10 @@
         <div class="stat-card">
           <span class="stat-number">${user.honorScore}</span>
           <span class="stat-label">Honor Score</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">${user.totalPoints || 0}</span>
+          <span class="stat-label">Total Points</span>
         </div>
       `;
     }
@@ -541,6 +752,13 @@
             ` : ''}
             ${mission.proof ? `<div class="mission-proof" style="margin-bottom: 10px; padding: 8px; background: rgba(4, 170, 109, 0.1); border-radius: 4px; font-size: 13px;"><strong>Proof:</strong> ${mission.proof}</div>` : ''}
             <div class="mission-hashtag" style="margin-bottom: 10px; font-family: monospace; color: #04aa6d; font-size: 12px;">${mission.hashtag}</div>
+            <div class="mission-points" style="margin-bottom: 15px;">
+              <label style="display: block; color: #04aa6d; margin-bottom: 5px; font-size: 12px; font-weight: bold;">Points Earned:</label>
+              <select id="points-${mission.id}" class="points-dropdown" style="background: #333; color: #fff; border: 1px solid #04aa6d; border-radius: 4px; padding: 5px; font-size: 12px; width: 100px;" onchange="updateMissionPoints(${mission.id})">
+                ${getPointsOptions(mission)}
+              </select>
+              <span style="color: #666; font-size: 11px; margin-left: 10px;">Default: 0 (select points earned)</span>
+            </div>
             <div class="mission-actions">
               ${!isCompleted ? `
                 ${mission.type === 'setup' ? `
@@ -556,11 +774,8 @@
                   Mark Complete
                 </button>
               ` : ''}
-              <button class="mission-btn" onclick="shareMission(${mission.id})">
-                Share
-              </button>
-              <button class="mission-btn" onclick="Social.copyHashtag('${mission.hashtag}')">
-                Copy Hashtag
+              <button class="mission-btn" onclick="shareWithHashtags(${mission.id})">
+                📤 Share with Hashtags
               </button>
             </div>
           </div>
@@ -630,10 +845,10 @@
           <p><strong>Hashtag:</strong> ${mission.hashtag}</p>
         </div>
         
-        <div style="background: #222; border-radius: 8px; padding: 20px; max-width: 500px; width: 100%;">
-          <div style="margin-bottom: 20px;">
-            <label style="display: block; color: #04aa6d; margin-bottom: 10px; font-weight: bold;">📁 Upload Your Photo/Video:</label>
-            <input type="file" id="missionFile" accept="image/*,video/*" style="width: 100%; padding: 10px; background: #333; color: #fff; border: 1px solid #04aa6d; border-radius: 4px;">
+        <div style="background: #222; border-radius: 8px; padding: 15px; width: 100%; max-width: 500px;">
+          <div style="margin-bottom: 15px;">
+            <label style="display: block; color: #04aa6d; margin-bottom: 8px; font-weight: bold; font-size: 14px;">📁 Upload Photo/Video:</label>
+            <input type="file" id="missionFile" accept="image/*,video/*" style="width: 100%; padding: 8px; background: #333; color: #fff; border: 1px solid #04aa6d; border-radius: 4px; font-size: 14px;">
           </div>
           
           <div id="previewContainer" style="display: none; margin-bottom: 20px;">
@@ -647,10 +862,11 @@
             </div>
           </div>
           
-          <div style="text-align: center;">
-            <button onclick="processUpload()" id="processBtn" disabled style="background: #666; color: #fff; padding: 10px 20px; margin: 5px; border: none; border-radius: 4px; cursor: not-allowed;">🎭 PROCESS WITH OVERLAYS</button>
-            <button onclick="downloadResult()" id="downloadBtn" disabled style="background: #666; color: #fff; padding: 10px 20px; margin: 5px; border: none; border-radius: 4px; cursor: not-allowed; display: none;">💾 DOWNLOAD</button>
-            <button onclick="closeMissionUpload()" style="background: #666; color: #fff; padding: 10px 20px; margin: 5px; border: none; border-radius: 4px; cursor: pointer;">❌ CLOSE</button>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">
+            <button onclick="processUpload()" id="processBtn" disabled style="background: #666; color: #fff; padding: 8px 12px; border: none; border-radius: 4px; cursor: not-allowed; font-size: 12px; flex: 1; min-width: 120px;">🎭 PROCESS</button>
+            <button onclick="downloadResult()" id="downloadBtn" disabled style="background: #666; color: #fff; padding: 8px 12px; border: none; border-radius: 4px; cursor: not-allowed; display: none; font-size: 12px; flex: 1; min-width: 100px;">💾 SAVE</button>
+            <button onclick="shareProcessed()" id="shareBtn" disabled style="background: #666; color: #fff; padding: 8px 12px; border: none; border-radius: 4px; cursor: not-allowed; display: none; font-size: 12px; flex: 1; min-width: 100px;">📤 SHARE</button>
+            <button onclick="closeMissionUpload()" style="background: #666; color: #fff; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; flex: 1; min-width: 80px;">❌ CLOSE</button>
           </div>
         </div>
         
@@ -667,6 +883,9 @@
       
       // Setup file upload handler
       document.getElementById('missionFile').addEventListener('change', handleFileUpload);
+      
+      // Store mission for sharing
+      window.currentUploadMission = Missions.getMission(missionId);
       
       // Start camera overlay for preview
       if (window.Camera) {
@@ -747,11 +966,20 @@
     window.processUpload = function() {
       if (!uploadedFile) return;
       
-      if (uploadedFile.type.startsWith('image/')) {
-        processImage();
-      } else if (uploadedFile.type.startsWith('video/')) {
-        processVideo();
-      }
+      const btn = document.getElementById('processBtn');
+      btn.classList.add('loading');
+      btn.disabled = true;
+      btn.textContent = '⏳ PROCESSING...';
+      
+      setTimeout(() => {
+        if (uploadedFile.type.startsWith('image/')) {
+          processImage();
+        } else if (uploadedFile.type.startsWith('video/')) {
+          processVideo();
+        }
+        btn.classList.remove('loading');
+        btn.textContent = '🎭 PROCESS WITH OVERLAYS';
+      }, 1000);
     };
     
     function processImage() {
@@ -782,6 +1010,8 @@
     
     function enableDownload(filename, isVideo = false) {
       const downloadBtn = document.getElementById('downloadBtn');
+      const shareBtn = document.getElementById('shareBtn');
+      
       downloadBtn.disabled = false;
       downloadBtn.style.background = '#04aa6d';
       downloadBtn.style.color = '#000';
@@ -790,7 +1020,13 @@
       downloadBtn.setAttribute('data-filename', filename);
       downloadBtn.setAttribute('data-is-video', isVideo);
       
-      showToast('Ready to download!', 'success');
+      shareBtn.disabled = false;
+      shareBtn.style.background = '#04aa6d';
+      shareBtn.style.color = '#000';
+      shareBtn.style.cursor = 'pointer';
+      shareBtn.style.display = 'inline-block';
+      
+      showToast('Ready to download and share!', 'success');
     }
     
     window.downloadResult = function() {
@@ -863,6 +1099,40 @@
       }
     }
     
+    window.shareProcessed = function() {
+      const missionId = window.currentUploadMission?.id;
+      if (!missionId) return;
+      
+      const mission = Missions.getMission(missionId);
+      const user = Storage.getUser();
+      const hashtags = generateMissionHashtags(mission, user);
+      const shareText = `Just completed: ${mission.title}\n\n${hashtags}`;
+      
+      if (navigator.share && processedResult) {
+        const file = new File([processedResult], `mission-${mission.id}.jpg`, { type: 'image/jpeg' });
+        
+        navigator.share({
+          title: `Mission ${mission.id}: ${mission.title}`,
+          text: shareText,
+          files: [file]
+        }).catch(err => {
+          // Fallback to text with hashtags
+          navigator.clipboard.writeText(shareText).then(() => {
+            showToast('Hashtags copied! Paste when posting your photo', 'success');
+          }).catch(() => {
+            showToast('Manual copy: ' + hashtags, 'info');
+          });
+        });
+      } else {
+        // Copy hashtags to clipboard
+        navigator.clipboard.writeText(shareText).then(() => {
+          showToast('Hashtags copied! Paste when posting your photo', 'success');
+        }).catch(() => {
+          showToast('Manual copy: ' + hashtags, 'info');
+        });
+      }
+    };
+    
     window.closeMissionUpload = function() {
       const modal = document.getElementById('missionUploadModal');
       if (modal) {
@@ -872,6 +1142,7 @@
       // Clean up
       uploadedFile = null;
       processedResult = null;
+      window.currentUploadMission = null;
       
       // Stop camera overlay
       if (window.Camera) {
@@ -880,19 +1151,77 @@
     };
     
     function completeMission(missionId) {
-      const user = Storage.completeMission(missionId);
-      if (window.Camera) {
-        Camera.onMissionComplete(missionId);
-      }
-      showToast('Mission completed! 🎉', 'success');
-      loadUserStats();
-      loadMissions();
+      const btn = event.target;
+      btn.classList.add('loading');
+      btn.disabled = true;
+      
+      setTimeout(() => {
+        const user = Storage.completeMission(missionId);
+        if (window.Camera) {
+          Camera.onMissionComplete(missionId);
+        }
+        showToast('Mission completed! 🎉', 'success');
+        loadUserStats();
+        loadMissions();
+        btn.classList.remove('loading');
+        btn.disabled = false;
+      }, 500);
     }
 
-    function shareMission(missionId) {
+    function shareWithHashtags(missionId) {
       const mission = Missions.getMission(missionId);
       const user = Storage.getUser();
-      Social.shareMissionComplete(mission, user.userHandle);
+      const hashtags = generateMissionHashtags(mission, user);
+      const shareText = `Just completed: ${mission.title}\n\n${hashtags}`;
+      
+      if (navigator.share) {
+        navigator.share({
+          title: `Mission ${mission.id}: ${mission.title}`,
+          text: shareText,
+          url: window.location.origin
+        }).catch(err => {
+          // Fallback to clipboard
+          navigator.clipboard.writeText(shareText).then(() => {
+            showToast('Hashtags copied - paste when sharing!', 'success');
+          }).catch(() => {
+            showToast('Manual copy: ' + hashtags, 'info');
+          });
+        });
+      } else {
+        // Direct clipboard fallback
+        navigator.clipboard.writeText(shareText).then(() => {
+          showToast('Hashtags copied - paste when sharing!', 'success');
+        }).catch(() => {
+          showToast('Manual copy: ' + hashtags, 'info');
+        });
+      }
+    }
+    
+    function generateMissionHashtags(mission, user) {
+      const baseHashtags = mission.hashtag;
+      const userHashtag = `#${user.userHandle.replace('@', '')}`;
+      
+      // Get mission-specific points from dropdown
+      const pointsDropdown = document.getElementById(`points-${mission.id}`);
+      const missionPoints = pointsDropdown ? pointsDropdown.value : '0';
+      const missionPointsHashtag = `#missionmischiefpoints${missionPoints}`;
+      
+      // Generate location hashtags for bounty hunter scraping
+      let locationHashtags = '';
+      if (user.country) {
+        const countryClean = user.country.toLowerCase().replace(/[^a-z0-9]/g, '');
+        locationHashtags += ` #missionmischiefcountry${countryClean}`;
+      }
+      if (user.state) {
+        const stateClean = user.state.toLowerCase().replace(/[^a-z0-9]/g, '');
+        locationHashtags += ` #missionmischiefstate${stateClean}`;
+      }
+      if (user.city) {
+        const cityClean = user.city.toLowerCase().replace(/[^a-z0-9]/g, '');
+        locationHashtags += ` #missionmischiefcity${cityClean}`;
+      }
+      
+      return `${baseHashtags} ${userHashtag} ${missionPointsHashtag}${locationHashtags} #missionmischief #realworldgame`;
     }
     
     function printCard() {
@@ -919,6 +1248,70 @@
       }
     };
 
+    // Points dropdown generation
+    function getPointsOptions(mission) {
+      const points = mission.points;
+      let options = '<option value="0" selected>0 (default)</option>';
+      
+      if (typeof points === 'number') {
+        // Fixed points (1, 3, 10, etc.)
+        options += `<option value="${points}">${points}</option>`;
+      } else if (typeof points === 'string') {
+        if (points.includes('-')) {
+          // Range like "1-3" or "3-10"
+          const [min, max] = points.split('-').map(p => parseInt(p.trim()));
+          for (let i = min; i <= max; i++) {
+            options += `<option value="${i}">${i}</option>`;
+          }
+        } else if (points === '?') {
+          // Variable points (1-50 with scroll)
+          for (let i = 1; i <= 50; i++) {
+            options += `<option value="${i}">${i}</option>`;
+          }
+        } else if (points.includes('/')) {
+          // Multiple options like "1 / 3"
+          const pointValues = points.split('/').map(p => parseInt(p.trim())).filter(p => !isNaN(p));
+          pointValues.forEach(p => {
+            options += `<option value="${p}">${p}</option>`;
+          });
+        } else {
+          // Try to extract numbers from string
+          const matches = points.match(/\d+/g);
+          if (matches) {
+            matches.forEach(p => {
+              options += `<option value="${p}">${p}</option>`;
+            });
+          }
+        }
+      }
+      
+      return options;
+    }
+    
+    // Update mission points and store for user total
+    window.updateMissionPoints = function(missionId) {
+      const dropdown = document.getElementById(`points-${missionId}`);
+      const points = parseInt(dropdown.value) || 0;
+      
+      // Store mission points in user data
+      const user = Storage.getUser();
+      if (!user.missionPoints) {
+        user.missionPoints = {};
+      }
+      user.missionPoints[missionId] = points;
+      
+      // Update total points display
+      const totalPoints = Object.values(user.missionPoints).reduce((sum, p) => sum + p, 0);
+      user.totalPoints = totalPoints;
+      
+      Storage.saveUser(user);
+      
+      // Update stats display
+      loadUserStats();
+      
+      showToast(`Mission ${missionId} points set to ${points}`, 'success');
+    };
+    
     // Initialize app
     window.addEventListener('load', function() {
       document.body.classList.remove('page-transitioning');

@@ -1,0 +1,2140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mission Mischief - Complete Mission List</title>
+    <style>
+        /* CSS Variables for easy theme changes based on your original colors */
+        :root {
+            --color-primary: #04aa6d; /* Green */
+            --color-secondary: #ffd700; /* Gold/Yellow */
+            --color-background: #000;
+            --color-surface: #111;
+            --color-text: #fff;
+            --color-subtle: #333;
+            --color-prank: rgba(255, 107, 107, 0.2); /* Reddish */
+            --color-goodwill: rgba(4, 170, 109, 0.2); /* Greenish */
+            --color-setup: rgba(255, 215, 0, 0.2); /* Light Gold */
+            --color-special: rgba(255, 165, 0, 0.2); /* Orange */
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: var(--color-background);
+            color: var(--color-text);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.5;
+        }
+        
+        h1, h2, h3 {
+            text-align: center;
+            color: var(--color-primary);
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: var(--color-secondary);
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #ccc;
+            margin-bottom: 30px;
+        }
+
+        /* Crown of Chaos Section */
+        .crown-section {
+            background: linear-gradient(45deg, var(--color-secondary), #ffed4e);
+            color: var(--color-background);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+        .crown-section h2 {
+            color: var(--color-background);
+            margin-top: 0;
+        }
+        .crown-section strong {
+            font-size: 1.1em;
+        }
+        
+        /* Mission List Container */
+        #mission-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px; /* Spacing between missions */
+            margin: 30px 0;
+        }
+
+        /* Mission Card Styling and Type Colors */
+        .mission-card {
+            border-radius: 8px;
+            background: var(--color-surface);
+            color: var(--color-text);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border-left: 5px solid transparent; 
+        }
+
+        .setup { border-left-color: var(--color-secondary); background: var(--color-setup); }
+        .buyin { border-left-color: var(--color-primary); background: var(--color-goodwill); }
+        .prank { border-left-color: #ff6b6b; background: var(--color-prank); }
+        .goodwill { border-left-color: var(--color-primary); background: var(--color-goodwill); }
+        .special { border-left-color: #ffa500; background: var(--color-special); }
+        
+        .m1-special { 
+            border-left-color: #02885a !important;
+            background: linear-gradient(45deg, var(--color-primary), #02885a) !important;
+            color: var(--color-background) !important;
+        }
+        .final-special { 
+            border-left-color: var(--color-secondary) !important;
+            background: linear-gradient(45deg, var(--color-secondary), #ffed4e) !important;
+            color: var(--color-background) !important;
+        }
+
+        /* SUMMARY (The visible bar) - Clean Look */
+        .mission-card summary {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            font-weight: bold;
+            cursor: pointer;
+            background-color: rgba(0, 0, 0, 0.2); /* Subtly darker background for the bar */
+            list-style: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .mission-card[open] summary {
+             border-bottom: 1px solid var(--color-subtle);
+        }
+
+        /* Custom Arrow */
+        .mission-card summary::before {
+            content: '▶';
+            margin-right: 10px;
+            font-size: 0.8em;
+            transition: transform 0.2s;
+        }
+        .mission-card[open] summary::before {
+            transform: rotate(90deg);
+        }
+
+        /* Summary Bar Layout */
+        .mission-card summary .m-number {
+            font-size: 1.2em;
+            width: 50px; 
+            flex-shrink: 0;
+        }
+        .mission-card summary .m-title {
+            flex-grow: 1;
+            font-size: 1.1em;
+        }
+        .mission-card summary .m-short-desc {
+            color: #aaa;
+            font-weight: normal;
+            font-style: italic;
+            font-size: 0.9em;
+            width: 30%; 
+            text-align: right;
+        }
+        .mission-card summary .m-points {
+            width: 50px;
+            text-align: right;
+            color: var(--color-primary);
+        }
+
+        /* DETAILS (The hidden content) */
+        .mission-details {
+            padding: 15px 20px;
+            font-size: 0.9em;
+        }
+
+        .section-meta {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #333;
+        }
+        .section-meta p {
+            display: inline-block;
+            margin-right: 20px;
+            font-size: 0.9em;
+        }
+
+        .section-proof {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        .section-proof h3 {
+            text-align: left;
+            margin-top: 0;
+            color: var(--color-secondary);
+            font-size: 1.1em;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 5px;
+        }
+
+        /* Proof Skeleton Layout (2 columns for field data) */
+        .proof-fields {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 10px 20px;
+            margin-top: 10px;
+        }
+        .proof-fields p {
+            margin: 0;
+            line-height: 1.3;
+        }
+        .proof-fields strong {
+            color: var(--color-primary);
+        }
+
+        /* Specific text styles */
+        .mayhem {
+            background: var(--color-primary);
+            color: var(--color-background);
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-size: 9px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .hashtag {
+            font-family: monospace;
+            color: var(--color-primary);
+            font-size: 10px;
+        }
+
+        /* Legal and Bounty Hunter sections */
+        .info-section {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .legal-section {
+            background: #333;
+        }
+        .bounty-section {
+            background: #222;
+        }
+        .info-section h3 {
+            margin-top: 0;
+            text-align: left;
+        }
+        .info-section ul {
+            font-size: 12px;
+            color: #ccc;
+        }
+        .info-section li {
+            margin-bottom: 5px;
+        }
+        
+        /* Responsive adjustment for summary bar on small screens */
+        @media (max-width: 700px) {
+            .mission-card summary {
+                flex-wrap: wrap;
+                padding: 10px 15px;
+            }
+            .mission-card summary .m-number {
+                order: 1;
+                width: auto;
+                margin-right: 10px;
+            }
+            .mission-card summary .m-title {
+                order: 3;
+                width: 100%;
+                margin-top: 5px;
+                font-size: 1em;
+            }
+            .mission-card summary .m-short-desc {
+                order: 4;
+                width: 100%;
+                text-align: left;
+                margin-top: 5px;
+                font-size: 0.7em;
+            }
+            .mission-card summary .m-points {
+                order: 2;
+                width: auto;
+            }
+            .mission-card summary::before {
+                order: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>🎭 MISSION MISCHIEF - COMPLETE MISSION LIST 🎭</h1>
+    <p class="subtitle">Revolutionary Hashtag Blockchain Verification System</p>
+    
+    <div class="crown-section">
+        <h2>👑 CROWN OF CHAOS SYSTEM 👑</h2>
+        <p><strong>Complete ALL buy-ins to unlock Mayhem wearing the Crown of Chaos!</strong></p>
+        <p>Captain Planet + Oscar the Grouch + Justin (NSYNC) = KING OF CHAOS</p>
+    </div>
+
+    <div id="mission-list">
+        
+        <details class="mission-card special m1-special">
+            <summary>
+                <span class="m-number">M1</span>
+                <span class="m-title">FAFO (F*** Around and Find Out)</span>
+                <span class="m-short-desc">Read funny ToS, check agreement box, take mugshot selfie</span>
+                <span class="m-points">PRICELESS</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#iwillnotsuemissionmischief</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem" style="background: #000; color: #04aa6d;">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> N/A (setup mission)</p>
+                    <p><strong>Badge:</strong> Mugshot Badge</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Read funny ToS, check agreement box, take mugshot selfie with date/time sign</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Mugshot Selfie (PRICELESS)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Mugshot-style selfie holding sign with today's date and time</p>
+                        <p><strong>Face Expression:</strong> Serious mugshot face</p>
+                        <p><strong>Clothing:</strong> Any clothing</p>
+                        <p><strong>Pose:</strong> Front-facing, shoulders visible</p>
+                        <p><strong>Location:</strong> Any indoor location</p>
+                        <p><strong>Location Proof:</strong> Plain wall or neutral background</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card setup">
+            <summary>
+                <span class="m-number">M2</span>
+                <span class="m-title">License To Ill</span>
+                <span class="m-short-desc">Setup business cards, print</span>
+                <span class="m-points">1</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischieflicensetoill</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> N/A (creates your cards)</p>
+                    <p><strong>Badge:</strong> Setup Card</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Setup business cards, print</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Card Selfie (1 Point)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Selfie with business card (QR Code and details clear)</p>
+                        <p><strong>Face Expression:</strong> Proud/confident</p>
+                        <p><strong>Clothing:</strong> Any clothing</p>
+                        <p><strong>Pose:</strong> Holding card clearly visible</p>
+                        <p><strong>Location:</strong> Any location</p>
+                        <p><strong>Location Proof:</strong> Any background</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card setup">
+            <summary>
+                <span class="m-number">M3</span>
+                <span class="m-title">Buy Me A Beer 🍺</span>
+                <span class="m-short-desc">Setup Buy Me A Coffee account</span>
+                <span class="m-points">1 / 3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefbuymeabeer</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> N/A (setup mission)</p>
+                    <p><strong>Badge:</strong> Beer Emoji</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Setup Buy Me A Coffee account, change to beer. Message: "I bought a stupid game #missionmischief and it told me if I made this account and followed all the rules and completed all the missions I would most likely, not promised, more like a maybe, get my money back with interest on a mission by getting someone to buy me a beer. Which cost $5. The game cost me $4.99. Wow! These guys are geniuses!" Then get ANYONE to buy you a beer ($5)</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Setup Message Screenshot (1 Point)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Screenshot of the message on your account</p>
+                        <p><strong>Face Expression:</strong> Excited/proud</p>
+                        <p><strong>Clothing:</strong> Any clothing</p>
+                        <p><strong>Pose:</strong> Holding phone showing account</p>
+                        <p><strong>Location:</strong> Any location with internet</p>
+                        <p><strong>Location Proof:</strong> Account screenshot visible</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+                
+                <div class="section-proof proof-2">
+                    <h3>Proof 2: Beer Purchase Screenshot (3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Screenshot of anyone buying you a beer on your Buy Me A Coffee account</p>
+                        <p><strong>Face Expression:</strong> Excited/proud</p>
+                        <p><strong>Clothing:</strong> Any clothing</p>
+                        <p><strong>Pose:</strong> Holding phone showing purchase</p>
+                        <p><strong>Location:</strong> Any location</p>
+                        <p><strong>Location Proof:</strong> Purchase notification visible</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card buyin">
+            <summary>
+                <span class="m-number">M4</span>
+                <span class="m-title">Choose Your Destiny</span>
+                <span class="m-short-desc">Select a path: Planet, Oscar, Justin, or Clown</span>
+                <span class="m-points">0-3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefdestiny</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> Leave with donation/give to audience</p>
+                    <p><strong>Badge:</strong> Captain Planet / Oscar / Justin / Clown</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Captain Planet (2x50gal recyclables) OR Oscar (2x50gal trash) OR Sign up 3 players + Bye-Bye-Bye dance OR do nothing (clown badge)</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Captain Planet Path (3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Photo</p>
+                        <p><strong>Proof Description:</strong> Photo of you posing as a super hero in front of two 50 gallon bags of recycling</p>
+                        <p><strong>Face Expression:</strong> Determined/proud</p>
+                        <p><strong>Clothing:</strong> Cape or towel tucked in shirt</p>
+                        <p><strong>Pose:</strong> Super hero pose, hands on hips</p>
+                        <p><strong>Location:</strong> Recycling center</p>
+                        <p><strong>Location Proof:</strong> Recycling center name visible</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card prank">
+            <summary>
+                <span class="m-number">M5</span>
+                <span class="m-title">The Real Slim Shady</span>
+                <span class="m-short-desc">Card in "Art of Not Giving A F*ck" (Page 69)</span>
+                <span class="m-points">1-3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefslimshady</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> Leave card in page #69 of book</p>
+                    <p><strong>Badge:</strong> Slim Shady Black</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Find "Art of Not Giving A F*ck", pose with book (title needs to be shown) in one hand while flipping off the camera with the other, leave card in page #69</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Book Flip Off (1-3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Hold book, flip off camera (pinkie=1pt, middle=3pts)</p>
+                        <p><strong>Face Expression:</strong> Mischievous/defiant</p>
+                        <p><strong>Clothing:</strong> Casual street clothes</p>
+                        <p><strong>Pose:</strong> Holding book, flipping off camera</p>
+                        <p><strong>Location:</strong> Bookstore/library</p>
+                        <p><strong>Location Proof:</strong> Book title clearly visible</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+
+        <details class="mission-card goodwill">
+            <summary>
+                <span class="m-number">M6</span>
+                <span class="m-title">Your Momma</span>
+                <span class="m-short-desc">Tell a "Your momma" joke</span>
+                <span class="m-points">3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefyourmomma</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> Give to person who laughed hardest</p>
+                    <p><strong>Badge:</strong> Slim Shady Color</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Tell a "Your momma" joke</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Joke Video (3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Video</p>
+                        <p><strong>Proof Description:</strong> Video of you telling joke</p>
+                        <p><strong>Face Expression:</strong> Animated/comedic</p>
+                        <p><strong>Clothing:</strong> Friendly approachable</p>
+                        <p><strong>Pose:</strong> Gesturing while telling joke</p>
+                        <p><strong>Location:</strong> Public area with audience</p>
+                        <p><strong>Location Proof:</strong> Audience reactions visible</p>
+                        <p><strong>Audio Duration:</strong> 30-60 sec</p>
+                        <p><strong>Audio Requirements:</strong> Full joke clearly audible</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card prank">
+            <summary>
+                <span class="m-number">M7</span>
+                <span class="m-title">YOLO</span>
+                <span class="m-short-desc">Order coffee as "Bueller"</span>
+                <span class="m-points">?</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefyolo</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> Give to the barista that helped you</p>
+                    <p><strong>Badge:</strong> N/A</p>
+                    <p><strong>Badge:</strong> Coffee Black</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Order coffee as "Bueller". Sit down and while you wait for your your order and get as many pens and pencils on your head as you can. Use your ears, hair, whatever. They need to be in view when the barista calls "Bueller" </p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Bueller Video (? Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Video</p>
+                        <p><strong>Proof Description:</strong> Video with pens/pencils on head, barista saying "Bueller" (1pt per pen/pencil)</p>
+                        <p><strong>Face Expression:</strong> Look bitchy</p>
+                        <p><strong>Clothing:</strong> any</p>
+                        <p><strong>Pose:</strong> Sitting. Only your neck and head need to be in view</p>
+                        <p><strong>Location:</strong> Coffee shop</p>
+                        <p><strong>Location Proof:</strong> Coffee Shop name in background of video</p>
+                        <p><strong>Audio Duration:</strong> 10 sec</p>
+                        <p><strong>Audio Requirements:</strong> "Bueller" must be heard</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card goodwill">
+            <summary>
+                <span class="m-number">M8</span>
+                <span class="m-title">Coffee Stranger</span>
+                <span class="m-short-desc">Give coffee to stranger</span>
+                <span class="m-points">3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefcoffee</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> Give card to person you give coffee to</p>
+                    <p><strong>Badge:</strong> Coffee Color</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Give coffee to stranger with your card</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Coffee & Card Photo (3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Picture of you, stranger, coffee and card</p>
+                        <p><strong>Face Expression:</strong> Smile</p>
+                        <p><strong>Clothing:</strong> any</p>
+                        <p><strong>Pose:</strong> any</p>
+                        <p><strong>Location:</strong> any</p>
+                        <p><strong>Location Proof:</strong> N/A</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card prank">
+            <summary>
+                <span class="m-number">M9</span>
+                <span class="m-title">Saving Fantasia</span>
+                <span class="m-short-desc">Get library card</span>
+                <span class="m-points">1</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischieffantasia</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> Leave on a table</p>
+                    <p><strong>Badge:</strong> Book For Dummies Black</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Get library card, take a selfie in front a bookshelf, and leave your card on a table</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Library Card Selfie (1 Point)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Selfie with library card in front of bookshelf</p>
+                        <p><strong>Face Expression:</strong> Smile</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> Any. Just be quiet about it</p>
+                        <p><strong>Location:</strong> Any public library</p>
+                        <p><strong>Location Proof:</strong> Name of library in background of picture. If there's no posted signs, check the books for a rubber stamp and use that.</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card goodwill">
+            <summary>
+                <span class="m-number">M10</span>
+                <span class="m-title">Take A Poo</span>
+                <span class="m-short-desc">Rent "Everybody Poops"</span>
+                <span class="m-points">1-3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischieftakeapoo</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">BLANK STARE</span></p>
+                    <p><strong>Card Drop:</strong> Place card in the cover of a copy of "Everybody Poops"</p>
+                    <p><strong>Badge:</strong> Book For Dummies Color</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Rent "Everybody Poops", leave your card in the cover of a different copy, have your picture taken with the book cover showing opened like you're reading it while sitting down</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Reading Photo (1-3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Hold book open, sitting (bench=1pt, toilet=3pts, pants ON!)</p>
+                        <p><strong>Face Expression:</strong> Look at book like you're reading and interested</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> Need photo of your knees up</p>
+                        <p><strong>Location:</strong> Any public place</p>
+                        <p><strong>Location Proof:</strong> N/A</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card prank">
+            <summary>
+                <span class="m-number">M11</span>
+                <span class="m-title">Van Gogh</span>
+                <span class="m-short-desc">Get brown bear and draw it</span>
+                <span class="m-points">1</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefvangogh</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> N/A</p>
+                    <p><strong>Badge:</strong> Brown Bear Black</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Get brown bear and draw it</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Drawing Selfie (1 Point)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Selfie with drawing</p>
+                        <p><strong>Face Expression:</strong> Big smile, be proud</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> Any</p>
+                        <p><strong>Location:</strong> Any</p>
+                        <p><strong>Location Proof:</strong> N/A</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card goodwill">
+            <summary>
+                <span class="m-number">M12</span>
+                <span class="m-title">Take Care, Brown Bear</span>
+                <span class="m-short-desc">Give bear, drawing and card to stranger</span>
+                <span class="m-points">3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischieftakecare</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> Give card to stranger you give bear and drawing to</p>
+                    <p><strong>Badge:</strong> Brown Bear Color</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Give bear, drawing and card to stranger</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Gifting Photo (3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> You, stranger holding bear, drawing, and card</p>
+                        <p><strong>Face Expression:</strong> Smile</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> Any</p>
+                        <p><strong>Location:</strong> Any</p>
+                        <p><strong>Location Proof:</strong> N/A</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card prank">
+            <summary>
+                <span class="m-number">M13</span>
+                <span class="m-title">Smoke Pot</span>
+                <span class="m-short-desc">Act like smoking joint with a small potted plant</span>
+                <span class="m-points">1</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefsmokepot</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> Leave your card where you found the plant</p>
+                    <p><strong>Badge:</strong> Green Leaf Black</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Find small potted plant at nursery. Hold plant, act like smoking joint</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Smoking Pose (1 Point)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Hold plant, act like smoking joint</p>
+                        <p><strong>Face Expression:</strong> Taking a hit</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> Smoking fake joint with thumb and index fingers pinched</p>
+                        <p><strong>Location:</strong> Local plant nursery</p>
+                        <p><strong>Location Proof:</strong> Plant nursery name on sign in background of picture</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card prank">
+            <summary>
+                <span class="m-number">M14</span>
+                <span class="m-title">Bought Pot</span>
+                <span class="m-short-desc">Buy the plant</span>
+                <span class="m-points">1</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefboughtpot</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">BLANK STARE</span></p>
+                    <p><strong>Card Drop:</strong> Give to cashier</p>
+                    <p><strong>Badge:</strong> Green Leaf Color</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Buy the plant. Money is no object here. Go cheap if you'd like.</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Receipt Photo (1 Point)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Picture of receipt</p>
+                        <p><strong>Face Expression:</strong> Smile</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> N/A</p>
+                        <p><strong>Location:</strong> N/A</p>
+                        <p><strong>Location Proof:</strong> N/A</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card prank">
+            <summary>
+                <span class="m-number">M15</span>
+                <span class="m-title">Love Alfalfa</span>
+                <span class="m-short-desc">Sing "You are so beautiful" to plant (Alfalfa impression)</span>
+                <span class="m-points">1-3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefalfalfa</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> N/A</p>
+                    <p><strong>Badge:</strong> Chili Pepper Black</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Sing "You are so beautiful" to plant (Alfalfa impression)</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Singing Video (1-3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Video</p>
+                        <p><strong>Proof Description:</strong> Hold plant, stare while singing (1pt singing, 3pts with Alfalfa point)</p>
+                        <p><strong>Face Expression:</strong> Smile</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> N/A</p>
+                        <p><strong>Location:</strong> N/A</p>
+                        <p><strong>Location Proof:</strong> N/A</p>
+                        <p><strong>Audio Duration:</strong> 10 sec</p>
+                        <p><strong>Audio Requirements:</strong> Must hear you sing the words "You are so beautiful to me"</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card goodwill">
+            <summary>
+                <span class="m-number">M16</span>
+                <span class="m-title">Give It Away, Now</span>
+                <span class="m-short-desc">Give plant to neighbor with card</span>
+                <span class="m-points">3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefrhcp</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> Give to neighbor with plant</p>
+                    <p><strong>Badge:</strong> Chili Pepper Color</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Give plant to neighbor with card</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Gifting Photo (3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> You and neighbor holding plant with card</p>
+                        <p><strong>Face Expression:</strong> Smile</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> N/A</p>
+                        <p><strong>Location:</strong> N/A</p>
+                        <p><strong>Location Proof:</strong> N/A</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card prank">
+            <summary>
+                <span class="m-number">M17</span>
+                <span class="m-title">You're A Towel</span>
+                <span class="m-short-desc">Big blue towel, Towelie voice phrases</span>
+                <span class="m-points">1-3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischieftowelie</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> Leave on towel rack</p>
+                    <p><strong>Badge:</strong> Towelie Black</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Get a big blue towel and video it over your head as you do a Towelie voice phrase in store or at home</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Towelie Video (1-3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Video</p>
+                        <p><strong>Proof Description:</strong> Video with towel over head (store=3pts, home=1pt)</p>
+                        <p><strong>Face Expression:</strong> Smile</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> Towel over head</p>
+                        <p><strong>Location:</strong> Store or home</p>
+                        <p><strong>Location Proof:</strong> If store, store must be obvious in background</p>
+                        <p><strong>Audio Duration:</strong> 10 sec</p>
+                        <p><strong>Audio Requirements:</strong> Must hear one Towlie phrase clearly in a Towlie voice</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card goodwill">
+            <summary>
+                <span class="m-number">M18</span>
+                <span class="m-title">Sarah McLachlaned</span>
+                <span class="m-short-desc">Donate towel to animal shelter</span>
+                <span class="m-points">1-3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefaspca</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">CRYING</span></p>
+                    <p><strong>Card Drop:</strong> Pin to bulletin board at shelter</p>
+                    <p><strong>Badge:</strong> Towelie Black</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Donate towel to animal shelter. Take a picture with one of the animals there.</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Donation Selfie (1-3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Selfie with animal, sad face (1pt) + blue towel shown (3pts)</p>
+                        <p><strong>Face Expression:</strong> Sad. Like, super-effin-sad, try to cry</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> N/A</p>
+                        <p><strong>Location:</strong> Animal shelter</p>
+                        <p><strong>Location Proof:</strong> With name of shelter in background </p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card prank">
+            <summary>
+                <span class="m-number">M19</span>
+                <span class="m-title">Edward</span>
+                <span class="m-short-desc">Blood bank dressed as vampire</span>
+                <span class="m-points">3-10</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefedward</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">VAMPIRE</span></p>
+                    <p><strong>Card Drop:</strong> Leave on waiting room chair</p>
+                    <p><strong>Badge:</strong> Rocky Horror Lips Color</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Go to a blood bank dressed as vampire, donate blood or time.</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Vampire Pose (3-10 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Dramatic pose with blood bank name (3pts) + donate blood or time (10pts)</p>
+                        <p><strong>Face Expression:</strong> Expressionless</p>
+                        <p><strong>Clothing:</strong> Vampire outfit</p>
+                        <p><strong>Pose:</strong> Any</p>
+                        <p><strong>Location:</strong> Blood bank</p>
+                        <p><strong>Location Proof:</strong> Blood bank sign in background</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card goodwill">
+            <summary>
+                <span class="m-number">M20</span>
+                <span class="m-title">Bella</span>
+                <span class="m-short-desc">Donate blood or time</span>
+                <span class="m-points">3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefbella</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">HALO</span></p>
+                    <p><strong>Card Drop:</strong> Leave on waiting room chair</p>
+                    <p><strong>Badge:</strong> Rocky Horror Lips Black</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Donate blood or time</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Donation Proof (3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Photo of bandage or volunteer badge showing you from the waist up</p>
+                        <p><strong>Face Expression:</strong> Smile</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> N/A</p>
+                        <p><strong>Location:</strong> Blood bank</p>
+                        <p><strong>Location Proof:</strong> Have sign with name of blood bank in background</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card prank">
+            <summary>
+                <span class="m-number">M21</span>
+                <span class="m-title">Pop Star</span>
+                <span class="m-short-desc">Rockstar pose with 20 bottles/cans at recycling center</span>
+                <span class="m-points">3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefpopstar</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> give to innocent bystander</p>
+                    <p><strong>Badge:</strong> Mic Black</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> 20 bottles/cans in circle, rockstar pose</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Pop Star Pose (3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Stand in circle of your recyclings screaming into fake mic with recycling center name in background</p>
+                        <p><strong>Face Expression:</strong> Screaming</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> N/A</p>
+                        <p><strong>Location:</strong> Recycling center</p>
+                        <p><strong>Location Proof:</strong> Locations sign in background</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card goodwill">
+            <summary>
+                <span class="m-number">M22</span>
+                <span class="m-title">Crushed It</span>
+                <span class="m-short-desc">Recycle 20 cans/bottles</span>
+                <span class="m-points">1</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefcrushedit</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> Give to person working the center</p>
+                    <p><strong>Badge:</strong> Mic Color</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Recycle 20 cans/bottles</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Voucher Photo (1 Point)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Picture of voucher</p>
+                        <p><strong>Face Expression:</strong> N/A</p>
+                        <p><strong>Clothing:</strong> N/A</p>
+                        <p><strong>Pose:</strong> N/A</p>
+                        <p><strong>Location:</strong> N/A</p>
+                        <p><strong>Location Proof:</strong> N/A</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card prank">
+            <summary>
+                <span class="m-number">M23</span>
+                <span class="m-title">Popping Tags</span>
+                <span class="m-short-desc">10 sec Macklemore rap with thrift items</span>
+                <span class="m-points">?</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefpoppingtags</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">BLANK STARE</span></p>
+                    <p><strong>Card Drop:</strong> Leave on shop counter</p>
+                    <p><strong>Badge:</strong> Tag Color</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> 10 sec Macklemore rap with thrift items as props. Get 1 point for every thrift store item you have on during video</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Rap Video (? Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Video</p>
+                        <p><strong>Proof Description:</strong> Video rapping (1pt per item worn)</p>
+                        <p><strong>Face Expression:</strong> Smile</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> N/A</p>
+                        <p><strong>Location:</strong> Thrift Shop</p>
+                        <p><strong>Location Proof:</strong> Obvious it's a thrift shop in background or sign with name</p>
+                        <p><strong>Audio Duration:</strong> 10 sec</p>
+                        <p><strong>Audio Requirements:</strong> Must hear you rap. Choose any verse from Maklemore's Thrift Shop</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card goodwill">
+            <summary>
+                <span class="m-number">M24</span>
+                <span class="m-title">Pocket Pull</span>
+                <span class="m-short-desc">Place card in 5 different pant pockets</span>
+                <span class="m-points">1</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefpocketpull</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">BLANK STARE</span></p>
+                    <p><strong>Card Drop:</strong> 5 cards into 5 different pant pockets</p>
+                    <p><strong>Badge:</strong> Tag Black</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Place card in 5 different pant pockets</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Pocket Photo (1 Point)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Picture holding pulled out pant pocket</p>
+                        <p><strong>Face Expression:</strong> Smile</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> N/A</p>
+                        <p><strong>Location:</strong> Thrift shop</p>
+                        <p><strong>Location Proof:</strong> Obvious it's a thrift shop in background or sign with name</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card prank">
+            <summary>
+                <span class="m-number">M25</span>
+                <span class="m-title">Jump</span>
+                <span class="m-short-desc">Find oversized pants & pose</span>
+                <span class="m-points">3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefjump</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> N/A</p>
+                    <p><strong>Badge:</strong> Salvation Army Logo</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Find oversized pants</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Oversized Pose (3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Oversized pants on backwards, arms crossed gangster pose</p>
+                        <p><strong>Face Expression:</strong> Ganster glare</p>
+                        <p><strong>Clothing:</strong> Oversized pants</p>
+                        <p><strong>Pose:</strong> Arms crossed</p>
+                        <p><strong>Location:</strong> Anywhere</p>
+                        <p><strong>Location Proof:</strong> N/A</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card goodwill">
+            <summary>
+                <span class="m-number">M26</span>
+                <span class="m-title">Pants Down</span>
+                <span class="m-short-desc">Donate pants with card to Salvation Army</span>
+                <span class="m-points">3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefpantsdown</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> In pants pocket</p>
+                    <p><strong>Badge:</strong> Salvation Army Logo</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Donate pants with card in pocket to Salvation Army</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Receipt Photo (3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Photo of receipt</p>
+                        <p><strong>Face Expression:</strong> N/A</p>
+                        <p><strong>Clothing:</strong> N/A</p>
+                        <p><strong>Pose:</strong> N/A</p>
+                        <p><strong>Location:</strong> N/A</p>
+                        <p><strong>Location Proof:</strong> N/A</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card special">
+            <summary>
+                <span class="m-number">M27</span>
+                <span class="m-title">Stranger Danger</span>
+                <span class="m-short-desc">Video dance off with another player</span>
+                <span class="m-points">10</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefstrangerdanger</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> N/A</p>
+                    <p><strong>Badge:</strong> 40oz Brown Bagged Black</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Video dance off with another player. Find another Mission Mischief player online and challenge them to a dance off via Zoom, Video chat, however you can get them on a screen and show both you and them having a dance off to "You Never Can Tell" by Chuck Berry, Pulp Fiction style.</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Dance Video (10 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Video</p>
+                        <p><strong>Proof Description:</strong> 30 sec Pulp Fiction inspired dance (5 sec turns each)</p>
+                        <p><strong>Face Expression:</strong> Smile</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> Dancing</p>
+                        <p><strong>Location:</strong> Anywhere</p>
+                        <p><strong>Location Proof:</strong> N/A</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card special">
+            <summary>
+                <span class="m-number">M28</span>
+                <span class="m-title">40oz To Freedom</span>
+                <span class="m-short-desc">Buy another player a beer (via Buy Me A Coffee)</span>
+                <span class="m-points">10</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefcheers</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> 40oz Brown Bagged</p>
+                    <p><strong>Badge:</strong> 40oz Brown Bagged Color</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Buy another player a beer (via Buy Me A Coffee). Mayhem loves free drinks js</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Gifting Photo (10 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Screenshot your purchased message, "Give this to Mayhem."</p>
+                        <p><strong>Face Expression:</strong> N/A</p>
+                        <p><strong>Clothing:</strong> N/A</p>
+                        <p><strong>Pose:</strong> N/A</p>
+                        <p><strong>Location:</strong> N/A</p>
+                        <p><strong>Location Proof:</strong> N/A</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card prank">
+            <summary>
+                <span class="m-number">M29</span>
+                <span class="m-title">Bigfoot</span>
+                <span class="m-short-desc">Find largest shoe on display at shoe store</span>
+                <span class="m-points">1</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefbigfoot</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> Leave in shoe box when trying on shoe</p>
+                    <p><strong>Badge:</strong> Big Red Shoe Black</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Find largest shoe on display at shoe store. Take a picture holding it and looking down.</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Shoe Photo (1 Point)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Picture waist high holding shoe, looking down</p>
+                        <p><strong>Face Expression:</strong> Smile</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> Waist high picture</p>
+                        <p><strong>Location:</strong> Shoe store</p>
+                        <p><strong>Location Proof:</strong> Shoe store name on sign or in on window in background</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card goodwill">
+            <summary>
+                <span class="m-number">M30</span>
+                <span class="m-title">Sobriety Test</span>
+                <span class="m-short-desc">Try on biggest shoes, walk while touching nose</span>
+                <span class="m-points">3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefsobrietytest</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> Leave card on counter on way out</p>
+                    <p><strong>Badge:</strong> Big Red Shoe Color</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Try on biggest shoes, walk while touching nose</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Sobriety Video (3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Video</p>
+                        <p><strong>Proof Description:</strong> 10 sec video walking in shoes, touching nose with each hand</p>
+                        <p><strong>Face Expression:</strong> Smile</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> Walking one foot in front of the other while touching your nose with each hand</p>
+                        <p><strong>Location:</strong> Shoe store</p>
+                        <p><strong>Location Proof:</strong> Make sure it's obviously a shoe store in the background</p>
+                        <p><strong>Audio Duration:</strong> 10 sec</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card prank">
+            <summary>
+                <span class="m-number">M31</span>
+                <span class="m-title">American Pie</span>
+                <span class="m-short-desc">Order apple pie at local diner</span>
+                <span class="m-points">3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefamericanpie</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> Leave card at table</p>
+                    <p><strong>Badge:</strong> Pie w/ Hole Black</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Order a piece of apple pie at local diner</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Pie Photo (3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Picture of pie with you pointing at it with two fingers</p>
+                        <p><strong>Face Expression:</strong> Smile</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> Two fingers pointing close to pie piece</p>
+                        <p><strong>Location:</strong> Diner</p>
+                        <p><strong>Location Proof:</strong> Have a menu under the piece of pie</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card goodwill">
+            <summary>
+                <span class="m-number">M32</span>
+                <span class="m-title">Give A Piece</span>
+                <span class="m-short-desc">Buy pie for stranger at diner</span>
+                <span class="m-points">3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefgiveapiece</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> Give with piece of pie</p>
+                    <p><strong>Badge:</strong> Pie w/ Hole Color</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Buy pie for stranger at diner. Either you or the server take the piece with the card to stranger</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Pie Gifting Photo (3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Picture with stranger, pie, and your card underneath</p>
+                        <p><strong>Face Expression:</strong> Smile</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> N/A</p>
+                        <p><strong>Location:</strong> N/A</p>
+                        <p><strong>Location Proof:</strong> N/A</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card prank">
+            <summary>
+                <span class="m-number">M33</span>
+                <span class="m-title">Dynamite</span>
+                <span class="m-short-desc">Draw Napoleon Dynamite's favorite animal, the Liger</span>
+                <span class="m-points">1</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefdynamite</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> N/A</p>
+                    <p><strong>Badge:</strong> Liger Color</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Draw Napoleon Dynamite's favorite animal, the Liger</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Liger Drawing Photo (1 Point)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> You holding up your Liger drawing like a proud 1st grader</p>
+                        <p><strong>Face Expression:</strong> Smile</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> Must have liger drawing clearly showing with you holding it</p>
+                        <p><strong>Location:</strong> N/A</p>
+                        <p><strong>Location Proof:</strong> N/A</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card goodwill">
+            <summary>
+                <span class="m-number">M34</span>
+                <span class="m-title">Lost Liger</span>
+                <span class="m-short-desc">Make "Lost" flyer with liger drawing, tape to stop sign</span>
+                <span class="m-points">3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischieflostliger</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> Tape card to liger drawing</p>
+                    <p><strong>Badge:</strong> Liger Black</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Make "Lost" flyer with liger drawing, tape to stop sign</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Flyer Photo (3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Picture of drawing taped to stop sign</p>
+                        <p><strong>Face Expression:</strong> N/A</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> N/A</p>
+                        <p><strong>Location:</strong> N/A</p>
+                        <p><strong>Location Proof:</strong> N/A</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card prank">
+            <summary>
+                <span class="m-number">M35</span>
+                <span class="m-title">Netflix and Chill</span>
+                <span class="m-short-desc">Ask librarian where to find book on "how to Netflix and chill"</span>
+                <span class="m-points">3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefnetflixandchill</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> Give card to librarian</p>
+                    <p><strong>Badge:</strong> Netflix "N" Color</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Ask librarian where to find book on "how to Netflix and chill"</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Asking Video (3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Video</p>
+                        <p><strong>Proof Description:</strong> Video of you asking and them responding</p>
+                        <p><strong>Face Expression:</strong> Serious</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> N/A</p>
+                        <p><strong>Location:</strong> Library</p>
+                        <p><strong>Location Proof:</strong> Background must obviously be a library</p>
+                        <p><strong>Audio Duration:</strong> 15 sec</p>
+                        <p><strong>Audio Requirements:</strong> Must hear you ask, "Where can I find a book on how to Netflix and chill?" and give the librarian 10 sec for a response... if they resond</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card goodwill">
+            <summary>
+                <span class="m-number">M36</span>
+                <span class="m-title">Give a Poo</span>
+                <span class="m-short-desc">Return "Everyone Poops" with card in back</span>
+                <span class="m-points">1</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefgiveapoo</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> In back cover of book</p>
+                    <p><strong>Badge:</strong> Netflix "N" Black</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Return "Everyone Poops" with card in back</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Book Drop Photo (1 Point)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Photo of you dropping book in or at book drop off</p>
+                        <p><strong>Face Expression:</strong> Smile</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> N/A</p>
+                        <p><strong>Location:</strong> N/A</p>
+                        <p><strong>Location Proof:</strong> N/A</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card prank">
+            <summary>
+                <span class="m-number">M37</span>
+                <span class="m-title">Daddy Issues</span>
+                <span class="m-short-desc">Ask male employee at hardware store "Are you my daddy?"</span>
+                <span class="m-points">3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefdaddyissues</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> Give employee card</p>
+                    <p><strong>Badge:</strong> Hammer Black</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Ask male employee at hardware store "Are you my daddy?"</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Asking Video (3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Video</p>
+                        <p><strong>Proof Description:</strong> Video of you asking and them responding</p>
+                        <p><strong>Face Expression:</strong> Smile</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> N/A</p>
+                        <p><strong>Location:</strong> N/A</p>
+                        <p><strong>Location Proof:</strong> N/A</p>
+                        <p><strong>Audio Duration:</strong> 15 sec</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card goodwill">
+            <summary>
+                <span class="m-number">M38</span>
+                <span class="m-title">Bird Cage</span>
+                <span class="m-short-desc">Build birdhouse kit, paint each side different Beetlejuice colors</span>
+                <span class="m-points">3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefbirdcage</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> N/A</p>
+                    <p><strong>Badge:</strong> Hammer Color</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Build birdhouse kit, paint each side different Beetlejuice colors</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Birdhouse Photo (3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Photo of your completed birdhouse</p>
+                        <p><strong>Face Expression:</strong> Smile</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> You holding your bird house</p>
+                        <p><strong>Location:</strong> N/A</p>
+                        <p><strong>Location Proof:</strong> N/A</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card prank">
+            <summary>
+                <span class="m-number">M39</span>
+                <span class="m-title">Cat Fishing</span>
+                <span class="m-short-desc">Fish with cat toy as bait, say "here kitty kitty"</span>
+                <span class="m-points">3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefcatfishing</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">Blank Stare</span></p>
+                    <p><strong>Card Drop:</strong> N/A</p>
+                    <p><strong>Badge:</strong> Catfish Black</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Fish with cat toy as bait, say "here kitty kitty". Yes, you can tie a string to a stick, then the cat toy to the string.</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Fishing Video (3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Video</p>
+                        <p><strong>Proof Description:</strong> Video of you fishing with cat toy (toy doesn't need to go in water)</p>
+                        <p><strong>Face Expression:</strong> Smile</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> N/A</p>
+                        <p><strong>Location:</strong> Somewhere with water (pool okay)</p>
+                        <p><strong>Location Proof:</strong> Water must be present in video. Tow does not need to go into water</p>
+                        <p><strong>Audio Duration:</strong> 10 sec</p>
+                        <p><strong>Audio Requirements:</strong> Must hear you say, "here kitty-kitty" 2x</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card goodwill">
+            <summary>
+                <span class="m-number">M40</span>
+                <span class="m-title">Cat Shelter</span>
+                <span class="m-short-desc">Take cat toy to animal shelter</span>
+                <span class="m-points">3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefcatshelter</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> Leave on chair or table in waiting room</p>
+                    <p><strong>Badge:</strong> Catfish Color</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Take cat toy to animal shelter</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Shelter Photo (3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Photo holding toy outside shelter with shelter name visible</p>
+                        <p><strong>Face Expression:</strong> Smile</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> N/A</p>
+                        <p><strong>Location:</strong> N/A</p>
+                        <p><strong>Location Proof:</strong> N/A</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card prank">
+            <summary>
+                <span class="m-number">M41</span>
+                <span class="m-title">Googley Eyes Buy</span>
+                <span class="m-short-desc">Buy googley eyes</span>
+                <span class="m-points">3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefgoogley</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> Leave card where you got the eyes</p>
+                    <p><strong>Badge:</strong> Googley Eyes Black</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Buy googley eyes</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Purchase Photo (3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Photo with googley eyes</p>
+                        <p><strong>Face Expression:</strong> Smile</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> Any</p>
+                        <p><strong>Location:</strong> N/A</p>
+                        <p><strong>Location Proof:</strong> N/A</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card goodwill">
+            <summary>
+                <span class="m-number">M42</span>
+                <span class="m-title">Fridge Eyes</span>
+                <span class="m-short-desc">Put googley eyes on 5 refrigerator items</span>
+                <span class="m-points">3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischieffridgeeyes</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> N/A</p>
+                    <p><strong>Badge:</strong> Googley Eyes Color</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Put googley eyes on 5 refrigerator items</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Fridge Photo (3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Photo of 5 items in refrigerator together with googley eyes</p>
+                        <p><strong>Face Expression:</strong> N/A</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> N/A</p>
+                        <p><strong>Location:</strong> N/A</p>
+                        <p><strong>Location Proof:</strong> N/A</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card prank">
+            <summary>
+                <span class="m-number">M43</span>
+                <span class="m-title">Suspect</span>
+                <span class="m-short-desc">Buy only tube socks and lotion</span>
+                <span class="m-points">3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefsuspect</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">Blank Stare</span></p>
+                    <p><strong>Card Drop:</strong> Give card to cashier</p>
+                    <p><strong>Badge:</strong> Sock Puppet Black</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Buy only tube socks and lotion</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Purchase Photo (3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Photo holding lotion and socks with big smile, store name on building behind you</p>
+                        <p><strong>Face Expression:</strong> Smile</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> N/A</p>
+                        <p><strong>Location:</strong> Store where purchased parking lot</p>
+                        <p><strong>Location Proof:</strong> Picture of stores sign on building in background</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card goodwill">
+            <summary>
+                <span class="m-number">M44</span>
+                <span class="m-title">Sock Puppet Show</span>
+                <span class="m-short-desc">Make sock puppet, perform 10 second skit</span>
+                <span class="m-points">3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefsockpuppet</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> N/A</p>
+                    <p><strong>Badge:</strong> Sock Puppet Color</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Make sock puppet, perform 10 second skit (need inspiration, watch lambchop)</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Skit Video (3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Video</p>
+                        <p><strong>Proof Description:</strong> Video of puppet skit</p>
+                        <p><strong>Face Expression:</strong> Smile</p>
+                        <p><strong>Clothing:</strong> Must wear hand puppet</p>
+                        <p><strong>Pose:</strong> Talk to your hand puppet like it is real</p>
+                        <p><strong>Location:</strong> N/A</p>
+                        <p><strong>Location Proof:</strong> N/A</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card prank">
+            <summary>
+                <span class="m-number">M45</span>
+                <span class="m-title">Dobby</span>
+                <span class="m-short-desc">Put card in sock, hand to stranger and walk away</span>
+                <span class="m-points">3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefdobby</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">BLANK STARE</span></p>
+                    <p><strong>Card Drop:</strong> Card in sock</p>
+                    <p><strong>Badge:</strong> Dobby Black</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Put card in a sock, hand to a stranger and walk away</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Gifting Video (3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Video</p>
+                        <p><strong>Proof Description:</strong> Video of handing sock, walking away, stranger's response</p>
+                        <p><strong>Face Expression:</strong> Serious</p>
+                        <p><strong>Clothing:</strong> Must hand over a sock</p>
+                        <p><strong>Pose:</strong> N/A</p>
+                        <p><strong>Location:</strong> N/A</p>
+                        <p><strong>Location Proof:</strong> N/A</p>
+                        <p><strong>Audio Duration:</strong> 15 sec</p>
+                        <p><strong>Audio Requirements:</strong> 10 secs should be dedicated to the strangers response</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card goodwill">
+            <summary>
+                <span class="m-number">M46</span>
+                <span class="m-title">Dobby Donation</span>
+                <span class="m-short-desc">Donate socks and lotion to Salvation Army with card in sock</span>
+                <span class="m-points">3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefdobbydonation</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> Card in sock</p>
+                    <p><strong>Badge:</strong> Dobby Color</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Donate socks and lotion to Salvation Army with card in sock</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Receipt Photo (3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Photo of receipt</p>
+                        <p><strong>Face Expression:</strong> N/A</p>
+                        <p><strong>Clothing:</strong> N/A</p>
+                        <p><strong>Pose:</strong> N/A</p>
+                        <p><strong>Location:</strong> N/A</p>
+                        <p><strong>Location Proof:</strong> N/A</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card prank">
+            <summary>
+                <span class="m-number">M47</span>
+                <span class="m-title">Mission Haiku</span>
+                <span class="m-short-desc">Make up haiku about a mission you did, read dramatically</span>
+                <span class="m-points">3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefhaiku</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> N/A</p>
+                    <p><strong>Badge:</strong> Magazine Clipping Note</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Make up haiku about a mission you did, read dramatically</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Haiku Video (3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Video</p>
+                        <p><strong>Proof Description:</strong> Video of you reading haiku dramatically</p>
+                        <p><strong>Face Expression:</strong> Dramatic</p>
+                        <p><strong>Clothing:</strong> Any</p>
+                        <p><strong>Pose:</strong> N/A</p>
+                        <p><strong>Location:</strong> N/A</p>
+                        <p><strong>Location Proof:</strong> N/A</p>
+                        <p><strong>Audio Duration:</strong> 10 sec</p>
+                        <p><strong>Audio Requirements:</strong> Must hear entire Haiku</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card goodwill">
+            <summary>
+                <span class="m-number">M48</span>
+                <span class="m-title">Ransom Note Haiku</span>
+                <span class="m-short-desc">Cut out magazine letters for haiku, glue to paper, post at gym</span>
+                <span class="m-points">3</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefrandsomnote</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> Pin with Haiku on gym bulletin board</p>
+                    <p><strong>Badge:</strong> Magazine Clipping Note</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Cut out magazine letters for haiku, glue to paper, post at gym</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Haiku Photo (3 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Photo of clipped haiku posted at gym with your card attached</p>
+                        <p><strong>Face Expression:</strong> N/A</p>
+                        <p><strong>Clothing:</strong> N/A</p>
+                        <p><strong>Pose:</strong> N/A</p>
+                        <p><strong>Location:</strong> N/A</p>
+                        <p><strong>Location Proof:</strong> N/A</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card special">
+            <summary>
+                <span class="m-number">M49</span>
+                <span class="m-title">Dog Bounty Hunter</span>
+                <span class="m-short-desc">Find another player's card</span>
+                <span class="m-points">10</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefdog</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> N/A (found card mission)</p>
+                    <p><strong>Badge:</strong> Dog Bounty Hunter Black</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> Find another player's card in the wild</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Found Card Photo (10 Points)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Photo of card with QR and player info visible</p>
+                        <p><strong>Face Expression:</strong> Excited/victorious</p>
+                        <p><strong>Clothing:</strong> Any clothing</p>
+                        <p><strong>Pose:</strong> Holding found card</p>
+                        <p><strong>Location:</strong> Where card was found</p>
+                        <p><strong>Location Proof:</strong> Location identifiable</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card special final-special">
+            <summary>
+                <span class="m-number">M50</span>
+                <span class="m-title">Finish Line - Card Retrieval</span>
+                <span class="m-short-desc">Collect ALL cards and signs you left</span>
+                <span class="m-points">1pt per card</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischieffinishline</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem" style="background: #000; color: #ffd700;">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> N/A (retrieval mission)</p>
+                    <p><strong>Badge:</strong> Crown of Chaos</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Long Description:</strong> (Requires all missions completed) Return to all locations where you dropped cards and try to retrieve them. Document your journey and stories of who found them.</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Card Collection Video (1pt per card found)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Video</p>
+                        <p><strong>Proof Description:</strong> Video showing each location revisited and cards found</p>
+                        <p><strong>Face Expression:</strong> Determined hunter/triumphant</p>
+                        <p><strong>Clothing:</strong> Comfortable walking clothes</p>
+                        <p><strong>Pose:</strong> Searching then holding cards</p>
+                        <p><strong>Location:</strong> Multiple previous mission locations</p>
+                        <p><strong>Location Proof:</strong> Each location clearly shown</p>
+                        <p><strong>Audio Duration:</strong> 120-300 sec</p>
+                        <p><strong>Audio Requirements:</strong> "Card hunting for Mission Mischief!" + count found cards</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+        
+        <details class="mission-card special">
+            <summary>
+                <span class="m-number">BONUS</span>
+                <span class="m-title">Bounty Hunter Rewards</span>
+                <span class="m-short-desc">Find cards or expose cheaters</span>
+                <span class="m-points">Var + $5</span>
+            </summary>
+            <div class="mission-details">
+                <div class="section-meta">
+                    <p><strong>Hashtag:</strong> <span class="hashtag">#missionmischiefdog / #missionmischiefexposed</span></p>
+                    <p><strong>Mayhem:</strong> <span class="mayhem">EXCITED</span></p>
+                    <p><strong>Card Drop:</strong> N/A (bonus missions)</p>
+                    <p><strong>Badge:</strong> Dog Bounty Hunter Color</p>
+                </div>
+                <div class="section-description">
+                    <p><strong>Found Card:</strong> Find another player's card (10 points + $5)</p>
+                    <p><strong>Exposed Cheater:</strong> Catch someone posting unearned badges (5 points + $5)</p>
+                </div>
+
+                <div class="section-proof proof-1">
+                    <h3>Proof 1: Found Card (10 + $5)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Photo of found card with QR visible</p>
+                        <p><strong>Face Expression:</strong> Excited/victorious</p>
+                        <p><strong>Clothing:</strong> Any clothing</p>
+                        <p><strong>Pose:</strong> Holding found card</p>
+                        <p><strong>Location:</strong> Where found</p>
+                        <p><strong>Location Proof:</strong> Location identifiable</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+                
+                <div class="section-proof proof-2">
+                    <h3>Proof 2: Exposed Cheater (5 + $5)</h3>
+                    <div class="proof-fields">
+                        <p><strong>Proof Type:</strong> Picture</p>
+                        <p><strong>Proof Description:</strong> Screenshot of cheater's post with unearned badge</p>
+                        <p><strong>Face Expression:</strong> Serious/investigative</p>
+                        <p><strong>Clothing:</strong> Any clothing</p>
+                        <p><strong>Pose:</strong> Pointing at evidence</p>
+                        <p><strong>Location:</strong> Any location</p>
+                        <p><strong>Location Proof:</strong> Evidence clearly visible</p>
+                        <p><strong>Audio Duration:</strong> N/A</p>
+                        <p><strong>Audio Requirements:</strong> N/A</p>
+                    </div>
+                </div>
+            </div>
+        </details>
+    </div>
+    
+    <div class="info-section legal-section">
+        <h3 style="color: #04aa6d;">⚖️ Legal Requirements:</h3>
+        <ul>
+            <li><strong>Business Permission:</strong> Always get permission before filming on private property</li>
+            <li><strong>Bystander Consent:</strong> Get verbal consent from anyone appearing in your videos/photos</li>
+            <li><strong>Respect Boundaries:</strong> If asked to stop or leave, comply immediately and respectfully</li>
+            <li><strong>No Trespassing:</strong> Stay on public property or get explicit permission</li>
+            <li><strong>Privacy Rights:</strong> Respect "No Photography" signs and private property</li>
+            <li><strong>Common Sense:</strong> If it feels wrong, don't do it - mischief should be fun for everyone</li>
+        </ul>
+    </div>
+
+    <div class="info-section bounty-section">
+        <h3 style="color: #ffd700;">🕵️ Bounty Hunter Verification Checklist:</h3>
+        <ul>
+            <li>✅ <strong>All Requirements Met:</strong> Every proof requirement exactly as specified</li>
+            <li>✅ <strong>Card Drop Visible:</strong> Strategic placement shown and appropriate for mission type</li>
+            <li>✅ <strong>Location Verified:</strong> Background/location requirements satisfied</li>
+            <li>✅ <strong>Audio Clear:</strong> Required phrases clearly audible (for video missions)</li>
+            <li>✅ <strong>Expression/Pose:</strong> Matches specified requirements exactly</li>
+            <li>✅ <strong>No Staging:</strong> Genuine reactions and authentic execution</li>
+            <li>💰 <strong>Report Violations:</strong> Submit evidence to claim your $5 bounty reward!</li>
+        </ul>
+    </div>
+
+    <div style="margin-top: 30px; padding: 20px; background: #111; border-radius: 8px;">
+        <h3 style="color: #04aa6d;">🎯 Hashtag Blockchain Features:</h3>
+        <ul>
+            <li><strong>Card Drop System:</strong> Every mission requires strategic card placement for viral marketing</li>
+            <li><strong>Distributed Verification:</strong> Hashtags create real-world blockchain for mission tracking</li>
+            <li><strong>Automated Justice:</strong> Community-driven fraud detection with escalating bounties</li>
+            <li><strong>Social Integration:</strong> Buy Me A Coffee for real money exchange ($5 rewards)</li>
+            <li><strong>Proof Verification:</strong> Detailed requirements prevent cheating and staging</li>
+            <li><strong>Viral Mechanics:</strong> Cards spread organically creating scavenger hunt ecosystem</li>
+            <li><strong>Final Retrieval:</strong> Card collection challenge completes the cycle</li>
+        </ul>
+    </div>
+</body>
+</html>

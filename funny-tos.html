@@ -247,12 +247,6 @@
             <button class="mugshot-btn" onclick="takeMugshotPhoto()">
                 📸 TAKE MUGSHOT
             </button>
-            <button class="mugshot-btn" onclick="copyHashtag()">
-                📋 COPY HASHTAG
-            </button>
-            <button class="mugshot-btn danger" onclick="completeFAFOAndContinue()">
-                ✕ CONTINUE TO GAME
-            </button>
         </div>
         
         <!-- Instructions -->
@@ -373,22 +367,30 @@
             }
         }
         
-        function copyHashtag() {
+        function shareWithHashtags() {
             const hashtag = '#iwillnotsuemissionmischieforitsaffiliatedteambecausedoingsowouldbeadickmoveandisignaconsentformpromisingtonotbeadickandtakeaselfieandpostitwithmelookinglikeacriminalholdingasignwithtodaysdateandtimeinamugshotandifithinkimsmarterthanthembynottakingaselfiebutuploadingapictureofanythingotherthanmeornopictureatalltheniwilloweallplayersexposingmefivedollarsandnotlimitedtotheonlybeingexposedoncerulebecauseiobviouslyamadick';
+            const shareText = `Just completed Mission 1: FAFO!\n\n${hashtag}\n\n#missionmischief #realworldgame`;
             
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(hashtag).then(() => {
-                    alert('📋 Hashtag copied! Now go take that mugshot!');
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Mission Mischief - FAFO Complete!',
+                    text: shareText,
+                    url: window.location.origin
+                }).catch(err => {
+                    // Fallback to clipboard
+                    navigator.clipboard.writeText(shareText).then(() => {
+                        alert('📤 Share text copied! Paste when posting your mugshot!');
+                    }).catch(() => {
+                        alert('📋 Manual copy: ' + hashtag);
+                    });
                 });
             } else {
-                // Fallback
-                const textArea = document.createElement('textarea');
-                textArea.value = hashtag;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-                alert('📋 Hashtag copied! Now go take that mugshot!');
+                // Direct clipboard fallback
+                navigator.clipboard.writeText(shareText).then(() => {
+                    alert('📤 Share text copied! Paste when posting your mugshot!');
+                }).catch(() => {
+                    alert('📋 Manual copy: ' + hashtag);
+                });
             }
         }
         

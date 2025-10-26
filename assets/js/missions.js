@@ -41,28 +41,33 @@ const Missions = {
 
   // Badge definitions mapped to actual badge files
   badges: {
-    setup: { name: 'Setup', icon: 'note-color.png' },
-    book: { name: 'Book', icon: 'book-for-dummies-color.png' },
+    mugshot: { name: 'Mugshot', icon: 'irritant-label-color.png' },
+    setup: { name: 'Setup Card', icon: 'note-color.png' },
+    beer: { name: 'Beer Emoji', icon: 'beer-emoji-color.png' },
+    slimshady: { name: 'Slim Shady', icon: 'slim-shady-color.png' },
     coffee: { name: 'Coffee', icon: 'coffee-color.png' },
-    library: { name: 'Library', icon: 'book-for-dummies-color.png' },
-    bear: { name: 'Bear', icon: 'teddy-bear-color.png' },
-    plant: { name: 'Plant', icon: 'green-leaf-color.png' },
-    towel: { name: 'Towel', icon: 'towlie-color.png' },
-    blood: { name: 'Blood', icon: 'red-hot-chili-pepper-color.png' },
-    recycle: { name: 'Recycle', icon: 'recycle-symbol-color.png' },
-    treasure: { name: 'Treasure', icon: 'tag-color.png' },
-    thrift: { name: 'Thrift', icon: 'salvation-army-logo-color.png' },
-    pants: { name: 'Pants', icon: 'big-red-shoe-color.png' },
-    dance: { name: 'Dance', icon: 'rocky-horror-lips-color.png' },
-    bigfoot: { name: 'Bigfoot', icon: 'big-red-shoe-color.png' },
-    diner: { name: 'Diner', icon: 'apple-pie-color.png' },
+    book: { name: 'Book For Dummies', icon: 'book-for-dummies-color.png' },
+    bear: { name: 'Brown Bear', icon: 'teddy-bear-color.png' },
+    plant: { name: 'Green Leaf', icon: 'green-leaf-color.png' },
+    pepper: { name: 'Chili Pepper', icon: 'red-hot-chili-pepper-color.png' },
+    towel: { name: 'Towelie', icon: 'towlie-color.png' },
+    blood: { name: 'Rocky Horror Lips', icon: 'rocky-horror-lips-color.png' },
+    recycle: { name: 'Mic', icon: 'mic-color.png' },
+    thrift: { name: 'Tag', icon: 'tag-color.png' },
+    pants: { name: 'Salvation Army Logo', icon: 'salvation-army-logo-color.png' },
+    thirsty: { name: '40oz Brown Bagged', icon: '40oz-color.png' },
+    bigfoot: { name: 'Big Red Shoe', icon: 'big-red-shoe-color.png' },
+    diner: { name: 'Pie w/ Hole', icon: 'apple-pie-color.png' },
     liger: { name: 'Liger', icon: 'liger-color.png' },
     netflix: { name: 'Netflix', icon: 'netflix-color.png' },
-    slide: { name: 'Slide', icon: 'googly-eyes-color.png' },
-    daddy: { name: 'Daddy', icon: 'hammer-color.png' },
+    daddy: { name: 'Hammer', icon: 'hammer-color.png' },
     catfish: { name: 'Catfish', icon: 'catfish-color.png' },
-    ghost: { name: 'Ghost', icon: 'ghost-color.png' },
-    thirsty: { name: 'Thirsty', icon: '40oz-color.png' }
+    eyes: { name: 'Googley Eyes', icon: 'googly-eyes-color.png' },
+    ghost: { name: 'Sock Puppet', icon: 'ghost-color.png' },
+    slide: { name: 'Dobby', icon: 'dobby-color.png' },
+    note: { name: 'Magazine Clipping Note', icon: 'note-color.png' },
+    bounty: { name: 'Dog Bounty Hunter', icon: 'nieghborhood-watch-sign-color.png' },
+    crown: { name: 'Crown of Chaos', icon: 'captain-planet-color.png' }
   },
 
   // Special overlay badges
@@ -73,110 +78,112 @@ const Missions = {
 
   // Mission data (52 missions total)
   missionData: [
-    // Mission 1: FAFO
-    { id: 1, title: 'FAFO (F*** Around and Find Out)', location: 'Anywhere', description: 'Read funny ToS, check agreement box, take mugshot selfie with date/time sign', proof: 'Mugshot-style selfie holding sign with today\'s date and time', hashtag: '#iwillnotsuemissionmischief', badgeId: null, type: 'special', requiresBuyIn: false, points: 'PRICELESS' },
+    // M1: FAFO
+    { id: 1, title: 'FAFO (F*** Around and Find Out)', location: 'Anywhere', description: 'Read funny ToS, check agreement box, take mugshot selfie with date/time sign', proof: 'Mugshot-style selfie holding sign with today\'s date and time', hashtag: '#iwillnotsuemissionmischief', badgeId: null, type: 'special', requiresBuyIn: false, points: 'PRICELESS', cardDrop: 'N/A (setup mission)', mayhem: 'EXCITED' },
     
-    // Mission 2: Setup
-    { id: 2, title: 'License To Ill', location: 'Anywhere', description: 'Setup business cards, print', proof: 'Selfie with business card (details clear)', hashtag: '#missionmischieflicensetoill', badgeId: 'setup', type: 'setup', requiresBuyIn: false, points: 1 },
+    // M2: Setup
+    { id: 2, title: 'License To Ill', location: 'Anywhere', description: 'Setup business cards, print', proof: 'Selfie with business card (QR Code and details clear)', hashtag: '#missionmischieflicensetoill', badgeId: null, type: 'setup', requiresBuyIn: false, points: 1, cardDrop: 'N/A (creates your cards)', mayhem: 'EXCITED' },
     
-    // Mission 3: The Genius Economics
-    { id: 3, title: 'Buy Me A Beer', location: 'Anywhere', description: 'Setup Buy Me A Coffee account, change to beer. Get ANYONE to buy you a beer ($5)', proof: 'Screenshot of account + message, then photo of someone buying you the beer', hashtag: '#missionmischiefbuymeabeer', badgeId: 'beer', type: 'setup', requiresBuyIn: false, points: '$0.01 PROFIT!' },
+    // M3: Beer Economics
+    { id: 3, title: 'Buy Me A Beer 🍺', location: 'Anywhere', description: 'Setup Buy Me A Coffee account, change to beer. Message: "I bought a stupid game #missionmischief and it told me if I made this account and followed all the rules and completed all the missions I would most likely, not promised, more like a maybe, get my money back with interest on a mission by getting someone to buy me a beer. Which cost $5. The game cost me $4.99. Wow! These guys are geniuses!" Then get ANYONE to buy you a beer ($5)', proof: 'Screenshot of the message on your account + Screenshot of anyone buying you a beer', hashtag: '#missionmischiefbuymeabeer', badgeId: 'beer', type: 'setup', requiresBuyIn: false, points: '1 / 3', cardDrop: 'N/A (setup mission)', mayhem: 'EXCITED' },
     
-    // Mission 4: Path Selection
-    { id: 4, title: 'Choose Your Destiny', location: 'Anywhere', description: 'Captain Planet (2x50gal recyclables) OR Oscar (2x50gal trash) OR Sign up 3 players + Bye-Bye-Bye dance OR do nothing (clown badge)', proof: 'Photo of bags OR dance video OR nothing', hashtag: '#missionmischiefdestiny', badgeId: null, type: 'buyin', requiresBuyIn: false, points: '0-3' },
+    // M4: Path Selection
+    { id: 4, title: 'Choose Your Destiny', location: 'Anywhere', description: 'Captain Planet (2x50gal recyclables) OR Oscar (2x50gal trash) OR Sign up 3 players + Bye-Bye-Bye dance OR do nothing (clown badge)', proof: 'Photo of you posing as a super hero in front of two 50 gallon bags of recycling', hashtag: '#missionmischiefdestiny', badgeId: null, type: 'buyin', requiresBuyIn: false, points: '0-3', cardDrop: 'Leave with donation/give to audience', mayhem: 'EXCITED' },
     
-    // Book Badge Missions
-    { id: 5, title: 'The Real Slim Shady', location: 'Bookstore/Library', description: 'Find "Art of Not Giving A F*ck", leave card in page #69', proof: 'Hold book, flip off camera (pinkie=1pt, middle=3pts)', hashtag: '#missionmischiefslimshady', badgeId: 'book', type: 'prank', requiresBuyIn: false, points: '1-3' },
-    { id: 6, title: 'Your Momma', location: 'Anywhere', description: 'Tell a "Your momma" joke', proof: 'Video of you telling joke', hashtag: '#missionmischiefyourmomma', badgeId: 'book', type: 'goodwill', requiresBuyIn: false, points: 3 },
+    // M5-M6: Slim Shady Badge
+    { id: 5, title: 'The Real Slim Shady', location: 'Bookstore/Library', description: 'Find "Art of Not Giving A F*ck", pose with book (title needs to be shown) in one hand while flipping off the camera with the other, leave card in page #69', proof: 'Hold book, flip off camera (pinkie=1pt, middle=3pts)', hashtag: '#missionmischiefslimshady', badgeId: 'slimshady', type: 'prank', requiresBuyIn: false, points: '1-3', cardDrop: 'Leave card in page #69 of book', mayhem: 'EXCITED' },
+    { id: 6, title: 'Your Momma', location: 'Public area with audience', description: 'Tell a "Your momma" joke', proof: 'Video of you telling joke', hashtag: '#missionmischiefyourmomma', badgeId: 'slimshady', type: 'goodwill', requiresBuyIn: false, points: 3, cardDrop: 'Give to person who laughed hardest', mayhem: 'EXCITED' },
     
-    // Coffee Badge Missions
-    { id: 7, title: 'YOLO', location: 'Coffee Shop', description: 'Order coffee as "Bueller"', hashtag: '#missionmischiefyolo', badgeId: 'coffee', type: 'prank', requiresBuyIn: false, points: '?' },
-    { id: 8, title: 'Coffee Stranger', location: 'Anywhere', description: 'Give coffee to stranger', hashtag: '#missionmischiefcoffee', badgeId: 'coffee', type: 'goodwill', requiresBuyIn: false, points: 3 },
+    // M7-M8: Coffee Badge
+    { id: 7, title: 'YOLO', location: 'Coffee Shop', description: 'Order coffee as "Bueller". Sit down and while you wait for your your order and get as many pens and pencils on your head as you can. Use your ears, hair, whatever. They need to be in view when the barista calls "Bueller"', proof: 'Video with pens/pencils on head, barista saying "Bueller" (1pt per pen/pencil)', hashtag: '#missionmischiefyolo', badgeId: 'coffee', type: 'prank', requiresBuyIn: false, points: '?', cardDrop: 'Give to the barista that helped you', mayhem: 'EXCITED' },
+    { id: 8, title: 'Coffee Stranger', location: 'Anywhere', description: 'Give coffee to stranger with your card', proof: 'Picture of you, stranger, coffee and card', hashtag: '#missionmischiefcoffee', badgeId: 'coffee', type: 'goodwill', requiresBuyIn: false, points: 3, cardDrop: 'Give card to person you give coffee to', mayhem: 'EXCITED' },
     
-    // Library Badge Missions
-    { id: 9, title: 'Saving Fantasia', location: 'Library', description: 'Get library card', hashtag: '#missionmischieffantasia', badgeId: 'library', type: 'prank', requiresBuyIn: false, points: 1 },
-    { id: 10, title: 'Take A Poo', location: 'Library', description: 'Rent "Everybody Poops"', hashtag: '#missionmischieftakeapoo', badgeId: 'library', type: 'goodwill', requiresBuyIn: false, points: '1-3' },
+    // M9-M10: Book For Dummies Badge
+    { id: 9, title: 'Saving Fantasia', location: 'Public Library', description: 'Get library card, take a selfie in front a bookshelf, and leave your card on a table', proof: 'Selfie with library card in front of bookshelf', hashtag: '#missionmischieffantasia', badgeId: 'book', type: 'prank', requiresBuyIn: false, points: 1, cardDrop: 'Leave on a table', mayhem: 'EXCITED' },
+    { id: 10, title: 'Take A Poo', location: 'Library', description: 'Rent "Everybody Poops", leave your card in the cover of a different copy, have your picture taken with the book cover showing opened like you\'re reading it while sitting down', proof: 'Hold book open, sitting (bench=1pt, toilet=3pts, pants ON!)', hashtag: '#missionmischieftakeapoo', badgeId: 'book', type: 'goodwill', requiresBuyIn: false, points: '1-3', cardDrop: 'Place card in the cover of a copy of "Everybody Poops"', mayhem: 'BLANK STARE' },
     
-    // Bear Badge Missions
-    { id: 11, title: 'Van Gogh', location: 'Store', description: 'Get brown bear and draw it', hashtag: '#missionmischiefvangogh', badgeId: 'bear', type: 'prank', requiresBuyIn: false, points: 1 },
-    { id: 12, title: 'Take Care, Brown Bear', location: 'Anywhere', description: 'Give bear, drawing and card to stranger', hashtag: '#missionmischieftakecare', badgeId: 'bear', type: 'goodwill', requiresBuyIn: false, points: 3 },
+    // M11-M12: Brown Bear Badge
+    { id: 11, title: 'Van Gogh', location: 'Store', description: 'Get brown bear and draw it', proof: 'Selfie with drawing', hashtag: '#missionmischiefvangogh', badgeId: 'bear', type: 'prank', requiresBuyIn: false, points: 1, cardDrop: 'N/A', mayhem: 'EXCITED' },
+    { id: 12, title: 'Take Care, Brown Bear', location: 'Anywhere', description: 'Give bear, drawing and card to stranger', proof: 'You, stranger holding bear, drawing, and card', hashtag: '#missionmischieftakecare', badgeId: 'bear', type: 'goodwill', requiresBuyIn: false, points: 3, cardDrop: 'Give card to stranger you give bear and drawing to', mayhem: 'EXCITED' },
     
-    // Plant Badge Missions
-    { id: 13, title: 'Smoke Pot', location: 'Nursery', description: 'Find small potted plant at nursery', hashtag: '#missionmischiefsmokepot', badgeId: 'plant', type: 'prank', requiresBuyIn: false, points: 1 },
-    { id: 14, title: 'Bought Pot', location: 'Nursery', description: 'Buy the plant', hashtag: '#missionmischiefboughtpot', badgeId: 'plant', type: 'prank', requiresBuyIn: false, points: 1 },
-    { id: 15, title: 'Love Alfalfa', location: 'Anywhere', description: 'Sing "You are so beautiful" to plant (Alfalfa impression)', hashtag: '#missionmischiefalfalfa', badgeId: 'pepper', type: 'prank', requiresBuyIn: false, points: '1-3' },
-    { id: 16, title: 'Give It Away, Now', location: 'Anywhere', description: 'Give plant to neighbor with card', hashtag: '#missionmischiefrhcp', badgeId: 'pepper', type: 'goodwill', requiresBuyIn: false, points: 3 },
+    // M13-M16: Green Leaf / Chili Pepper Badge
+    { id: 13, title: 'Smoke Pot', location: 'Plant Nursery', description: 'Find small potted plant at nursery. Hold plant, act like smoking joint', proof: 'Hold plant, act like smoking joint', hashtag: '#missionmischiefsmokepot', badgeId: 'plant', type: 'prank', requiresBuyIn: false, points: 1, cardDrop: 'Leave your card where you found the plant', mayhem: 'EXCITED' },
+    { id: 14, title: 'Bought Pot', location: 'Plant Nursery', description: 'Buy the plant. Money is no object here. Go cheap if you\'d like.', proof: 'Picture of receipt', hashtag: '#missionmischiefboughtpot', badgeId: 'plant', type: 'prank', requiresBuyIn: false, points: 1, cardDrop: 'Give to cashier', mayhem: 'BLANK STARE' },
+    { id: 15, title: 'Love Alfalfa', location: 'Anywhere', description: 'Sing "You are so beautiful" to plant (Alfalfa impression)', proof: 'Hold plant, stare while singing (1pt singing, 3pts with Alfalfa point)', hashtag: '#missionmischiefalfalfa', badgeId: 'pepper', type: 'prank', requiresBuyIn: false, points: '1-3', cardDrop: 'N/A', mayhem: 'EXCITED' },
+    { id: 16, title: 'Give It Away, Now', location: 'Anywhere', description: 'Give plant to neighbor with card', proof: 'You and neighbor holding plant with card', hashtag: '#missionmischiefrhcp', badgeId: 'pepper', type: 'goodwill', requiresBuyIn: false, points: 3, cardDrop: 'Give to neighbor with plant', mayhem: 'EXCITED' },
     
-    // Towel Badge Missions
-    { id: 17, title: 'You\'re A Towel', location: 'Anywhere', description: 'Big blue towel, Towelie voice phrases', hashtag: '#missionmischieftowelie', badgeId: 'towel', type: 'prank', requiresBuyIn: false, points: '1-3' },
-    { id: 18, title: 'Sarah McLachlaned', location: 'Animal Shelter', description: 'Donate towel to animal shelter', hashtag: '#missionmischiefaspca', badgeId: 'towel', type: 'goodwill', requiresBuyIn: false, points: '1-3' },
+    // M17-M18: Towelie Badge
+    { id: 17, title: 'You\'re A Towel', location: 'Store or home', description: 'Get a big blue towel and video it over your head as you do a Towelie voice phrase in store or at home', proof: 'Video with towel over head (store=3pts, home=1pt)', hashtag: '#missionmischieftowelie', badgeId: 'towel', type: 'prank', requiresBuyIn: false, points: '1-3', cardDrop: 'Leave on towel rack', mayhem: 'EXCITED' },
+    { id: 18, title: 'Sarah McLachlaned', location: 'Animal Shelter', description: 'Donate towel to animal shelter. Take a picture with one of the animals there.', proof: 'Selfie with animal, sad face (1pt) + blue towel shown (3pts)', hashtag: '#missionmischiefaspca', badgeId: 'towel', type: 'goodwill', requiresBuyIn: false, points: '1-3', cardDrop: 'Pin to bulletin board at shelter', mayhem: 'CRYING' },
     
-    // Blood Badge Missions
-    { id: 19, title: 'Edward', location: 'Blood Bank', description: 'Blood bank dressed as vampire', hashtag: '#missionmischiefedward', badgeId: 'blood', type: 'prank', requiresBuyIn: false, points: '3-10' },
-    { id: 20, title: 'Bella', location: 'Hospital', description: 'Donate blood or time', hashtag: '#missionmischiefbella', badgeId: 'blood', type: 'goodwill', requiresBuyIn: false, points: 3 },
+    // M19-M20: Rocky Horror Lips Badge
+    { id: 19, title: 'Edward', location: 'Blood Bank', description: 'Go to a blood bank dressed as vampire, donate blood or time.', proof: 'Dramatic pose with blood bank name (3pts) + donate blood or time (10pts)', hashtag: '#missionmischiefedward', badgeId: 'blood', type: 'prank', requiresBuyIn: false, points: '3-10', cardDrop: 'Leave on waiting room chair', mayhem: 'VAMPIRE' },
+    { id: 20, title: 'Bella', location: 'Blood Bank', description: 'Donate blood or time', proof: 'Photo of bandage or volunteer badge showing you from the waist up', hashtag: '#missionmischiefbella', badgeId: 'blood', type: 'goodwill', requiresBuyIn: false, points: 3, cardDrop: 'Leave on waiting room chair', mayhem: 'HALO' },
     
-    // Recycle Badge Missions
-    { id: 21, title: 'Pop Star', location: 'Recycling Center', description: '20 bottles/cans in circle, rockstar pose', hashtag: '#missionmischiefpopstar', badgeId: 'recycle', type: 'prank', requiresBuyIn: false, points: 3 },
-    { id: 22, title: 'Crushed It', location: 'Recycling Center', description: 'Recycle 20 cans/bottles', hashtag: '#missionmischiefcrushedit', badgeId: 'recycle', type: 'goodwill', requiresBuyIn: false, points: 1 },
+    // M21-M22: Mic Badge
+    { id: 21, title: 'Pop Star', location: 'Recycling Center', description: '20 bottles/cans in circle, rockstar pose', proof: 'Stand in circle of your recyclings screaming into fake mic with recycling center name in background', hashtag: '#missionmischiefpopstar', badgeId: 'recycle', type: 'prank', requiresBuyIn: false, points: 3, cardDrop: 'give to innocent bystander', mayhem: 'EXCITED' },
+    { id: 22, title: 'Crushed It', location: 'Recycling Center', description: 'Recycle 20 cans/bottles', proof: 'Picture of voucher', hashtag: '#missionmischiefcrushedit', badgeId: 'recycle', type: 'goodwill', requiresBuyIn: false, points: 1, cardDrop: 'Give to person working the center', mayhem: 'EXCITED' },
     
-    // Thrift Badge Missions
-    { id: 23, title: 'Popping Tags', location: 'Thrift Store', description: '10 sec Macklemore rap with thrift items as props', hashtag: '#missionmischiefpoppingtags', badgeId: 'thrift', type: 'prank', requiresBuyIn: false, points: '?' },
-    { id: 24, title: 'Pocket Pull', location: 'Thrift Store', description: 'Place card in 5 different pant pockets', hashtag: '#missionmischiefpocketpull', badgeId: 'thrift', type: 'goodwill', requiresBuyIn: false, points: 1 },
+    // M23-M24: Tag Badge
+    { id: 23, title: 'Popping Tags', location: 'Thrift Shop', description: '10 sec Macklemore rap with thrift items as props. Get 1 point for every thrift store item you have on during video', proof: 'Video rapping (1pt per item worn)', hashtag: '#missionmischiefpoppingtags', badgeId: 'thrift', type: 'prank', requiresBuyIn: false, points: '?', cardDrop: 'Leave on shop counter', mayhem: 'BLANK STARE' },
+    { id: 24, title: 'Pocket Pull', location: 'Thrift Shop', description: 'Place card in 5 different pant pockets', proof: 'Picture holding pulled out pant pocket', hashtag: '#missionmischiefpocketpull', badgeId: 'thrift', type: 'goodwill', requiresBuyIn: false, points: 1, cardDrop: '5 cards into 5 different pant pockets', mayhem: 'BLANK STARE' },
     
-    // Pants Badge Missions
-    { id: 25, title: 'Jump', location: 'Thrift Store', description: 'Find oversized pants', hashtag: '#missionmischiefjump', badgeId: 'pants', type: 'prank', requiresBuyIn: false, points: 3 },
-    { id: 26, title: 'Pants Down', location: 'Salvation Army', description: 'Donate pants with card to Salvation Army', hashtag: '#missionmischiefpantsdown', badgeId: 'pants', type: 'goodwill', requiresBuyIn: false, points: 3 },
+    // M25-M26: Salvation Army Logo Badge
+    { id: 25, title: 'Jump', location: 'Anywhere', description: 'Find oversized pants', proof: 'Oversized pants on backwards, arms crossed gangster pose', hashtag: '#missionmischiefjump', badgeId: 'pants', type: 'prank', requiresBuyIn: false, points: 3, cardDrop: 'N/A', mayhem: 'EXCITED' },
+    { id: 26, title: 'Pants Down', location: 'Salvation Army', description: 'Donate pants with card in pocket to Salvation Army', proof: 'Photo of receipt', hashtag: '#missionmischiefpantsdown', badgeId: 'pants', type: 'goodwill', requiresBuyIn: false, points: 3, cardDrop: 'In pants pocket', mayhem: 'EXCITED' },
     
-    // Social Badge Missions
-    { id: 27, title: 'Stranger Danger', location: 'Video Call', description: 'Video dance off with another player', hashtag: '#missionmischiefstrangerdanger', badgeId: 'thirsty', type: 'special', requiresBuyIn: false, points: 10 },
-    { id: 28, title: '40oz To Freedom', location: 'Anywhere', description: 'Buy another player a beer (via Buy Me A Coffee)', hashtag: '#missionmischiefcheers', badgeId: 'thirsty', type: 'special', requiresBuyIn: false, points: 10 },
+    // M27-M28: 40oz Brown Bagged Badge
+    { id: 27, title: 'Stranger Danger', location: 'Video Call', description: 'Video dance off with another player. Find another Mission Mischief player online and challenge them to a dance off via Zoom, Video chat, however you can get them on a screen and show both you and them having a dance off to "You Never Can Tell" by Chuck Berry, Pulp Fiction style.', proof: '30 sec Pulp Fiction inspired dance (5 sec turns each)', hashtag: '#missionmischiefstrangerdanger', badgeId: 'thirsty', type: 'special', requiresBuyIn: false, points: 10, cardDrop: 'N/A', mayhem: 'EXCITED' },
+    { id: 28, title: '40oz To Freedom', location: 'Anywhere', description: 'Buy another player a beer (via Buy Me A Coffee). Mayhem loves free drinks js', proof: 'Screenshot your purchased message, "Give this to Mayhem."', hashtag: '#missionmischiefcheers', badgeId: 'thirsty', type: 'special', requiresBuyIn: false, points: 10, cardDrop: '40oz Brown Bagged', mayhem: 'EXCITED' },
     
-    // Bigfoot Badge Missions
-    { id: 29, title: 'Bigfoot', location: 'Shoe Store', description: 'Find largest shoe on display at shoe store', hashtag: '#missionmischiefbigfoot', badgeId: 'bigfoot', type: 'prank', requiresBuyIn: false, points: 1 },
-    { id: 30, title: 'Sobriety Test', location: 'Shoe Store', description: 'Try on biggest shoes, walk while touching nose', hashtag: '#missionmischiefsobrietytest', badgeId: 'bigfoot', type: 'goodwill', requiresBuyIn: false, points: 3 },
+    // M29-M30: Big Red Shoe Badge
+    { id: 29, title: 'Bigfoot', location: 'Shoe Store', description: 'Find largest shoe on display at shoe store. Take a picture holding it and looking down.', proof: 'Picture waist high holding shoe, looking down', hashtag: '#missionmischiefbigfoot', badgeId: 'bigfoot', type: 'prank', requiresBuyIn: false, points: 1, cardDrop: 'Leave in shoe box when trying on shoe', mayhem: 'EXCITED' },
+    { id: 30, title: 'Sobriety Test', location: 'Shoe Store', description: 'Try on biggest shoes, walk while touching nose', proof: '10 sec video walking in shoes, touching nose with each hand', hashtag: '#missionmischiefsobrietytest', badgeId: 'bigfoot', type: 'goodwill', requiresBuyIn: false, points: 3, cardDrop: 'Leave card on counter on way out', mayhem: 'EXCITED' },
     
-    // Pie Badge Missions
-    { id: 31, title: 'American Pie', location: 'Diner', description: 'Order apple pie at local diner', hashtag: '#missionmischiefamericanpie', badgeId: 'diner', type: 'prank', requiresBuyIn: false, points: 3 },
-    { id: 32, title: 'Give A Piece', location: 'Diner', description: 'Buy pie for stranger at diner', hashtag: '#missionmischiefgiveapiece', badgeId: 'diner', type: 'goodwill', requiresBuyIn: false, points: 3 },
+    // M31-M32: Pie w/ Hole Badge
+    { id: 31, title: 'American Pie', location: 'Diner', description: 'Order a piece of apple pie at local diner', proof: 'Picture of pie with you pointing at it with two fingers', hashtag: '#missionmischiefamericanpie', badgeId: 'diner', type: 'prank', requiresBuyIn: false, points: 3, cardDrop: 'Leave card at table', mayhem: 'EXCITED' },
+    { id: 32, title: 'Give A Piece', location: 'Diner', description: 'Buy pie for stranger at diner. Either you or the server take the piece with the card to stranger', proof: 'Picture with stranger, pie, and your card underneath', hashtag: '#missionmischiefgiveapiece', badgeId: 'diner', type: 'goodwill', requiresBuyIn: false, points: 3, cardDrop: 'Give with piece of pie', mayhem: 'EXCITED' },
     
-    // Liger Badge Missions
-    { id: 33, title: 'Dynamite', location: 'Anywhere', description: 'Draw Napoleon Dynamite\'s favorite animal, the Liger', hashtag: '#missionmischiefdynamite', badgeId: 'liger', type: 'prank', requiresBuyIn: false, points: 1 },
-    { id: 34, title: 'Lost Liger', location: 'Street', description: 'Make "Lost" flyer with liger drawing, tape to stop sign', hashtag: '#missionmischieflostliger', badgeId: 'liger', type: 'goodwill', requiresBuyIn: false, points: 3 },
+    // M33-M34: Liger Badge
+    { id: 33, title: 'Dynamite', location: 'Anywhere', description: 'Draw Napoleon Dynamite\'s favorite animal, the Liger', proof: 'You holding up your Liger drawing like a proud 1st grader', hashtag: '#missionmischiefdynamite', badgeId: 'liger', type: 'prank', requiresBuyIn: false, points: 1, cardDrop: 'N/A', mayhem: 'EXCITED' },
+    { id: 34, title: 'Lost Liger', location: 'Street', description: 'Make "Lost" flyer with liger drawing, tape to stop sign', proof: 'Picture of drawing taped to stop sign', hashtag: '#missionmischieflostliger', badgeId: 'liger', type: 'goodwill', requiresBuyIn: false, points: 3, cardDrop: 'Tape card to liger drawing', mayhem: 'EXCITED' },
     
-    // Netflix Badge Missions
-    { id: 35, title: 'Netflix and Chill', location: 'Library', description: 'Ask librarian where to find book on "how to Netflix and chill"', hashtag: '#missionmischiefnetflixandchill', badgeId: 'netflix', type: 'prank', requiresBuyIn: false, points: 3 },
-    { id: 36, title: 'Give a Poo', location: 'Library', description: 'Return "Everyone Poops" with card in back', hashtag: '#missionmischiefgiveapoo', badgeId: 'netflix', type: 'goodwill', requiresBuyIn: false, points: 1 },
+    // M35-M36: Netflix "N" Badge
+    { id: 35, title: 'Netflix and Chill', location: 'Library', description: 'Ask librarian where to find book on "how to Netflix and chill"', proof: 'Video of you asking and them responding', hashtag: '#missionmischiefnetflixandchill', badgeId: 'netflix', type: 'prank', requiresBuyIn: false, points: 3, cardDrop: 'Give card to librarian', mayhem: 'EXCITED' },
+    { id: 36, title: 'Give a Poo', location: 'Library', description: 'Return "Everyone Poops" with card in back', proof: 'Photo of you dropping book in or at book drop off', hashtag: '#missionmischiefgiveapoo', badgeId: 'netflix', type: 'goodwill', requiresBuyIn: false, points: 1, cardDrop: 'In back cover of book', mayhem: 'EXCITED' },
     
-    // Hammer Badge Missions
-    { id: 37, title: 'Daddy Issues', location: 'Hardware Store', description: 'Ask male employee at hardware store "Are you my daddy?"', hashtag: '#missionmischiefdaddyissues', badgeId: 'daddy', type: 'prank', requiresBuyIn: false, points: 3 },
-    { id: 38, title: 'Bird Cage', location: 'Anywhere', description: 'Build birdhouse kit, paint each side different Beetlejuice colors', hashtag: '#missionmischiefbirdcage', badgeId: 'daddy', type: 'goodwill', requiresBuyIn: false, points: 3 },
+    // M37-M38: Hammer Badge
+    { id: 37, title: 'Daddy Issues', location: 'Hardware Store', description: 'Ask male employee at hardware store "Are you my daddy?"', proof: 'Video of you asking and them responding', hashtag: '#missionmischiefdaddyissues', badgeId: 'daddy', type: 'prank', requiresBuyIn: false, points: 3, cardDrop: 'Give employee card', mayhem: 'EXCITED' },
+    { id: 38, title: 'Bird Cage', location: 'Anywhere', description: 'Build birdhouse kit, paint each side different Beetlejuice colors', proof: 'Photo of your completed birdhouse', hashtag: '#missionmischiefbirdcage', badgeId: 'daddy', type: 'goodwill', requiresBuyIn: false, points: 3, cardDrop: 'N/A', mayhem: 'EXCITED' },
     
-    // Catfish Badge Missions
-    { id: 39, title: 'Cat Fishing', location: 'Fishing Spot', description: 'Fish with cat toy as bait, say "here kitty kitty"', hashtag: '#missionmischiefcatfishing', badgeId: 'catfish', type: 'prank', requiresBuyIn: false, points: 3 },
-    { id: 40, title: 'Cat Shelter', location: 'Animal Shelter', description: 'Take cat toy to animal shelter', hashtag: '#missionmischiefcatshelter', badgeId: 'catfish', type: 'goodwill', requiresBuyIn: false, points: 3 },
+    // M39-M40: Catfish Badge
+    { id: 39, title: 'Cat Fishing', location: 'Somewhere with water', description: 'Fish with cat toy as bait, say "here kitty kitty". Yes, you can tie a string to a stick, then the cat toy to the string.', proof: 'Video of you fishing with cat toy (toy doesn\'t need to go in water)', hashtag: '#missionmischiefcatfishing', badgeId: 'catfish', type: 'prank', requiresBuyIn: false, points: 3, cardDrop: 'N/A', mayhem: 'BLANK STARE' },
+    { id: 40, title: 'Cat Shelter', location: 'Animal Shelter', description: 'Take cat toy to animal shelter', proof: 'Photo holding toy outside shelter with shelter name visible', hashtag: '#missionmischiefcatshelter', badgeId: 'catfish', type: 'goodwill', requiresBuyIn: false, points: 3, cardDrop: 'Leave on chair or table in waiting room', mayhem: 'EXCITED' },
     
-    // Googley Eyes Badge Missions
-    { id: 41, title: 'Googley Eyes Buy', location: 'Store', description: 'Buy googley eyes', hashtag: '#missionmischiefgoogley', badgeId: 'eyes', type: 'prank', requiresBuyIn: false, points: 3 },
-    { id: 42, title: 'Fridge Eyes', location: 'Home', description: 'Put googley eyes on 5 refrigerator items', hashtag: '#missionmischieffridgeeyes', badgeId: 'eyes', type: 'goodwill', requiresBuyIn: false, points: 3 },
+    // M41-M42: Googley Eyes Badge
+    { id: 41, title: 'Googley Eyes Buy', location: 'Store', description: 'Buy googley eyes', proof: 'Photo with googley eyes', hashtag: '#missionmischiefgoogley', badgeId: 'eyes', type: 'prank', requiresBuyIn: false, points: 3, cardDrop: 'Leave card where you got the eyes', mayhem: 'EXCITED' },
+    { id: 42, title: 'Fridge Eyes', location: 'Home', description: 'Put googley eyes on 5 refrigerator items', proof: 'Photo of 5 items in refrigerator together with googley eyes', hashtag: '#missionmischieffridgeeyes', badgeId: 'eyes', type: 'goodwill', requiresBuyIn: false, points: 3, cardDrop: 'N/A', mayhem: 'EXCITED' },
     
-    // Sock Puppet Badge Missions
-    { id: 43, title: 'Suspect', location: 'Store', description: 'Buy only tube socks and lotion', hashtag: '#missionmischiefsuspect', badgeId: 'ghost', type: 'prank', requiresBuyIn: false, points: 3 },
-    { id: 44, title: 'Sock Puppet Show', location: 'Anywhere', description: 'Make sock puppet, perform 10 second skit', hashtag: '#missionmischiefsockpuppet', badgeId: 'ghost', type: 'goodwill', requiresBuyIn: false, points: 3 },
+    // M43-M44: Sock Puppet Badge
+    { id: 43, title: 'Suspect', location: 'Store', description: 'Buy only tube socks and lotion', proof: 'Photo holding lotion and socks with big smile, store name on building behind you', hashtag: '#missionmischiefsuspect', badgeId: 'ghost', type: 'prank', requiresBuyIn: false, points: 3, cardDrop: 'Give card to cashier', mayhem: 'BLANK STARE' },
+    { id: 44, title: 'Sock Puppet Show', location: 'Anywhere', description: 'Make sock puppet, perform 10 second skit (need inspiration, watch lambchop)', proof: 'Video of puppet skit', hashtag: '#missionmischiefsockpuppet', badgeId: 'ghost', type: 'goodwill', requiresBuyIn: false, points: 3, cardDrop: 'N/A', mayhem: 'EXCITED' },
     
-    // Dobby Badge Missions
-    { id: 45, title: 'Dobby', location: 'Public', description: 'Put card in sock, hand to stranger and walk away', hashtag: '#missionmischiefdobby', badgeId: 'slide', type: 'prank', requiresBuyIn: false, points: 3 },
-    { id: 46, title: 'Dobby Donation', location: 'Salvation Army', description: 'Donate socks and lotion to Salvation Army with card in sock', hashtag: '#missionmischiefdobbydonation', badgeId: 'slide', type: 'goodwill', requiresBuyIn: false, points: 3 },
+    // M45-M46: Dobby Badge
+    { id: 45, title: 'Dobby', location: 'Public', description: 'Put card in a sock, hand to a stranger and walk away', proof: 'Video of handing sock, walking away, stranger\'s response', hashtag: '#missionmischiefdobby', badgeId: 'slide', type: 'prank', requiresBuyIn: false, points: 3, cardDrop: 'Card in sock', mayhem: 'BLANK STARE' },
+    { id: 46, title: 'Dobby Donation', location: 'Salvation Army', description: 'Donate socks and lotion to Salvation Army with card in sock', proof: 'Photo of receipt', hashtag: '#missionmischiefdobbydonation', badgeId: 'slide', type: 'goodwill', requiresBuyIn: false, points: 3, cardDrop: 'Card in sock', mayhem: 'EXCITED' },
     
-    // Haiku Badge Missions
-    { id: 47, title: 'Mission Haiku', location: 'Anywhere', description: 'Make up haiku about a mission you did, read dramatically', hashtag: '#missionmischiefhaiku', badgeId: 'hammer', type: 'prank', requiresBuyIn: false, points: 3 },
-    { id: 48, title: 'Ransom Note Haiku', location: 'Gym', description: 'Cut out magazine letters for haiku, glue to paper, post at gym', hashtag: '#missionmischiefrandomnote', badgeId: 'hammer', type: 'goodwill', requiresBuyIn: false, points: 3 },
+    // M47-M48: Magazine Clipping Note Badge
+    { id: 47, title: 'Mission Haiku', location: 'Anywhere', description: 'Make up haiku about a mission you did, read dramatically', proof: 'Video of you reading haiku dramatically', hashtag: '#missionmischiefhaiku', badgeId: 'note', type: 'prank', requiresBuyIn: false, points: 3, cardDrop: 'N/A', mayhem: 'EXCITED' },
+    { id: 48, title: 'Ransom Note Haiku', location: 'Gym', description: 'Cut out magazine letters for haiku, glue to paper, post at gym', proof: 'Photo of clipped haiku posted at gym with your card attached', hashtag: '#missionmischiefrandsomnote', badgeId: 'note', type: 'goodwill', requiresBuyIn: false, points: 3, cardDrop: 'Pin with Haiku on gym bulletin board', mayhem: 'EXCITED' },
     
-    // Bonus Missions
-    { id: 49, title: 'Dog (Found Card)', location: 'Anywhere', description: 'Find another player\'s card', hashtag: '#missionmischiefdog', badgeId: null, type: 'special', requiresBuyIn: false, points: '10 + $5' },
-    { id: 50, title: 'Exposed Player', location: 'Social Media', description: 'Found player posting unearned badges', hashtag: '#missionmischiefexposed', badgeId: null, type: 'special', requiresBuyIn: false, points: '5 + $5' },
+    // M49: Dog Bounty Hunter
+    { id: 49, title: 'Dog Bounty Hunter', location: 'Anywhere', description: 'Find another player\'s card in the wild', proof: 'Photo of card with QR and player info visible', hashtag: '#missionmischiefdog', badgeId: 'bounty', type: 'special', requiresBuyIn: false, points: 10, cardDrop: 'N/A (found card mission)', mayhem: 'EXCITED' },
     
-    // Final Mission
-    { id: 52, title: 'Finish Line', location: 'Everywhere', description: 'Collect ALL cards and signs you left (requires all missions complete)', proof: 'Selfie holding collected cards/signs + piece of paper showing your TOTAL POINTS (1pt per card/sign collected)', hashtag: '#missionmischieffinishline', badgeId: null, type: 'special', requiresBuyIn: false, points: '?' }
+    // M50: Finish Line
+    { id: 50, title: 'Finish Line - Card Retrieval', location: 'Multiple previous mission locations', description: '(Requires all missions completed) Return to all locations where you dropped cards and try to retrieve them. Document your journey and stories of who found them.', proof: 'Video showing each location revisited and cards found', hashtag: '#missionmischieffinishline', badgeId: 'crown', type: 'special', requiresBuyIn: false, points: '1pt per card', cardDrop: 'N/A (retrieval mission)', mayhem: 'EXCITED' },
+    
+    // BONUS: Bounty Hunter Rewards
+    { id: 51, title: 'Bounty Hunter Rewards', location: 'Anywhere', description: 'Find cards or expose cheaters', proof: 'Photo of found card with QR visible OR Screenshot of cheater\'s post with unearned badge', hashtag: '#missionmischiefdog / #missionmischiefexposed', badgeId: 'bounty', type: 'special', requiresBuyIn: false, points: 'Var + $5', cardDrop: 'N/A (bonus missions)', mayhem: 'EXCITED' }
 
 
   ],
@@ -194,6 +201,13 @@ const Missions = {
     }
     
     const completedBuyIns = user.completedBuyIns || [];
+    const setupMissions = [1, 2, 3, 4]; // First 4 missions are setup
+    const setupCompleted = setupMissions.every(id => user.completedMissions.includes(id));
+    
+    // If setup missions not completed, only show setup missions
+    if (!setupCompleted) {
+      return this.missionData.slice(0, 4);
+    }
     
     // If user has no buy-in selected and no completed buy-ins, show setup missions
     if (!user.currentBuyIn && completedBuyIns.length === 0) {
@@ -207,7 +221,16 @@ const Missions = {
       return this.missionData.slice(0, Math.min(completedCount + 5, this.missionData.length));
     }
     
-    // Has real buy-in or completed buy-ins: all missions available
+    // Has real buy-in or completed buy-ins: check for mission 50 lock
+    const missions1to49 = Array.from({length: 49}, (_, i) => i + 1);
+    const allPreviousCompleted = missions1to49.every(id => user.completedMissions.includes(id));
+    
+    // If missions 1-49 not all completed, exclude mission 50
+    if (!allPreviousCompleted) {
+      return this.missionData.filter(m => m.id !== 50);
+    }
+    
+    // All missions available
     return this.missionData;
   },
 
@@ -249,6 +272,11 @@ const Missions = {
   getBadgeIcon(badgeId, state) {
     const badge = this.badges[badgeId];
     const baseName = badge.icon.replace('-color.png', '');
+    
+    // Special case for bounty badge (only has color version)
+    if (badgeId === 'bounty') {
+      return `assets/images/badges/${badge.icon}`;
+    }
     
     switch(state) {
       case 'gold': return `assets/images/badges/${baseName}-gold.png`;

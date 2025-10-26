@@ -30,21 +30,34 @@
 - [ ] Complete all 50+ mission descriptions
 - [ ] Add mission difficulty/effort selector (1pt Basic vs 3pts Full)
 - [ ] Implement mission prerequisites and unlock logic
-- [ ] Add mission difficulty indicators
+- [ ] **HASHTAG INTEGRATION**: Add required hashtags display for each mission
+- [ ] **BLOCKCHAIN FEATURES**: Show real-time verification status
+- [ ] Add mission difficulty indicators with blockchain verification complexity
 
 ### Scoring & Progression
 - [ ] Implement dynamic honor score calculation based on effort level
-- [ ] Create user profile/stats page
+- [ ] **BLOCKCHAIN SCORING**: Real-time point tracking via hashtag verification
+- [ ] Create user profile/stats page with blockchain verification history
 - [ ] Add mission history and completion timestamps
-- [ ] Add player leaderboards
+- [ ] **JUSTICE SYSTEM STATS**: Track bounties found, cheaters caught, redemptions
+- [ ] Add player leaderboards with blockchain verification scores
 
-### Social Verification Core
-- [ ] Create Bounty Hunter page with mission hashtag verification
+### Hashtag Blockchain System (REVOLUTIONARY PRIORITY)
+- [ ] **BOUNTY HUNTER PAGE**: Core hashtag verification system
   - [ ] Phase 1: Manual hashtag search links for each platform (Instagram, TikTok, Facebook, X, YouTube)
   - [ ] Add "Last Updated: [Date] 2:00 AM PST" disclaimer
   - [ ] Create mission difficulty rankings section (🔥 HARDEST, 🟡 MEDIUM, 🟢 EASIEST)
   - [ ] Phase 2: Simple Python web scraping script (runs daily at 2am, updates JSON file)
-- [ ] Add social platform buttons for hashtag search (Facebook, Instagram, TikTok, X, YouTube)
+- [ ] **AUTOMATED JUSTICE SYSTEM**: Fraud detection and escalation
+  - [ ] Public shaming board for exposed cheaters with mugshots
+  - [ ] Escalating bounty system ($5/day increases)
+  - [ ] Clown pic redemption protocol for caught cheaters
+  - [ ] Real-time point tracking via hashtags (#missionmischiefpoints23)
+- [ ] **USER EXPERIENCE ENHANCEMENTS**:
+  - [ ] One-click hashtag copy buttons for each mission
+  - [ ] Mission hashtag preview before posting
+  - [ ] Social platform quick-post buttons
+  - [ ] Real-time hashtag post counter (when available)
 - [ ] Add "Report Cheater" functionality with $5 reward system
 - [ ] Add bounty hunter badge system and leaderboard
 
@@ -205,3 +218,4 @@
 - [ ] **UPDATE APP STORE BADGE LINKS** in mobile-landing.html with actual App Store and Google Play URLs
 - [ ] **UPDATE SOCIAL MEDIA LINKS** in mobile-landing.html with actual account URLs
 - [ ] **UPDATE EFFECTIVE DATES** in all legal documents to actual launch date
+- [ ] **CREATE ENGAGING README.MD**: Write compelling proof-of-concept documentation about the social media blockchain innovation, including proper credit to Amazon Q for development partnership and AI advancement recognition
