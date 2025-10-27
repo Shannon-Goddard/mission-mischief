@@ -67,6 +67,7 @@ Comprehensive real-world social scavenger hunt game with 50+ missions, badge sys
 - `index.html` - **ENHANCED** Mobile-first landing page with integrated Mayhem mascot, responsive design, improved viewport handling
 - `app.html` - **ENHANCED** Main game interface with cascading location dropdowns, mission points tracking system, setup mission locks, finale mission lock, enhanced statistics display
 - `bounty-hunter.html` - **COMPLETE** War Board command center with Maximum Chaos leaderboard, mission browser, geographic activity, justice system, hashtag blockchain integration
+- `jointhechaos.html` - **COMPLETE** App store landing page with Mission Mischief logo, social media icons, "Join The Chaos" branding
 - `funny-tos.html` - **ENHANCED** FAFO Mission 1 with mobile-responsive mugshot camera interface, improved button flow (START CAMERA/TAKE MUGSHOT → RETAKE/SHARE/CONTINUE)
 - `mobile-landing.html` - Mobile-optimized landing page with social media links and app store badges
 - `mission-list.html` - **PRODUCTION-READY** complete mission reference with collapsible design, all 50 missions, perfect card drop system
@@ -131,8 +132,8 @@ Comprehensive real-world social scavenger hunt game with 50+ missions, badge sys
 - **Statistics Enhancement**: Available missions count excludes completed setup missions
 - **Data Persistence**: Mission points stored per mission, total points calculated and displayed
 
-### PHASE 3 COMPLETED ✅ (Bounty Hunter War Board)
-- **Bounty Hunter Command Center**: Complete bounty-hunter.html with War Board theme
+### PHASE 3 COMPLETED ✅ (Bounty Hunter War Board & Landing Page)
+- **Bounty Hunter Command Center**: Complete bounty-hunter.html with War Board theme and Dog The Bounty Hunter references
 - **Maximum Chaos Leaderboard**: Crown of Chaos with top 3 player rankings
 - **Mission Browser**: All 51 missions organized in mobile-friendly nested groups (1-10, 11-20, etc.)
 - **Social Media Integration**: Platform links with activity counts for all missions
@@ -142,6 +143,7 @@ Comprehensive real-world social scavenger hunt game with 50+ missions, badge sys
 - **System Status Monitoring**: Real-time scrape status with next update timing
 - **Mobile-First Design**: Responsive collapsible sections optimized for mobile
 - **Visual Polish**: Bounty hunter badges, Crown of Chaos, proper asset integration
+- **App Store Landing Page**: Complete jointhechaos.html with logo, social icons, and "Join The Chaos" branding
 
 ### PHASE 4 READY 🚀 (Data Integration & Scraping)
 - **Scraping Infrastructure**: Ready for real social media data integration
@@ -190,8 +192,9 @@ When starting a new conversation about this project:
 
 1. **Context**: 18+ social scavenger hunt game with legal comedy framework
 2. **Architecture**: Single-page app using localStorage, requires HTTP serving
-3. **Current Status**: PHASE 3 complete, ready for PHASE 4 data integration
-4. **Key Achievement**: Complete bounty hunter war board with hashtag blockchain system
+3. **Current Status**: PHASE 3 complete, ready for PHASE 4 scraping implementation
+4. **Key Achievement**: Complete bounty hunter war board + app store landing page
 5. **Brand**: #04aa6d green, dark theme, Mayhem mascot, comedy + legal binding
 6. **Technical**: Pure frontend, social media verification, device-only storage
 7. **Bounty System**: Complete justice system with evidence hashtags and resolution tracking
+8. **Landing Page**: jointhechaos.html ready for app store deployment

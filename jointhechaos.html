@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mission Mischief - The World's Most Sociopathic Scavenger Hunt</title>
+    <title>Join The Chaos - Mission Mischief</title>
     <meta name="description" content="The world's most sociopathic scavenger hunt where chaos meets community service. Complete hilarious missions, earn badges, and prove you're not a total sociopath.">
     
     <!-- Mobile optimizations -->
@@ -21,7 +21,7 @@
         
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #000 0%, #111 100%);
+            background: #000000;
             color: #fff;
             min-height: 100vh;
             display: flex;
@@ -38,9 +38,9 @@
         }
         
         .hero-image {
-            width: 200px;
-            height: 150px;
-            margin: 0 auto 20px;
+            width: 350px;
+            height: 350px;
+            margin: 0;
             border-radius: 12px;
             object-fit: cover;
         }
@@ -96,17 +96,24 @@
         
         .social-links {
             margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
         }
         
         .social-links a {
-            color: #04aa6d;
-            text-decoration: none;
-            margin: 0 10px;
-            font-size: 14px;
+            display: inline-block;
+            transition: transform 0.2s ease;
         }
         
         .social-links a:hover {
-            text-decoration: underline;
+            transform: scale(1.1);
+        }
+        
+        .social-icon {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
         }
         
         @media (min-width: 480px) {
@@ -119,15 +126,14 @@
 </head>
 <body>
     <div class="container">
-        <img src="assets/images/social/mayhem-hero.png" alt="Mayhem - Mission Mischief Mascot" class="hero-image">
-        
-        <h1 class="title">Mission Mischief</h1>
-        <p class="subtitle">The World's Most Sociopathic Scavenger Hunt</p>
+        <img src="assets/images/ui/logo-black.png" alt="Mission Mischief Logo" class="hero-image">
         
         <p class="description">
             The world's most sociopathic scavenger hunt where chaos meets community service. Complete hilarious missions, earn badges, and prove you're not a total sociopath.
         </p>
         
+        <h1 class="title">Join The Chaos</h1>
+
         <div class="app-buttons">
             <a href="#" class="app-button" id="appStoreBtn">
                 <img src="assets/images/social/app-store-badge.svg" alt="Download on the App Store">
@@ -136,12 +142,20 @@
                 <img src="assets/images/social/google-play-badge.svg" alt="Get it on Google Play">
             </a>
         </div>
-        
+
         <div class="social-links">
-            <a href="https://www.instagram.com/missionmischief_official" target="_blank">Instagram</a>
-            <a href="https://www.tiktok.com/@missionmischief_official" target="_blank">TikTok</a>
-            <a href="https://www.facebook.com/profile.php?id=61582651835720" target="_blank">Facebook</a>
-            <a href="https://x.com/Missio_Mischief" target="_blank">X</a>
+            <a href="https://www.instagram.com/missionmischief_official" target="_blank">
+                <img src="assets/images/social-icons/instagram-icon.svg" alt="Instagram" class="social-icon">
+            </a>
+            <a href="https://www.tiktok.com/@missionmischief_official" target="_blank">
+                <img src="assets/images/social-icons/tiktok-icon.svg" alt="TikTok" class="social-icon">
+            </a>
+            <a href="https://www.facebook.com/profile.php?id=61582651835720" target="_blank">
+                <img src="assets/images/social-icons/facebook-icon.svg" alt="Facebook" class="social-icon">
+            </a>
+            <a href="https://x.com/Missio_Mischief" target="_blank">
+                <img src="assets/images/social-icons/x-icon.svg" alt="X" class="social-icon">
+            </a>
         </div>
         
         <div class="footer">
