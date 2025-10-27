@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  
+  <!-- Mobile WebView Optimizations -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#000000">
+  
+  <title>Mission Mischief - Bounty Hunter Command Center</title>
+  <meta content="Track players, hunt cheaters, and explore the hashtag blockchain" name="description">
+  
+  <!-- Favicons -->
+  <link href="assets/images/ui/favicon.png" rel="icon">
+  <link href="assets/images/ui/apple-touch-icon.png" rel="apple-touch-icon">
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+  
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+  
+  <!-- CSS Files -->
+  <link href="assets/css/main.css" rel="stylesheet">
+  <link href="assets/css/components.css" rel="stylesheet">
+  
+  <style>
+    /* Bounty Hunter Specific Styles */
+    .bounty-header {
+      background: linear-gradient(135deg, #000 0%, #111 100%);
+      padding: 100px 0 40px;
+      text-align: center;
+      border-bottom: 2px solid #04aa6d;
+    }
+    
+    .bounty-title {
+      font-size: 2.5em;
+      color: #04aa6d;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    
+    .bounty-subtitle {
+      color: #999;
+      font-size: 1.1em;
+      margin-bottom: 20px;
+    }
+    
+    .last-updated {
+      background: rgba(4, 170, 109, 0.1);
+      color: #04aa6d;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.9em;
+      display: inline-block;
+      border: 1px solid rgba(4, 170, 109, 0.3);
+    }
+    
+    /* Leaderboard Styles */
+    .leaderboard {
+      background: #111;
+      padding: 30px 0;
+      margin-bottom: 30px;
+    }
+    
+    .leaderboard-title {
+      text-align: center;
+      color: #04aa6d;
+      font-size: 1.8em;
+      margin-bottom: 25px;
+      font-weight: bold;
+    }
+    
+    .top-players {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .player-card {
+      background: rgba(4, 170, 109, 0.1);
+      border: 2px solid #04aa6d;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      min-width: 200px;
+      position: relative;
+    }
+    
+    .player-card.rank-1 {
+      border-color: #ffd700;
+      background: rgba(255, 215, 0, 0.1);
+    }
+    
+    .player-card.rank-2 {
+      border-color: #c0c0c0;
+      background: rgba(192, 192, 192, 0.1);
+    }
+    
+    .player-card.rank-3 {
+      border-color: #cd7f32;
+      background: rgba(205, 127, 50, 0.1);
+    }
+    
+    .player-rank {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #04aa6d;
+      color: #000;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+    
+    .player-card.rank-1 .player-rank {
+      background: #ffd700;
+    }
+    
+    .player-card.rank-2 .player-rank {
+      background: #c0c0c0;
+    }
+    
+    .player-card.rank-3 .player-rank {
+      background: #cd7f32;
+    }
+    
+    .player-handle {
+      color: #04aa6d;
+      font-weight: bold;
+      font-size: 1.1em;
+      margin-bottom: 8px;
+    }
+    
+    .player-points {
+      color: #fff;
+      font-size: 1.4em;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .player-location {
+      color: #999;
+      font-size: 0.9em;
+    }
+    
+    /* Section Styles */
+    .bounty-section {
+      background: #000;
+      margin-bottom: 30px;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .section-header {
+      background: #111;
+      padding: 20px;
+      border-bottom: 1px solid #333;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.3s ease;
+    }
+    
+    .section-header:hover {
+      background: #222;
+    }
+    
+    .section-title {
+      color: #04aa6d;
+      font-size: 1.4em;
+      font-weight: bold;
+      margin: 0;
+    }
+    
+    .section-count {
+      background: #04aa6d;
+      color: #000;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.9em;
+      font-weight: bold;
+    }
+    
+    .expand-icon {
+      color: #04aa6d;
+      font-size: 1.2em;
+      transition: transform 0.3s ease;
+    }
+    
+    .section-content {
+      display: none;
+      padding: 20px;
+    }
+    
+    .section-content.expanded {
+      display: block;
+    }
+    
+    .section-header.expanded .expand-icon {
+      transform: rotate(180deg);
+    }
+    
+    /* Mission Styles */
+    .mission-grid {
+      display: grid;
+      gap: 15px;
+    }
+    
+    .mission-group {
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 15px;
+    }
+    
+    .mission-group-header {
+      padding: 15px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.3s ease;
+      background: #1a1a1a;
+    }
+    
+    .mission-group-header:hover {
+      background: #222;
+    }
+    
+    .mission-group-title {
+      color: #04aa6d;
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+    
+    .mission-group-content {
+      display: none;
+      padding: 15px;
+      background: #0f0f0f;
+    }
+    
+    .mission-group-content.expanded {
+      display: block;
+    }
+    
+    .mission-group-grid {
+      display: grid;
+      gap: 10px;
+    }
+    
+    .mission-item {
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 8px;
+      overflow: hidden;
+      width: 100%;
+    }
+    
+    .mission-header {
+      padding: 15px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.3s ease;
+    }
+    
+    .mission-header:hover {
+      background: #222;
+    }
+    
+    .mission-info {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+    
+    .mission-number {
+      background: #04aa6d;
+      color: #000;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.9em;
+      min-width: 35px;
+      text-align: center;
+    }
+    
+    .mission-details {
+      flex: 1;
+    }
+    
+    .mission-name {
+      color: #04aa6d;
+      font-weight: bold;
+      margin-bottom: 3px;
+    }
+    
+    .mission-description {
+      color: #999;
+      font-size: 0.9em;
+    }
+    
+    .mission-content {
+      display: none;
+      padding: 15px;
+      border-top: 1px solid #333;
+      background: #0a0a0a;
+    }
+    
+    .mission-content.expanded {
+      display: block;
+    }
+    
+    .social-platforms {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+    }
+    
+    .platform-link {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: #222;
+      padding: 6px 8px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border: 1px solid transparent;
+    }
+    
+    .platform-link:hover {
+      background: #333;
+      transform: translateY(-2px);
+      border-color: var(--hover-color);
+    }
+    
+    .platform-icon {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+    }
+    
+    .platform-count {
+      background: #04aa6d;
+      color: #000;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 0.8em;
+      font-weight: bold;
+      min-width: 20px;
+      text-align: center;
+    }
+    
+    /* Geographic Styles */
+    .geo-tree {
+      margin-left: 0;
+    }
+    
+    .geo-item {
+      margin-bottom: 10px;
+    }
+    
+    .geo-header {
+      background: #111;
+      padding: 12px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.3s ease;
+    }
+    
+    .geo-header:hover {
+      background: #222;
+    }
+    
+    .geo-name {
+      color: #04aa6d;
+      font-weight: bold;
+    }
+    
+    .geo-count {
+      background: rgba(4, 170, 109, 0.2);
+      color: #04aa6d;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.8em;
+    }
+    
+    .geo-children {
+      display: none;
+      margin-left: 20px;
+      margin-top: 10px;
+    }
+    
+    .geo-children.expanded {
+      display: block;
+    }
+    
+    /* Justice Section Styles */
+    .justice-cases {
+      display: grid;
+      gap: 20px;
+    }
+    
+    .case-item {
+      background: #111;
+      border: 2px solid #ff6b6b;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    
+    .case-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .case-title {
+      color: #ff6b6b;
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+    
+    .case-date {
+      color: #999;
+      font-size: 0.9em;
+    }
+    
+    .case-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    
+    .evidence-side {
+      text-align: center;
+    }
+    
+    .evidence-title {
+      color: #04aa6d;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    
+    .evidence-image {
+      width: 100%;
+      max-width: 200px;
+      height: 150px;
+      background: #222;
+      border: 1px solid #333;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      margin: 0 auto 10px auto;
+    }
+    
+    .evidence-info {
+      color: #999;
+      font-size: 0.9em;
+      word-wrap: break-word;
+      word-break: break-all;
+    }
+    
+    .case-requirements {
+      grid-column: 1 / -1;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #333;
+    }
+    
+    .requirements-title {
+      color: #ffd700;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    
+    .requirements-list {
+      color: #999;
+      font-size: 0.9em;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .bounty-title {
+        font-size: 2em;
+      }
+      
+      .top-players {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .player-card {
+        width: 100%;
+        max-width: 300px;
+      }
+      
+      .social-platforms {
+        gap: 4px;
+      }
+      
+      .mission-grid {
+        display: block;
+      }
+      
+      .mission-item {
+        margin-bottom: 15px;
+        min-height: 60px;
+      }
+      
+      .case-content {
+        grid-template-columns: 1fr;
+      }
+      
+      .evidence-side {
+        margin-bottom: 20px;
+      }
+      
+      .section-header {
+        padding: 15px;
+      }
+      
+      .section-title {
+        font-size: 1.2em;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .bounty-header {
+        padding: 120px 0 30px;
+      }
+      
+      .bounty-title {
+        font-size: 1.8em;
+      }
+      
+      .mission-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      
+      .platform-link {
+        padding: 8px 12px;
+      }
+    }
+  </style>
+</head>
+
+<body class="customBody">
+
+  <!-- Header -->
+  <header id="header" class="fixed-top">
+    <div class="container d-flex align-items-center justify-content-between">
+      <div class="logo">
+        <a href="index.html">Mission <span>Mischief</span></a>
+      </div>
+      <nav class="navbar">
+        <ul>
+          <li><a href="app.html">Dashboard</a></li>
+          <li><a href="bounty-hunter.html" class="active">Bounty Hunter</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main id="main">
+    
+    <!-- Header Section -->
+    <section class="bounty-header">
+      <div class="container">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px;">
+          <img src="assets/images/badges/bounty-hunter-badge-color.png" alt="Bounty Hunter Badge" style="height: 80px;">
+          <h1 class="bounty-title" style="margin: 0;">WAR BOARD</h1>
+          <img src="assets/images/badges/bounty-hunter-badge-color.png" alt="Bounty Hunter Badge" style="height: 80px;">
+        </div>
+        <p class="bounty-subtitle">Track players, expose cheaters, explore the hashtag blockchain</p>
+        <div class="last-updated" id="lastUpdated">
+          Last Updated: Loading...
+        </div>
+        <div class="last-updated" id="scrapeStatus" style="margin-top: 10px;">
+          <span id="statusIndicator">🟢</span> <span id="statusText">Active</span> - Next update in <span id="nextUpdate">2 hours</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Leaderboard Section -->
+    <section class="leaderboard">
+      <div class="container">
+        <div style="text-align: center;">
+          <h2 class="leaderboard-title" style="position: relative; display: inline-block;">
+            <img src="assets/images/mascot/c-o-c.png" alt="Crown of Chaos" style="position: absolute; top: -60px; left: 50%; transform: translateX(-50%); height: 105px; z-index: 1;">
+            <span style="position: relative; z-index: 0;">MAXIMUM CHAOS</span>
+          </h2>
+        </div>
+        <div class="top-players" id="topPlayers">
+          <!-- Top 3 players will be loaded here -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content Container -->
+    <div class="container">
+      
+      <!-- Mission Browser Section -->
+      <div class="bounty-section">
+        <div class="section-header" onclick="toggleSection('missions')">
+          <h2 class="section-title">🎯 Mission Browser</h2>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span class="section-count" id="missionCount">51</span>
+            <span class="expand-icon" id="missions-icon">▼</span>
+          </div>
+        </div>
+        <div class="section-content" id="missions-content">
+          <div class="mission-grid" id="missionGrid">
+            <!-- Missions will be loaded here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Geographic Activity Section -->
+      <div class="bounty-section">
+        <div class="section-header" onclick="toggleSection('geography')">
+          <h2 class="section-title">🌍 Geographic Activity</h2>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span class="section-count" id="geoCount">Loading...</span>
+            <span class="expand-icon" id="geography-icon">▼</span>
+          </div>
+        </div>
+        <div class="section-content" id="geography-content">
+          <div class="geo-tree" id="geoTree">
+            <!-- Geographic data will be loaded here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Justice Section -->
+      <div class="bounty-section">
+        <div class="section-header" onclick="toggleSection('justice')">
+          <h2 class="section-title">⚖️ The Accused</h2>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span class="section-count" id="justiceCount">Loading...</span>
+            <span class="expand-icon" id="justice-icon">▼</span>
+          </div>
+        </div>
+        <div class="section-content" id="justice-content">
+          <div class="justice-cases" id="justiceCases">
+            <!-- Justice cases will be loaded here -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer id="footer">
+    <div class="container">
+      <div class="copyright">
+        &copy; Copyright <strong><span>Mission Mischief</span></strong>. All Rights Reserved
+      </div>
+    </div>
+  </footer>
+
+  <!-- Back to top button -->
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- JS Files -->
+  <script src="assets/js/storage.js"></script>
+  <script src="assets/js/missions.js"></script>
+  <script src="assets/js/main.js"></script>
+  
+  <script>
+    // Mock data structure for testing (will be replaced with real scraping data)
+    const mockData = {
+      lastUpdated: new Date().toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      }) + ' 3:00 AM PST',
+      
+      topPlayers: [
+        { handle: '@mayhem_official', points: 847, city: 'Los Angeles', state: 'CA' },
+        { handle: '@slimshady_badge', points: 623, city: 'New York', state: 'NY' },
+        { handle: '@coffee_crusader', points: 445, city: 'Austin', state: 'TX' }
+      ],
+      
+      missionActivity: {
+        // Mission ID -> Platform counts
+        1: { instagram: 45, tiktok: 23, facebook: 12, x: 8 },
+        5: { instagram: 67, tiktok: 34, facebook: 21, x: 15 },
+        7: { instagram: 23, tiktok: 45, facebook: 8, x: 12 }
+      },
+      
+      geography: {
+        'United States': {
+          count: 156,
+          states: {
+            'California': {
+              count: 67,
+              cities: {
+                'Los Angeles': { count: 34, users: ['@mayhem_official', '@la_player'] },
+                'San Francisco': { count: 23, users: ['@sf_gamer'] }
+              }
+            },
+            'New York': {
+              count: 45,
+              cities: {
+                'New York City': { count: 45, users: ['@slimshady_badge', '@nyc_hunter'] }
+              }
+            }
+          }
+        }
+      },
+      
+      justiceCases: [
+        {
+          id: 1,
+          accused: '@fake_player',
+          accuser: '@bounty_hunter_1',
+          mission: 'The Real Slim Shady',
+          date: '2024-01-15',
+          evidenceHashtag: '#missionmischiefevidencestagedphotowithwrongbook',
+          requirements: [
+            { hashtag: '#missionmischiefclown', completed: false },
+            { hashtag: '#missionmischiefpaidbaler', completed: true }
+          ]
+        }
+      ]
+    };
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', function() {
+      loadBountyHunterData();
+      setupPlatformHovers();
+    });
+    
+    function setupPlatformHovers() {
+      // Set up hover colors for platform links
+      document.addEventListener('mouseover', function(e) {
+        if (e.target.closest('.platform-link')) {
+          const link = e.target.closest('.platform-link');
+          const hoverColor = link.getAttribute('data-hover-color');
+          link.style.setProperty('--hover-color', hoverColor);
+        }
+      });
+    }
+
+    function loadBountyHunterData() {
+      // Load last updated timestamp
+      document.getElementById('lastUpdated').textContent = `Last Updated: ${mockData.lastUpdated}`;
+      
+      // Load scrape status (mock - will be replaced with real status)
+      updateScrapeStatus('active', '2 hours 15 minutes');
+      
+      // Load top players
+      loadTopPlayers();
+      
+      // Load missions
+      loadMissions();
+      
+      // Load geography
+      loadGeography();
+      
+      // Load justice cases
+      loadJusticeCases();
+    }
+
+    function loadTopPlayers() {
+      const container = document.getElementById('topPlayers');
+      container.innerHTML = mockData.topPlayers.map((player, index) => `
+        <div class="player-card rank-${index + 1}">
+          <div class="player-rank">${index + 1}</div>
+          <div class="player-handle">${player.handle}</div>
+          <div class="player-points">${player.points.toLocaleString()} pts</div>
+          <div class="player-location">${player.city}, ${player.state}</div>
+        </div>
+      `).join('');
+    }
+
+    function loadMissions() {
+      const container = document.getElementById('missionGrid');
+      const allMissions = Missions.missionData;
+      
+      // Create mission groups
+      const groups = [
+        { title: 'Missions 1-10', start: 1, end: 10 },
+        { title: 'Missions 11-20', start: 11, end: 20 },
+        { title: 'Missions 21-30', start: 21, end: 30 },
+        { title: 'Missions 31-40', start: 31, end: 40 },
+        { title: 'Missions 41-51', start: 41, end: 51 }
+      ];
+      
+      container.innerHTML = groups.map((group, groupIndex) => {
+        const groupMissions = allMissions.filter(m => m.id >= group.start && m.id <= group.end);
+        
+        return `
+          <div class="mission-group">
+            <div class="mission-group-header" onclick="toggleMissionGroup(${groupIndex})">
+              <div class="mission-group-title">${group.title}</div>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span class="section-count">${groupMissions.length}</span>
+                <span class="expand-icon" id="group-${groupIndex}-icon">▼</span>
+              </div>
+            </div>
+            <div class="mission-group-content" id="group-${groupIndex}-content">
+              <div class="mission-group-grid">
+                ${groupMissions.map(mission => `
+                  <div class="mission-item">
+                    <div class="mission-header" onclick="toggleMission(${mission.id})">
+                      <div class="mission-info">
+                        <div class="mission-number">M${mission.id}</div>
+                        <div class="mission-details">
+                          <div class="mission-name">${mission.title}</div>
+                          <div class="mission-description">${mission.description.substring(0, 80)}...</div>
+                        </div>
+                      </div>
+                      <span class="expand-icon" id="mission-${mission.id}-icon">▼</span>
+                    </div>
+                    <div class="mission-content" id="mission-${mission.id}-content">
+                      <div class="social-platforms">
+                        ${generatePlatformLinks(mission)}
+                      </div>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function generatePlatformLinks(mission) {
+      const platforms = [
+        { name: 'Instagram', icon: 'instagram-icon.svg', color: '#f09433', baseUrl: 'https://www.instagram.com/explore/tags/' }, // Instagram gradient orange
+        { name: 'TikTok', icon: 'tiktok-icon.svg', color: '#fe2858', baseUrl: 'https://www.tiktok.com/tag/' }, // TikTok pink
+        { name: 'Facebook', icon: 'facebook-icon.svg', color: '#1877F2', baseUrl: 'https://www.facebook.com/hashtag/' }, // Facebook blue
+        { name: 'X', icon: 'x-icon.svg', color: '#04aa6d', baseUrl: 'https://twitter.com/hashtag/' } // Mission Mischief green
+      ];
+      
+      return platforms.map(platform => {
+        const hashtag = mission.hashtag.replace('#', '');
+        const count = mockData.missionActivity[mission.id]?.[platform.name.toLowerCase()] || 0;
+        
+        return `
+          <a href="${platform.baseUrl}${hashtag}" target="_blank" class="platform-link" data-hover-color="${platform.color}">
+            <img src="assets/images/social-icons/${platform.icon}" alt="${platform.name}" class="platform-icon">
+            <span class="platform-count">${count}</span>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function loadGeography() {
+      const container = document.getElementById('geoTree');
+      container.innerHTML = Object.entries(mockData.geography).map(([country, data]) => 
+        generateGeoItem(country, data, 'country')
+      ).join('');
+      
+      document.getElementById('geoCount').textContent = Object.keys(mockData.geography).length;
+    }
+
+    function generateGeoItem(name, data, type) {
+      const hasChildren = data.states || data.cities || data.users;
+      const count = data.count || (data.users ? data.users.length : 0);
+      
+      return `
+        <div class="geo-item">
+          <div class="geo-header" onclick="toggleGeo('${type}-${name.replace(/\s+/g, '-')}')">
+            <span class="geo-name">${name}</span>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="geo-count">${count}</span>
+              ${hasChildren ? `<span class="expand-icon" id="${type}-${name.replace(/\s+/g, '-')}-icon">▼</span>` : ''}
+            </div>
+          </div>
+          ${hasChildren ? `
+            <div class="geo-children" id="${type}-${name.replace(/\s+/g, '-')}-content">
+              ${data.states ? Object.entries(data.states).map(([state, stateData]) => 
+                generateGeoItem(state, stateData, 'state')
+              ).join('') : ''}
+              ${data.cities ? Object.entries(data.cities).map(([city, cityData]) => 
+                generateGeoItem(city, cityData, 'city')
+              ).join('') : ''}
+              ${data.users ? data.users.map(user => `
+                <div class="geo-item">
+                  <div class="geo-header">
+                    <span class="geo-name" style="color: #04aa6d;">${user}</span>
+                  </div>
+                </div>
+              `).join('') : ''}
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    function loadJusticeCases() {
+      const container = document.getElementById('justiceCases');
+      container.innerHTML = mockData.justiceCases.map(caseItem => `
+        <div class="case-item">
+          <div class="case-header">
+            <div class="case-title">Case #${caseItem.id}: ${caseItem.mission}</div>
+            <div class="case-date">${caseItem.date}</div>
+          </div>
+          <div class="case-content">
+            <div class="evidence-side">
+              <div class="evidence-title"><img src="assets/images/badges/bounty-hunter-badge-color.png" alt="Bounty Hunter" style="height: 30px; vertical-align: middle; margin-right: 5px;">Bounty Hunter Evidence</div>
+              <div class="evidence-image">📸 Evidence Photo</div>
+              <div class="evidence-info">
+                <strong>Reported by:</strong> ${caseItem.accuser}<br>
+                <strong>Evidence Tag:</strong> <span style="color: #04aa6d;">${caseItem.evidenceHashtag}</span>
+              </div>
+            </div>
+            <div class="evidence-side">
+              <div class="evidence-title"><img src="assets/images/badges/clown.png" alt="Clown" style="height: 30px; vertical-align: middle; margin-right: 5px;">Accused Player</div>
+              <div class="evidence-image">👤 Mugshot</div>
+              <div class="evidence-info">
+                <strong>Player:</strong> ${caseItem.accused}<br>
+                <strong>Status:</strong><br>
+                ${caseItem.requirements.map(req => 
+                  `<span style="color: ${req.completed ? '#04aa6d' : '#ff6b6b'}; font-size: 0.9em;">${req.hashtag}</span>`
+                ).join('<br>')}
+              </div>
+            </div>
+            <div class="case-requirements">
+              <div class="requirements-title">⚖️ Resolution Process:</div>
+              <div class="requirements-list">
+                <strong>For Bounty Hunters:</strong> Post evidence with <span style="color: #04aa6d;">#missionmischiefevidenceyourmessage</span><br>
+                <strong>For Accused Players:</strong><br>
+                • Post clown selfie with <span style="color: #04aa6d;">#missionmischiefclown</span><br>
+                • Buy bounty hunter a beer via Buy Me A Coffee and post screenshot with <span style="color: #04aa6d;">#missionmischiefpaidbaler</span><br>
+                • Complete both requirements same day to remove case from system
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      
+      document.getElementById('justiceCount').textContent = mockData.justiceCases.length;
+    }
+
+    // Toggle functions
+    function toggleSection(sectionId) {
+      const content = document.getElementById(`${sectionId}-content`);
+      const header = content.previousElementSibling;
+      const icon = document.getElementById(`${sectionId}-icon`);
+      
+      if (content.classList.contains('expanded')) {
+        content.classList.remove('expanded');
+        header.classList.remove('expanded');
+      } else {
+        content.classList.add('expanded');
+        header.classList.add('expanded');
+      }
+    }
+    
+    function toggleMissionGroup(groupIndex) {
+      const content = document.getElementById(`group-${groupIndex}-content`);
+      const icon = document.getElementById(`group-${groupIndex}-icon`);
+      
+      if (content.classList.contains('expanded')) {
+        content.classList.remove('expanded');
+        icon.style.transform = 'rotate(0deg)';
+      } else {
+        content.classList.add('expanded');
+        icon.style.transform = 'rotate(180deg)';
+      }
+    }
+
+    function toggleMission(missionId) {
+      const content = document.getElementById(`mission-${missionId}-content`);
+      const icon = document.getElementById(`mission-${missionId}-icon`);
+      
+      if (content.classList.contains('expanded')) {
+        content.classList.remove('expanded');
+        icon.style.transform = 'rotate(0deg)';
+      } else {
+        content.classList.add('expanded');
+        icon.style.transform = 'rotate(180deg)';
+      }
+    }
+
+    function toggleGeo(geoId) {
+      const content = document.getElementById(`${geoId}-content`);
+      const icon = document.getElementById(`${geoId}-icon`);
+      
+      if (content && content.classList.contains('expanded')) {
+        content.classList.remove('expanded');
+        if (icon) icon.style.transform = 'rotate(0deg)';
+      } else if (content) {
+        content.classList.add('expanded');
+        if (icon) icon.style.transform = 'rotate(180deg)';
+      }
+    }
+    
+    function updateScrapeStatus(status, nextUpdate) {
+      const indicator = document.getElementById('statusIndicator');
+      const statusText = document.getElementById('statusText');
+      const nextUpdateText = document.getElementById('nextUpdate');
+      
+      if (status === 'active') {
+        indicator.textContent = '🟢';
+        statusText.textContent = 'Active';
+        statusText.style.color = '#04aa6d';
+      } else if (status === 'maintenance') {
+        indicator.textContent = '🔴';
+        statusText.textContent = 'Maintenance';
+        statusText.style.color = '#ff6b6b';
+      } else if (status === 'warning') {
+        indicator.textContent = '🟡';
+        statusText.textContent = 'Limited';
+        statusText.style.color = '#ffd700';
+      }
+      
+      nextUpdateText.textContent = nextUpdate;
+    }
+  </script>
+
+</body>
+</html>
