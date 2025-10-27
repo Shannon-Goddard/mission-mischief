@@ -132,7 +132,7 @@ Comprehensive real-world social scavenger hunt game with 50+ missions, badge sys
 - **Statistics Enhancement**: Available missions count excludes completed setup missions
 - **Data Persistence**: Mission points stored per mission, total points calculated and displayed
 
-### PHASE 3 COMPLETED ✅ (Bounty Hunter War Board & Landing Page)
+### PHASE 3 COMPLETED ✅ (Bounty Hunter War Board & User Experience)
 - **Bounty Hunter Command Center**: Complete bounty-hunter.html with War Board theme and Dog The Bounty Hunter references
 - **Maximum Chaos Leaderboard**: Crown of Chaos with top 3 player rankings
 - **Mission Browser**: All 51 missions organized in mobile-friendly nested groups (1-10, 11-20, etc.)
@@ -144,6 +144,9 @@ Comprehensive real-world social scavenger hunt game with 50+ missions, badge sys
 - **Mobile-First Design**: Responsive collapsible sections optimized for mobile
 - **Visual Polish**: Bounty hunter badges, Crown of Chaos, proper asset integration
 - **App Store Landing Page**: Complete jointhechaos.html with logo, social icons, and "Join The Chaos" branding
+- **Hashtag Rule Clarification**: Prominent instruction in app.html requiring ALL hashtags on every post
+- **Cheater Redemption System**: Complete 4-step redemption process at bottom of app.html with clown overlay, mission checkboxes, and beer payment proof
+- **Real-Time Sync**: Cheater checkboxes automatically uncheck when missions are completed legitimately
 
 ### PHASE 4 READY 🚀 (Data Integration & Scraping)
 - **Scraping Infrastructure**: Ready for real social media data integration
@@ -177,6 +180,9 @@ Comprehensive real-world social scavenger hunt game with 50+ missions, badge sys
 - **MOBILE-FIRST APPROACH**: Game designed primarily for mobile devices with responsive design
 - **WEBVIEW COMPATIBILITY**: Code optimized for Android Studio and Xcode WebView implementations
 - **LEADERBOARD READY**: Points hashtag system enables automated scoring and ranking
+- **CHEATER DETERRENT**: Visible red redemption section warns new players while providing redemption path
+- **HASHTAG COMPLIANCE**: Clear posting rules ensure proper tracking for bounty hunter scraping
+- **JUSTICE AUTOMATION**: Real-time checkbox sync creates seamless redemption experience
 
 ## Next Steps - PHASE 4 PRIORITIES
 - **SCRAPING SYSTEM**: Implement real social media data collection
@@ -187,14 +193,27 @@ Comprehensive real-world social scavenger hunt game with 50+ missions, badge sys
 - **CAMERA OVERLAY REVIEW**: Badge placement, sizing, mobile optimization (if needed)
 - **SYSTEM MONITORING**: Real scrape status and health monitoring
 
+## Critical Hashtag System for Scraping
+**REQUIRED HASHTAGS ON EVERY POST:**
+- **Mission-specific**: #missionmischiefslimshady (from mission.hashtag)
+- **User handle**: #username (from user.userHandle)
+- **Points earned**: #missionmischiefpoints[number] (from points dropdown)
+- **Location tracking**: #missionmischiefcountryusa #missionmischiefstatecalifornia #missionmischiefcityriverside
+- **Evidence system**: #missionmischiefevidenceyourmessage (for reporting cheaters)
+- **Cheater redemption**: #missionmischiefclown #missionmischiefpaidbail
+- **Base tags**: #missionmischief #realworldgame
+
+**Hashtag Generation Function**: `generateMissionHashtags(mission, user)` in app.html creates complete hashtag string
+
 ## For New Conversations
 When starting a new conversation about this project:
 
 1. **Context**: 18+ social scavenger hunt game with legal comedy framework
 2. **Architecture**: Single-page app using localStorage, requires HTTP serving
 3. **Current Status**: PHASE 3 complete, ready for PHASE 4 scraping implementation
-4. **Key Achievement**: Complete bounty hunter war board + app store landing page
+4. **Key Achievement**: Complete bounty hunter war board + cheater redemption system
 5. **Brand**: #04aa6d green, dark theme, Mayhem mascot, comedy + legal binding
 6. **Technical**: Pure frontend, social media verification, device-only storage
 7. **Bounty System**: Complete justice system with evidence hashtags and resolution tracking
-8. **Landing Page**: jointhechaos.html ready for app store deployment
+8. **Hashtag System**: Complete blockchain-style verification system ready for scraping
+9. **User Experience**: Clear rules, cheater deterrent, redemption path all implemented

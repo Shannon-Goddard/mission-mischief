@@ -168,6 +168,12 @@
           <!-- Stats will be loaded here -->
         </div>
 
+        <!-- Hashtag Instructions -->
+        <div class="hashtag-instructions" style="background: rgba(4, 170, 109, 0.1); border: 1px solid #04aa6d; border-radius: 8px; padding: 15px; margin: 20px 0; text-align: center;">
+          <h3 style="color: #04aa6d; margin: 0 0 10px 0; font-size: 16px;">📱 POSTING RULE</h3>
+          <p style="color: #fff; margin: 0; font-size: 14px; line-height: 1.4;">When sharing your mission photos/videos, <strong>ALWAYS include ALL hashtags</strong> from the "📤 Share with Hashtags" button. This includes your mission hashtag, handle, points earned, and location tags. All hashtags are required for leaderboard tracking!</p>
+        </div>
+
         <!-- Badges -->
         <div class="badges-container" id="badgesContainer">
           <!-- Badges will be loaded here -->
@@ -183,6 +189,44 @@
         <!-- Missions Container -->
         <div id="missionsContainer">
           <!-- Missions will be loaded here -->
+        </div>
+
+        <!-- Cheater Redemption Section -->
+        <div class="cheater-section" style="margin-top: 50px; padding: 20px; background: rgba(255, 0, 0, 0.1); border: 2px solid #ff4444; border-radius: 8px;">
+          <h3 style="color: #ff4444; text-align: center; margin-bottom: 15px;">🤡 CHEATER REDEMPTION ZONE 🤡</h3>
+          <p style="color: #ccc; text-align: center; font-size: 14px; margin-bottom: 20px;">If you're scrolling down this far, you probably got caught cheating. Time to make it right, clown.</p>
+          
+          <div class="redemption-steps">
+            <div style="background: #222; padding: 15px; border-radius: 6px; margin-bottom: 15px;">
+              <h4 style="color: #ff4444; margin-bottom: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;" onclick="toggleCheaterMissions()">
+                Step 1: Mark Cheated Missions Incomplete
+                <span id="cheaterToggle" style="font-size: 12px;">▼</span>
+              </h4>
+              <div id="cheaterMissionsList" style="max-height: 200px; overflow-y: auto; display: none;">
+                <!-- Mission checkboxes will be loaded here -->
+              </div>
+            </div>
+            
+            <div style="background: #222; padding: 15px; border-radius: 6px; margin-bottom: 15px;">
+              <h4 style="color: #ff4444; margin-bottom: 10px;">Step 2: Delete Your Fake Posts</h4>
+              <p style="color: #ccc; font-size: 13px;">Go delete the posts you cheated on. We'll wait.</p>
+            </div>
+            
+            <div style="background: #222; padding: 15px; border-radius: 6px; margin-bottom: 15px;">
+              <h4 style="color: #ff4444; margin-bottom: 10px;">Step 3: Upload Clown Selfie</h4>
+              <input type="file" id="clownSelfie" accept="image/*" style="width: 100%; padding: 8px; background: #333; color: #fff; border: 1px solid #ff4444; border-radius: 4px; margin-bottom: 10px;">
+              <button onclick="processClownSelfie()" id="clownBtn" disabled style="background: #666; color: #fff; padding: 8px 16px; border: none; border-radius: 4px; cursor: not-allowed; width: 100%;">🤡 ADD CLOWN OVERLAY</button>
+              <p style="color: #999; font-size: 12px; margin-top: 5px;">Post with: #missionmischiefclown + your regular hashtags</p>
+            </div>
+            
+            <div style="background: #222; padding: 15px; border-radius: 6px;">
+              <h4 style="color: #ff4444; margin-bottom: 10px;">Step 4: Buy Your Bounty Hunter a Beer</h4>
+              <p style="color: #ccc; font-size: 13px; margin-bottom: 10px;">Go to their Buy Me a Coffee page and buy them a beer. Screenshot the purchase.</p>
+              <input type="file" id="beerProof" accept="image/*" style="width: 100%; padding: 8px; background: #333; color: #fff; border: 1px solid #ff4444; border-radius: 4px; margin-bottom: 10px;">
+              <button onclick="uploadBeerProof()" id="beerBtn" disabled style="background: #666; color: #fff; padding: 8px 16px; border: none; border-radius: 4px; cursor: not-allowed; width: 100%;">📸 UPLOAD BEER PROOF</button>
+              <p style="color: #999; font-size: 12px; margin-top: 5px;">Post with: #missionmischiefpaidbail + screenshot</p>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -633,6 +677,7 @@
       loadBadges();
       loadMissions();
       setupFilters();
+      loadCheaterMissions();
       
       // Initialize camera overlay
       if (window.Camera) {
@@ -1163,6 +1208,7 @@
         showToast('Mission completed! 🎉', 'success');
         loadUserStats();
         loadMissions();
+        updateCheaterCheckbox(missionId, false); // Uncheck in cheater section
         btn.classList.remove('loading');
         btn.disabled = false;
       }, 500);
@@ -1310,6 +1356,145 @@
       loadUserStats();
       
       showToast(`Mission ${missionId} points set to ${points}`, 'success');
+    };
+    
+    // Cheater redemption functions
+    function loadCheaterMissions() {
+      const user = Storage.getUser();
+      const container = document.getElementById('cheaterMissionsList');
+      const allMissions = Missions.missionData;
+      
+      container.innerHTML = allMissions.map(mission => `
+        <div style="display: flex; align-items: center; margin-bottom: 8px; padding: 5px; background: #333; border-radius: 4px;">
+          <input type="checkbox" id="cheat-${mission.id}" onchange="toggleMissionCheat(${mission.id})" style="margin-right: 10px;">
+          <label for="cheat-${mission.id}" style="color: #fff; font-size: 13px; cursor: pointer; flex: 1;">
+            Mission ${mission.id}: ${mission.title}
+          </label>
+        </div>
+      `).join('');
+      
+      // Setup file upload handlers
+      document.getElementById('clownSelfie').addEventListener('change', function() {
+        const btn = document.getElementById('clownBtn');
+        if (this.files[0]) {
+          btn.disabled = false;
+          btn.style.background = '#ff4444';
+          btn.style.cursor = 'pointer';
+        }
+      });
+      
+      
+      document.getElementById('beerProof').addEventListener('change', function() {
+        const btn = document.getElementById('beerBtn');
+        if (this.files[0]) {
+          btn.disabled = false;
+          btn.style.background = '#ff4444';
+          btn.style.cursor = 'pointer';
+        }
+      });
+    }
+    
+    window.toggleCheaterMissions = function() {
+      const list = document.getElementById('cheaterMissionsList');
+      const toggle = document.getElementById('cheaterToggle');
+      
+      if (list.style.display === 'none') {
+        list.style.display = 'block';
+        toggle.textContent = '▲';
+      } else {
+        list.style.display = 'none';
+        toggle.textContent = '▼';
+      }
+    };
+    
+    function updateCheaterCheckbox(missionId, checked) {
+      const checkbox = document.getElementById(`cheat-${missionId}`);
+      if (checkbox) {
+        checkbox.checked = checked;
+      }
+    };
+    
+    window.toggleMissionCheat = function(missionId) {
+      const checkbox = document.getElementById(`cheat-${missionId}`);
+      const user = Storage.getUser();
+      
+      if (checkbox.checked) {
+        // Mark mission as incomplete
+        user.completedMissions = user.completedMissions.filter(id => id !== missionId);
+        // Remove points for this mission
+        if (user.missionPoints && user.missionPoints[missionId]) {
+          delete user.missionPoints[missionId];
+          user.totalPoints = Object.values(user.missionPoints).reduce((sum, p) => sum + p, 0);
+        }
+        Storage.saveUser(user);
+        showToast(`Mission ${missionId} marked incomplete`, 'success');
+        loadUserStats();
+        loadMissions();
+      }
+    };
+    
+    window.processClownSelfie = function() {
+      const file = document.getElementById('clownSelfie').files[0];
+      if (!file) return;
+      
+      const btn = document.getElementById('clownBtn');
+      btn.textContent = '⏳ PROCESSING...';
+      btn.disabled = true;
+      
+      // Create canvas for clown overlay
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      
+      img.onload = function() {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        
+        // Draw original image
+        ctx.drawImage(img, 0, 0);
+        
+        // Add clown nose (red circle)
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2.2;
+        const radius = Math.min(canvas.width, canvas.height) / 20;
+        
+        ctx.fillStyle = '#ff0000';
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+        ctx.fill();
+        
+        // Add "CLOWN" text
+        ctx.fillStyle = '#ff0000';
+        ctx.font = `bold ${canvas.width / 15}px Arial`;
+        ctx.textAlign = 'center';
+        ctx.fillText('CLOWN', centerX, canvas.height - 50);
+        
+        // Download result
+        canvas.toBlob(blob => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'clown-selfie.jpg';
+          a.click();
+          URL.revokeObjectURL(url);
+          
+          btn.textContent = '✅ CLOWN SELFIE READY';
+          showToast('Clown selfie ready! Post with #missionmischiefclown', 'success');
+        });
+      };
+      
+      img.src = URL.createObjectURL(file);
+    };
+    
+    window.uploadBeerProof = function() {
+      const file = document.getElementById('beerProof').files[0];
+      if (!file) return;
+      
+      const btn = document.getElementById('beerBtn');
+      btn.textContent = '✅ BEER PROOF UPLOADED';
+      btn.disabled = true;
+      
+      showToast('Beer proof ready! Post with #missionmischiefpaidbail', 'success');
     };
     
     // Initialize app
