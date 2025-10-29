@@ -4,6 +4,9 @@
   "description": "AWS Lambda function for Mission Mischief social media scraping",
   "main": "index.js",
   "dependencies": {
-    "aws-sdk": "^2.1691.0"
+    "aws-sdk": "^2.1490.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

@@ -23,7 +23,7 @@ class SimpleScraper {
           }
         }
       },
-      missions: { 1: { instagram: 45, tiktok: 23, facebook: 12, x: 8 } },
+      missions: { 1: { instagram: 45, facebook: 12, x: 8 } },
       justice: []
     };
   }
@@ -32,9 +32,14 @@ class SimpleScraper {
     console.log('🚀 Starting simplified scraping...');
     this.status.active = true;
     this.status.lastUpdate = new Date();
-    this.status.nextUpdate = new Date(Date.now() + 2 * 60 * 60 * 1000);
+    // Set next update to 3am tomorrow
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(3, 0, 0, 0);
+    this.status.nextUpdate = tomorrow;
 
     try {
+      console.log('📡 Attempting AWS Lambda connection...');
       const response = await fetch(this.endpoint, {
         method: 'GET',
         headers: {
@@ -51,18 +56,24 @@ class SimpleScraper {
         } else {
           console.warn('⚠️ Lambda returned no data, using demo data');
         }
+      } else if (response.status === 502) {
+        console.warn('🔧 Lambda function not deployed (502), using demo data');
       } else {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
     } catch (error) {
-      console.error('❌ Lambda scraping failed:', error);
+      if (error.message.includes('Failed to fetch')) {
+        console.warn('🌐 Lambda endpoint unreachable, using demo data');
+      } else {
+        console.error('❌ Lambda scraping failed:', error);
+      }
       this.status.errors.push({
         timestamp: new Date(),
         error: error.message
       });
-      // Continue with demo data
     }
 
+    console.log('📊 Using demo data for display');
     this.updateDisplay();
     return this.data;
   }

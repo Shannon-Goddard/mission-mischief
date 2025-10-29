@@ -11,8 +11,7 @@ const Social = {
     const urls = {
       twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`,
       instagram: `https://www.instagram.com/`, // Instagram doesn't support direct posting via URL
-      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(text)}`,
-      tiktok: `https://www.tiktok.com/` // TikTok doesn't support direct posting via URL
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(text)}`
     };
     
     return urls[platform] || '';

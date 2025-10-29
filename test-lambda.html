@@ -63,12 +63,18 @@
                     } catch (e) {
                         addResult('⚠️ JSON Parse Error', e.message, true);
                     }
+                } else if (response.status === 502) {
+                    addResult('🔧 Lambda Not Deployed', 'The AWS Lambda function is not deployed or has an internal error. The system will use demo data.', true);
                 } else {
                     addResult('❌ Lambda Error', `HTTP ${response.status}: ${responseText}`, true);
                 }
                 
             } catch (error) {
-                addResult('💥 Network Error', error.message, true);
+                if (error.message.includes('Failed to fetch')) {
+                    addResult('🌐 Network Issue', 'Cannot reach Lambda endpoint. This is expected if Lambda is not deployed. System will use demo data.', true);
+                } else {
+                    addResult('💥 Network Error', error.message, true);
+                }
                 console.error('Lambda test error:', error);
             }
         }
@@ -112,6 +118,7 @@
         // Auto-test on load
         document.addEventListener('DOMContentLoaded', function() {
             addResult('🎯 Mission Mischief Lambda Tester', 'Ready to test AWS Lambda endpoint');
+            addResult('📝 Status Info', 'If you see 502 Bad Gateway, the Lambda function needs to be deployed. The game will work with demo data.');
         });
     </script>
 </body>

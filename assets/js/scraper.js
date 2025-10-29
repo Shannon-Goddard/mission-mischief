@@ -3,7 +3,6 @@ class MissionMischiefScraper {
   constructor() {
     this.apiEndpoints = {
       instagram: 'https://www.instagram.com/api/v1/tags/',
-      tiktok: 'https://www.tiktok.com/api/challenge/detail/',
       facebook: 'https://graph.facebook.com/v18.0/',
       twitter: 'https://api.twitter.com/2/tweets/search/recent'
     };
@@ -125,13 +124,12 @@ class MissionMischiefScraper {
       const hashtag = mission.hashtag.replace('#', '');
       missions[mission.id] = {
         instagram: 0,
-        tiktok: 0,
         facebook: 0,
         x: 0
       };
       
       // Scrape each platform for this mission hashtag
-      const platforms = ['instagram', 'tiktok', 'facebook', 'x'];
+      const platforms = ['instagram', 'facebook', 'x'];
       for (const platform of platforms) {
         try {
           const posts = await this.scrapePlatform(platform, hashtag);
@@ -183,10 +181,6 @@ class MissionMischiefScraper {
       const instagramPosts = await this.scrapePlatform('instagram', hashtag);
       allPosts.push(...instagramPosts);
       
-      // TikTok scraping
-      const tiktokPosts = await this.scrapePlatform('tiktok', hashtag);
-      allPosts.push(...tiktokPosts);
-      
       // Facebook scraping
       const facebookPosts = await this.scrapePlatform('facebook', hashtag);
       allPosts.push(...facebookPosts);
@@ -210,8 +204,6 @@ class MissionMischiefScraper {
       switch (platform) {
         case 'instagram':
           return await this.scrapeInstagram(hashtag);
-        case 'tiktok':
-          return await this.scrapeTikTok(hashtag);
         case 'facebook':
           return await this.scrapeFacebook(hashtag);
         case 'x':
@@ -247,25 +239,7 @@ class MissionMischiefScraper {
     }
   }
 
-  // TikTok scraping implementation
-  async scrapeTikTok(hashtag) {
-    try {
-      const response = await fetch(`${this.apiEndpoints.tiktok}?challengeName=${hashtag}`, {
-        headers: {
-          'User-Agent': 'MissionMischief/1.0',
-          'Accept': 'application/json'
-        }
-      });
-      
-      if (!response.ok) throw new Error(`TikTok API error: ${response.status}`);
-      
-      const data = await response.json();
-      return this.parseTikTokPosts(data);
-    } catch (error) {
-      console.warn('TikTok scraping failed, using fallback method');
-      return this.fallbackScrape('tiktok', hashtag);
-    }
-  }
+
 
   // Facebook scraping implementation
   async scrapeFacebook(hashtag) {
@@ -462,18 +436,7 @@ class MissionMischiefScraper {
     }));
   }
 
-  parseTikTokPosts(data) {
-    // TikTok-specific parsing logic
-    return (data.itemList || []).map(post => ({
-      id: post.id,
-      platform: 'tiktok',
-      user: `@${post.author.uniqueId}`,
-      content: post.desc || '',
-      timestamp: post.createTime,
-      hashtags: this.extractHashtags(post.desc || ''),
-      location: this.parseLocation(post.locationCreated)
-    }));
-  }
+
 
   parseFacebookPosts(data) {
     // Facebook-specific parsing logic
@@ -547,7 +510,7 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         }
       },
-      missions: { 1: { instagram: 45, tiktok: 23, facebook: 12, x: 8 } },
+      missions: { 1: { instagram: 45, facebook: 12, x: 8 } },
       justice: []
     };
     

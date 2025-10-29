@@ -602,7 +602,7 @@
           Last Updated: Loading...
         </div>
         <div class="last-updated" id="scrapeStatus" style="margin-top: 10px;">
-          <span id="statusIndicator">🟢</span> <span id="statusText">Active</span> - Next update in <span id="nextUpdate">2 hours</span>
+          <span id="statusIndicator">🟢</span> <span id="statusText">Active</span> - Next update at <span id="nextUpdate">3:00 AM</span>
         </div>
       </div>
     </section>
@@ -712,9 +712,9 @@
       
       missionActivity: {
         // Mission ID -> Platform counts
-        1: { instagram: 45, tiktok: 23, facebook: 12, x: 8 },
-        5: { instagram: 67, tiktok: 34, facebook: 21, x: 15 },
-        7: { instagram: 23, tiktok: 45, facebook: 8, x: 12 }
+        1: { instagram: 45, facebook: 12, x: 8 },
+        5: { instagram: 67, facebook: 21, x: 15 },
+        7: { instagram: 23, facebook: 8, x: 12 }
       },
       
       geography: {
@@ -794,7 +794,7 @@
       document.getElementById('lastUpdated').textContent = `Last Updated: ${mockData.lastUpdated}`;
       
       // Load scrape status (mock - will be replaced with real status)
-      updateScrapeStatus('active', '2 hours 15 minutes');
+      updateScrapeStatus('active', '3:00 AM');
       
       // Load top players
       loadTopPlayers();
@@ -910,7 +910,6 @@
     function generatePlatformLinks(mission) {
       const platforms = [
         { name: 'Instagram', icon: 'instagram-icon.svg', color: '#f09433', baseUrl: 'https://www.instagram.com/explore/tags/' }, // Instagram gradient orange
-        { name: 'TikTok', icon: 'tiktok-icon.svg', color: '#fe2858', baseUrl: 'https://www.tiktok.com/tag/' }, // TikTok pink
         { name: 'Facebook', icon: 'facebook-icon.svg', color: '#1877F2', baseUrl: 'https://www.facebook.com/hashtag/' }, // Facebook blue
         { name: 'X', icon: 'x-icon.svg', color: '#04aa6d', baseUrl: 'https://twitter.com/hashtag/' } // Mission Mischief green
       ];
