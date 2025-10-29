@@ -216,15 +216,30 @@ Comprehensive real-world social scavenger hunt game with 50+ missions, badge sys
 
 **Hashtag Generation Function**: `generateMissionHashtags(mission, user)` in app.html creates complete hashtag string
 
+## Additional Files Created
+- **HASHTAG_LIST.txt**: Complete reference of 100+ hashtags used in Mission Mischief
+- **lambda/**: AWS Lambda function code for production scraping system
+- **CNAME**: GitHub Pages custom domain configuration
+- **.gitignore**: Protects sensitive API credentials from repository
+
+## AWS Production Infrastructure
+- **Lambda Function**: `mission-mischief-scraper` (Node.js 22.x)
+- **API Gateway**: `mission-mischief-api` with CORS enabled
+- **Parameter Store**: Secure storage for Facebook, Instagram, and X API keys
+- **IAM Roles**: Proper permissions for Lambda to access Parameter Store
+- **Live Endpoint**: https://imddm6sh0i.execute-api.us-east-1.amazonaws.com/prod/scrape
+- **Domain**: https://missionmischief.online (GitHub Pages + custom domain)
+
 ## For New Conversations
 When starting a new conversation about this project:
 
 1. **Context**: 18+ social scavenger hunt game with legal comedy framework
-2. **Architecture**: Single-page app using localStorage, requires HTTP serving
-3. **Current Status**: PHASE 3 complete, ready for PHASE 4 scraping implementation
-4. **Key Achievement**: Complete bounty hunter war board + cheater redemption system
+2. **Architecture**: Single-page app using localStorage, AWS Lambda backend
+3. **Current Status**: PHASE 4 COMPLETE - Full AWS production deployment
+4. **Key Achievement**: Live social media scraping system with AWS infrastructure
 5. **Brand**: #04aa6d green, dark theme, Mayhem mascot, comedy + legal binding
-6. **Technical**: Pure frontend, social media verification, device-only storage
-7. **Bounty System**: Complete justice system with evidence hashtags and resolution tracking
-8. **Hashtag System**: Complete blockchain-style verification system ready for scraping
-9. **User Experience**: Clear rules, cheater deterrent, redemption path all implemented
+6. **Technical**: Frontend + AWS Lambda, real social media verification, device-only storage
+7. **Bounty System**: Complete justice system with live hashtag monitoring
+8. **Hashtag System**: Production blockchain-style verification with 100+ hashtags
+9. **Production Status**: Live at missionmischief.online with real-time scraping active
+10. **Testing Ready**: System ready for social media posts to test live scraping

@@ -4,9 +4,9 @@ class APIConfig {
     this.config = {
       // Instagram Basic Display API
       instagram: {
-        clientId: process.env.INSTAGRAM_CLIENT_ID || 'YOUR_INSTAGRAM_CLIENT_ID',
-        clientSecret: process.env.INSTAGRAM_CLIENT_SECRET || 'YOUR_INSTAGRAM_CLIENT_SECRET',
-        accessToken: process.env.INSTAGRAM_ACCESS_TOKEN || 'YOUR_INSTAGRAM_ACCESS_TOKEN',
+        clientId: 'CONFIGURED_IN_LAMBDA',
+        clientSecret: 'CONFIGURED_IN_LAMBDA',
+        accessToken: 'CONFIGURED_IN_LAMBDA',
         baseUrl: 'https://graph.instagram.com/v18.0',
         rateLimit: 200, // requests per hour
         endpoints: {
@@ -17,9 +17,9 @@ class APIConfig {
       
       // TikTok Research API
       tiktok: {
-        clientKey: process.env.TIKTOK_CLIENT_KEY || 'YOUR_TIKTOK_CLIENT_KEY',
-        clientSecret: process.env.TIKTOK_CLIENT_SECRET || 'YOUR_TIKTOK_CLIENT_SECRET',
-        accessToken: process.env.TIKTOK_ACCESS_TOKEN || 'YOUR_TIKTOK_ACCESS_TOKEN',
+        clientKey: 'CONFIGURED_IN_LAMBDA',
+        clientSecret: 'CONFIGURED_IN_LAMBDA',
+        accessToken: 'CONFIGURED_IN_LAMBDA',
         baseUrl: 'https://open.tiktokapis.com/v2',
         rateLimit: 1000, // requests per day
         endpoints: {
@@ -30,9 +30,9 @@ class APIConfig {
       
       // Facebook Graph API
       facebook: {
-        appId: process.env.FACEBOOK_APP_ID || 'YOUR_FACEBOOK_APP_ID',
-        appSecret: process.env.FACEBOOK_APP_SECRET || 'YOUR_FACEBOOK_APP_SECRET',
-        accessToken: process.env.FACEBOOK_ACCESS_TOKEN || 'YOUR_FACEBOOK_ACCESS_TOKEN',
+        appId: 'CONFIGURED_IN_LAMBDA',
+        appSecret: 'CONFIGURED_IN_LAMBDA',
+        accessToken: 'CONFIGURED_IN_LAMBDA',
         baseUrl: 'https://graph.facebook.com/v18.0',
         rateLimit: 600, // requests per hour
         endpoints: {
@@ -43,9 +43,9 @@ class APIConfig {
       
       // X (Twitter) API v2
       twitter: {
-        bearerToken: process.env.TWITTER_BEARER_TOKEN || 'YOUR_TWITTER_BEARER_TOKEN',
-        apiKey: process.env.TWITTER_API_KEY || 'YOUR_TWITTER_API_KEY',
-        apiSecret: process.env.TWITTER_API_SECRET || 'YOUR_TWITTER_API_SECRET',
+        bearerToken: 'CONFIGURED_IN_LAMBDA',
+        apiKey: 'CONFIGURED_IN_LAMBDA',
+        apiSecret: 'CONFIGURED_IN_LAMBDA',
         baseUrl: 'https://api.twitter.com/2',
         rateLimit: 300, // requests per 15 minutes
         endpoints: {
@@ -115,25 +115,25 @@ class APIConfig {
     switch (platform) {
       case 'instagram':
         return {
-          'Authorization': `Bearer ${config.accessToken}`,
+          'Authorization': 'Bearer CONFIGURED_IN_LAMBDA',
           'Content-Type': 'application/json'
         };
         
       case 'tiktok':
         return {
-          'Authorization': `Bearer ${config.accessToken}`,
+          'Authorization': 'Bearer CONFIGURED_IN_LAMBDA',
           'Content-Type': 'application/json'
         };
         
       case 'facebook':
         return {
-          'Authorization': `Bearer ${config.accessToken}`,
+          'Authorization': 'Bearer CONFIGURED_IN_LAMBDA',
           'Content-Type': 'application/json'
         };
         
       case 'twitter':
         return {
-          'Authorization': `Bearer ${config.bearerToken}`,
+          'Authorization': 'Bearer CONFIGURED_IN_LAMBDA',
           'Content-Type': 'application/json'
         };
         

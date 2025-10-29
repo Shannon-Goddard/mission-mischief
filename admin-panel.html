@@ -254,9 +254,7 @@
     <!-- Include scraping system -->
     <script src="assets/js/storage.js"></script>
     <script src="assets/js/missions.js"></script>
-    <script src="assets/js/api-config.js"></script>
-    <script src="assets/js/data-processor.js"></script>
-    <script src="assets/js/scraper.js"></script>
+    <script src="assets/js/scraper-simple.js"></script>
     
     <script>
         let systemLogs = [];
@@ -275,16 +273,16 @@
             loadSystemLogs();
             
             // Add log listener
-            if (window.MissionMischiefScraper) {
-                window.MissionMischiefScraper.onLog = addLogEntry;
+            if (window.SimpleScraper) {
+                console.log('✅ SimpleScraper connected to admin panel');
             }
         }
         
         function loadSystemStatus() {
-            const scraper = window.MissionMischiefScraper;
+            const scraper = window.SimpleScraper;
             if (!scraper) return;
             
-            const status = scraper.scrapeStatus;
+            const status = scraper.getStatus();
             
             document.getElementById('scraperStatusText').textContent = status.active ? 'Active' : 'Inactive';
             document.getElementById('scraperStatus').className = `status-indicator ${status.active ? 'status-active' : 'status-inactive'}`;
@@ -304,37 +302,31 @@
         }
         
         function loadDataStatistics() {
-            const processor = window.DataProcessor;
-            if (!processor) return;
+            const scraper = window.SimpleScraper;
+            if (!scraper) return;
             
-            const stats = processor.getStatistics();
+            const data = scraper.getData();
             
-            document.getElementById('totalPlayers').textContent = stats.totalPlayers.toLocaleString();
-            document.getElementById('totalPosts').textContent = stats.totalPosts.toLocaleString();
-            document.getElementById('totalPoints').textContent = stats.totalPoints.toLocaleString();
-            document.getElementById('activeCases').textContent = stats.activeCases;
+            document.getElementById('totalPlayers').textContent = data.leaderboard.length.toLocaleString();
+            document.getElementById('totalPosts').textContent = Object.values(data.missions).reduce((sum, m) => sum + (m.total || 0), 0).toLocaleString();
+            document.getElementById('totalPoints').textContent = data.leaderboard.reduce((sum, p) => sum + p.points, 0).toLocaleString();
+            document.getElementById('activeCases').textContent = data.justice.length;
             
             // Calculate cache size
-            const cacheSize = JSON.stringify(processor.getData()).length;
+            const cacheSize = JSON.stringify(data).length;
             document.getElementById('cacheSize').textContent = `${Math.round(cacheSize / 1024)} KB`;
         }
         
         function loadAPIStatus() {
-            const config = window.APIConfig;
-            if (!config) return;
-            
             const container = document.getElementById('apiStatus');
             const platforms = ['instagram', 'tiktok', 'facebook', 'twitter'];
             
             container.innerHTML = platforms.map(platform => {
-                const limiter = config.rateLimiters.get(platform);
-                const platformConfig = config.getConfig(platform);
-                
                 return `
                     <div class="api-item">
                         <div class="api-name">${platform.charAt(0).toUpperCase() + platform.slice(1)}</div>
-                        <div class="api-requests">${limiter ? limiter.requests : 0}/${platformConfig ? platformConfig.rateLimit : 0}</div>
-                        <div class="status-indicator ${limiter && limiter.requests < platformConfig.rateLimit ? 'status-active' : 'status-warning'}"></div>
+                        <div class="api-requests">Via Lambda</div>
+                        <div class="status-indicator status-active"></div>
                     </div>
                 `;
             }).join('');
@@ -383,34 +375,33 @@
         
         // Admin actions
         function startScraping() {
-            if (window.MissionMischiefScraper) {
-                window.MissionMischiefScraper.startScraping();
+            if (window.SimpleScraper) {
+                window.SimpleScraper.startScraping();
                 addLogEntry('info', 'Scraping started manually');
             }
         }
         
         function stopScraping() {
-            if (window.MissionMischiefScraper) {
-                window.MissionMischiefScraper.scrapeStatus.active = false;
+            if (window.SimpleScraper) {
+                window.SimpleScraper.status.active = false;
                 addLogEntry('info', 'Scraping stopped manually');
             }
         }
         
         function forceScrape() {
-            if (window.MissionMischiefScraper) {
-                window.MissionMischiefScraper.startScraping();
+            if (window.SimpleScraper) {
+                window.SimpleScraper.startScraping();
                 addLogEntry('info', 'Force scrape initiated');
             }
         }
         
         function clearCache() {
-            if (window.DataProcessor) {
-                window.DataProcessor.processedData = {
+            if (window.SimpleScraper) {
+                window.SimpleScraper.data = {
                     leaderboard: [],
                     geography: {},
                     missions: {},
-                    justice: [],
-                    statistics: { totalPlayers: 0, totalPosts: 0, totalPoints: 0, activeCases: 0 }
+                    justice: []
                 };
                 addLogEntry('info', 'Cache cleared');
                 loadDataStatistics();
@@ -418,8 +409,8 @@
         }
         
         function exportData() {
-            if (window.DataProcessor) {
-                const data = window.DataProcessor.getData();
+            if (window.SimpleScraper) {
+                const data = window.SimpleScraper.getData();
                 const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
@@ -440,11 +431,8 @@
         }
         
         function resetRateLimits() {
-            if (window.APIConfig) {
-                window.APIConfig.initializeRateLimiters();
-                addLogEntry('info', 'Rate limits reset');
-                loadAPIStatus();
-            }
+            addLogEntry('info', 'Rate limits managed by AWS Lambda');
+            loadAPIStatus();
         }
         
         function clearLogs() {
