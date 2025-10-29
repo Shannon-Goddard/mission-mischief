@@ -521,13 +521,14 @@ class MissionMischiefScraper {
   }
 }
 
-// Initialize scraper
+// Initialize scraper with AWS Lambda endpoint
 const scraper = new MissionMischiefScraper();
+scraper.lambdaEndpoint = 'https://imddm6sh0i.execute-api.us-east-1.amazonaws.com/prod/scrape';
 
-// Demo mode - don't auto-start scraping to avoid CORS errors
+// Production mode - use AWS Lambda for scraping
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('Mission Mischief Scraper loaded in demo mode');
-  console.log('Real scraping requires server-side implementation to avoid CORS');
+  console.log('Mission Mischief Scraper loaded with AWS Lambda backend');
+  console.log('Using endpoint:', scraper.lambdaEndpoint);
   
   // Initialize with demo data instead
   if (window.DataProcessor) {
@@ -560,18 +561,33 @@ document.addEventListener('DOMContentLoaded', function() {
 // Export for use in other files
 window.MissionMischiefScraper = scraper;
 
-// Override startScraping to prevent CORS errors in demo mode
-scraper.startScraping = function() {
-  console.log('Demo Mode: Scraping disabled to prevent CORS errors');
-  console.log('In production, this would run server-side with proper API keys');
+// Override startScraping to use AWS Lambda
+scraper.startScraping = async function() {
+  console.log('Starting AWS Lambda scraping...');
   
-  // Update status to show it would be working
-  this.scrapeStatus.active = true;
-  this.scrapeStatus.lastUpdate = new Date();
-  this.scrapeStatus.nextUpdate = new Date(Date.now() + 2 * 60 * 60 * 1000);
-  
-  // Use demo data
-  this.updateBountyHunterDisplay();
-  
-  return Promise.resolve('Demo mode active');
+  try {
+    const response = await fetch(this.lambdaEndpoint);
+    const result = await response.json();
+    
+    if (result.success) {
+      // Update cache with real data
+      this.cache = result.data;
+      this.scrapeStatus.active = true;
+      this.scrapeStatus.lastUpdate = new Date();
+      this.scrapeStatus.nextUpdate = new Date(Date.now() + 2 * 60 * 60 * 1000);
+      
+      this.updateBountyHunterDisplay();
+      console.log('AWS Lambda scraping completed successfully');
+    } else {
+      throw new Error(result.error || 'Lambda function failed');
+    }
+  } catch (error) {
+    console.error('AWS Lambda scraping failed:', error);
+    // Fall back to demo data
+    this.handleScrapeError(error);
+    this.updateBountyHunterDisplay();
+  }
 };
+
+// Auto-start scraping
+scraper.startScraping();

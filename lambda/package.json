@@ -1,0 +1,9 @@
+{
+  "name": "mission-mischief-scraper",
+  "version": "1.0.0",
+  "description": "AWS Lambda function for Mission Mischief social media scraping",
+  "main": "index.js",
+  "dependencies": {
+    "aws-sdk": "^2.1691.0"
+  }
+}
