@@ -141,23 +141,7 @@
       </div>
     </section>
 
-    <!-- Buy-in Section -->
-    <section id="buyinSection" style="display: none; padding-top: 100px;">
-      <div class="container">
-        <div class="section-title text-center">
-          <h2>Choose Your Path</h2>
-          <p>Select a buy-in to unlock all missions, or start with limited access</p>
-        </div>
-        
-        <div class="row" id="buyinOptions">
-          <!-- Buy-in options will be loaded here -->
-        </div>
-        
-        <div class="text-center mt-4">
-          <button id="skipBuyin" class="mission-btn">Skip - Start with Limited Access</button>
-        </div>
-      </div>
-    </section>
+
 
     <!-- Dashboard Section -->
     <section id="dashboard" style="display: none; padding-top: 100px;">
@@ -276,8 +260,6 @@
         
         if (!user.userName) {
           showUserSetup();
-        } else if (!user.currentBuyIn && user.completedBuyIns.length === 0) {
-          showBuyinSection();
         } else {
           showDashboard();
         }
@@ -315,7 +297,7 @@
             user.state = userState;
             user.city = userCity;
             Storage.saveUser(user);
-            showBuyinSection();
+            showDashboard();
           } else {
             // Fallback to original file
             const reader = new FileReader();
@@ -330,7 +312,7 @@
               user.state = userState;
               user.city = userCity;
               Storage.saveUser(user);
-              showBuyinSection();
+              showDashboard();
             };
             reader.readAsDataURL(qrCodeFile);
           }
@@ -585,91 +567,10 @@
       };
     }
 
-    function showBuyinSection() {
-      document.getElementById('userSetup').style.display = 'none';
-      document.getElementById('buyinSection').style.display = 'block';
-      
-      loadBuyinOptions();
-      
-      document.getElementById('skipBuyin').addEventListener('click', function() {
-        showDashboard();
-      });
-    }
 
-    function loadBuyinOptions() {
-      const container = document.getElementById('buyinOptions');
-      const user = Storage.getUser();
-      const availableBuyIns = Missions.getAvailableBuyIns(user);
-      const completedBuyIns = user.completedBuyIns || [];
-      
-      container.innerHTML = '';
-      
-      Object.values(availableBuyIns).forEach(buyin => {
-        const isCompleted = completedBuyIns.includes(buyin.id);
-        const isGoldPrompt = completedBuyIns.length === 1 && buyin.id !== 'nothing';
-        
-        const card = document.createElement('div');
-        card.className = 'col-lg-4 mb-4';
-        card.innerHTML = `
-          <div class="buyin-card ${isCompleted ? 'completed' : ''} ${isGoldPrompt ? 'gold-prompt' : ''}">
-            <div class="buyin-title">${buyin.title}</div>
-            <div class="buyin-description">${buyin.description}</div>
-            <div class="buyin-proof">Proof: ${buyin.proof}</div>
-            ${!isCompleted ? `
-              <button class="mission-btn" onclick="selectBuyin('${buyin.id}')">
-                ${isGoldPrompt ? '🏆 COMPLETE FOR CROWN 🏆' : 'Choose This Path'}
-              </button>
-            ` : `
-              <div class="completed-badge">✅ COMPLETED</div>
-              <button class="mission-btn" onclick="completeBuyinProof('${buyin.id}')">
-                Mark as Completed
-              </button>
-            `}
-          </div>
-        `;
-        container.appendChild(card);
-      });
-      
-      // Show crown of chaos message if eligible
-      if (Missions.hasCrownOfChaos(user)) {
-        const crownMessage = document.createElement('div');
-        crownMessage.className = 'col-lg-12 text-center';
-        crownMessage.innerHTML = `
-          <div class="crown-message">
-            <h2>🏆 CROWN OF CHAOS UNLOCKED! 🏆</h2>
-            <p>You have achieved the ultimate secret level!</p>
-          </div>
-        `;
-        container.appendChild(crownMessage);
-      }
-    }
-
-    function selectBuyin(buyinId) {
-      const user = Storage.getUser();
-      user.currentBuyIn = buyinId;
-      Storage.saveUser(user);
-      showToast(`Selected ${Missions.buyIns[buyinId].title} path!`, 'success');
-      showDashboard();
-    }
-    
-    function completeBuyinProof(buyinId) {
-      const user = Storage.completeBuyIn(buyinId);
-      showToast(`${Missions.buyIns[buyinId].title} completed! 🎉`, 'success');
-      
-      // Check for crown of chaos
-      if (Missions.hasCrownOfChaos(user)) {
-        showToast('🏆 CROWN OF CHAOS UNLOCKED! 🏆', 'success');
-      }
-      
-      loadBuyinOptions();
-      if (window.Camera) {
-        Camera.updateBuyInBadge();
-      }
-    }
 
     function showDashboard() {
       document.getElementById('userSetup').style.display = 'none';
-      document.getElementById('buyinSection').style.display = 'none';
       document.getElementById('dashboard').style.display = 'block';
       
       loadUserInfo();
