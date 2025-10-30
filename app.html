@@ -434,30 +434,30 @@
         updateQRTransform();
       };
       
-      // Location data for cascading dropdowns
-      const locationData = {
-        US: {
-          'California': ['Los Angeles', 'San Francisco', 'San Diego', 'Sacramento'],
-          'New York': ['New York City', 'Buffalo', 'Rochester', 'Syracuse'],
-          'Texas': ['Houston', 'Dallas', 'Austin', 'San Antonio'],
-          'Florida': ['Miami', 'Orlando', 'Tampa', 'Jacksonville']
-        },
-        CA: {
-          'Ontario': ['Toronto', 'Ottawa', 'Hamilton', 'London'],
-          'Quebec': ['Montreal', 'Quebec City', 'Laval', 'Gatineau'],
-          'British Columbia': ['Vancouver', 'Victoria', 'Surrey', 'Burnaby']
-        },
-        UK: {
-          'England': ['London', 'Manchester', 'Birmingham', 'Liverpool'],
-          'Scotland': ['Edinburgh', 'Glasgow', 'Aberdeen', 'Dundee'],
-          'Wales': ['Cardiff', 'Swansea', 'Newport', 'Wrexham']
-        },
-        AU: {
-          'New South Wales': ['Sydney', 'Newcastle', 'Wollongong', 'Wagga Wagga'],
-          'Victoria': ['Melbourne', 'Geelong', 'Ballarat', 'Bendigo'],
-          'Queensland': ['Brisbane', 'Gold Coast', 'Townsville', 'Cairns']
-        }
-      };
+      // Location data will be loaded from JSON file
+      let locationData = {};
+      
+      // Load US states and cities from JSON file
+      fetch('assets/js/usa-states-cities.json')
+        .then(response => response.json())
+        .then(data => {
+          // Convert to our expected format
+          locationData.US = {};
+          Object.entries(data).forEach(([stateCode, stateInfo]) => {
+            locationData.US[stateInfo.name] = Object.keys(stateInfo.cities).sort();
+          });
+        })
+        .catch(error => {
+          console.error('Failed to load location data:', error);
+          // Fallback to basic data
+          locationData = {
+            US: {
+              'California': ['Los Angeles', 'San Francisco', 'San Diego'],
+              'New York': ['New York City', 'Buffalo', 'Rochester'],
+              'Texas': ['Houston', 'Dallas', 'Austin']
+            }
+          };
+        });
       
       window.loadStates = function() {
         const country = document.getElementById('userCountry').value;
@@ -479,7 +479,7 @@
           stateOther.required = true;
           cityOther.style.display = 'block';
           cityOther.required = true;
-        } else if (country && locationData[country]) {
+        } else if (country && locationData[country] && Object.keys(locationData[country]).length > 0) {
           stateSelect.disabled = false;
           stateOther.required = false;
           cityOther.required = false;
