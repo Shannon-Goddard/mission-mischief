@@ -686,7 +686,7 @@
   </footer>
 
   <!-- Back to top button -->
-  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center" id="backToTop" style="display: none;"><i class="bi bi-arrow-up-short"></i></a>
 
   <!-- JS Files -->
   <script src="assets/js/storage.js"></script>
@@ -695,63 +695,13 @@
   <script src="assets/js/scraper-simple.js"></script>
   
   <script>
-    // Mock data structure for testing (will be replaced with real scraping data)
-    const mockData = {
-      lastUpdated: new Date().toLocaleDateString('en-US', { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-      }) + ' 3:00 AM PST',
-      
-      topPlayers: [
-        { handle: '@mayhem_official', points: 847, city: 'Los Angeles', state: 'CA' },
-        { handle: '@slimshady_badge', points: 623, city: 'New York', state: 'NY' },
-        { handle: '@coffee_crusader', points: 445, city: 'Austin', state: 'TX' }
-      ],
-      
-      missionActivity: {
-        // Mission ID -> Platform counts
-        1: { instagram: 45, facebook: 12, x: 8 },
-        5: { instagram: 67, facebook: 21, x: 15 },
-        7: { instagram: 23, facebook: 8, x: 12 }
-      },
-      
-      geography: {
-        'United States': {
-          count: 156,
-          states: {
-            'California': {
-              count: 67,
-              cities: {
-                'Los Angeles': { count: 34, users: ['@mayhem_official', '@la_player'] },
-                'San Francisco': { count: 23, users: ['@sf_gamer'] }
-              }
-            },
-            'New York': {
-              count: 45,
-              cities: {
-                'New York City': { count: 45, users: ['@slimshady_badge', '@nyc_hunter'] }
-              }
-            }
-          }
-        }
-      },
-      
-      justiceCases: [
-        {
-          id: 1,
-          accused: '@fake_player',
-          accuser: '@bounty_hunter_1',
-          mission: 'The Real Slim Shady',
-          date: '2024-01-15',
-          evidenceHashtag: '#missionmischiefevidencestagedphotowithwrongbook',
-          requirements: [
-            { hashtag: '#missionmischiefclown', completed: false },
-            { hashtag: '#missionmischiefpaidbaler', completed: true }
-          ]
-        }
-      ]
+    // Real data from scraper
+    let realData = {
+      lastUpdated: 'Loading...',
+      topPlayers: [],
+      missionActivity: {},
+      geography: {},
+      justiceCases: []
     };
 
     // Initialize page
@@ -780,71 +730,46 @@
     }
 
     function loadBountyHunterData() {
-      // Check if we have real scraper data
-      if (window.DataProcessor && window.DataProcessor.getData().leaderboard.length > 0) {
-        updateWithScrapedData(window.DataProcessor.getData());
-      } else {
-        // Load mock data as fallback
-        loadMockData();
-      }
-    }
-    
-    function loadMockData() {
-      // Load last updated timestamp
-      document.getElementById('lastUpdated').textContent = `Last Updated: ${mockData.lastUpdated}`;
-      
-      // Load scrape status (mock - will be replaced with real status)
-      updateScrapeStatus('active', '3:00 AM');
-      
-      // Load top players
-      loadTopPlayers();
-      
-      // Load missions
-      loadMissions();
-      
-      // Load geography
-      loadGeography();
-      
-      // Load justice cases
-      loadJusticeCases();
-    }
-    
-    function updateWithScrapedData(scrapedData) {
-      // Update with real scraper data
-      const scraper = window.MissionMischiefScraper;
-      if (scraper) {
-        const lastUpdate = new Date(scraper.scrapeStatus.lastUpdate).toLocaleDateString('en-US', { 
+      // Get real data from scraper
+      if (window.SimpleScraper) {
+        const scraperData = window.SimpleScraper.getData();
+        realData.topPlayers = scraperData.leaderboard || [];
+        realData.missionActivity = scraperData.missions || {};
+        realData.geography = scraperData.geography || {};
+        realData.justiceCases = scraperData.justice || [];
+        realData.lastUpdated = new Date().toLocaleDateString('en-US', { 
           weekday: 'long', 
           year: 'numeric', 
           month: 'long', 
-          day: 'numeric',
-          hour: 'numeric',
-          minute: 'numeric'
-        });
-        document.getElementById('lastUpdated').textContent = `Last Updated: ${lastUpdate}`;
-        
-        const timeUntilNext = scraper.scrapeStatus.nextUpdate - new Date();
-        const hours = Math.floor(timeUntilNext / (1000 * 60 * 60));
-        const minutes = Math.floor((timeUntilNext % (1000 * 60 * 60)) / (1000 * 60));
-        updateScrapeStatus('active', `${hours} hours ${minutes} minutes`);
+          day: 'numeric' 
+        }) + ' 3:00 AM PST';
       }
       
-      // Update displays with real data
-      mockData.topPlayers = scrapedData.leaderboard.slice(0, 3);
-      mockData.geography = scrapedData.geography;
-      mockData.missionActivity = scrapedData.missions;
-      mockData.justiceCases = scrapedData.justice;
+      // Load last updated timestamp
+      document.getElementById('lastUpdated').textContent = `Last Updated: ${realData.lastUpdated}`;
       
-      // Refresh displays
+      // Load scrape status
+      updateScrapeStatus('active', '3:00 AM');
+      
+      // Load all sections
       loadTopPlayers();
       loadMissions();
       loadGeography();
       loadJusticeCases();
     }
+    
+
 
     function loadTopPlayers() {
       const container = document.getElementById('topPlayers');
-      container.innerHTML = mockData.topPlayers.map((player, index) => `
+      const topPlayers = realData.topPlayers.slice(0, 3);
+      
+      if (topPlayers.length === 0) {
+        container.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">No players found yet</div>';
+        return;
+      }
+      
+      container.innerHTML = topPlayers.map((player, index) => `
         <div class="player-card rank-${index + 1}">
           <div class="player-rank">${index + 1}</div>
           <div class="player-handle">${player.handle}</div>
@@ -916,7 +841,7 @@
       
       return platforms.map(platform => {
         const hashtag = mission.hashtag.replace('#', '');
-        const count = mockData.missionActivity[mission.id]?.[platform.name.toLowerCase()] || 0;
+        const count = realData.missionActivity[mission.id]?.[platform.name.toLowerCase()] || 0;
         
         return `
           <a href="${platform.baseUrl}${hashtag}" target="_blank" class="platform-link" data-hover-color="${platform.color}">
@@ -929,11 +854,61 @@
 
     function loadGeography() {
       const container = document.getElementById('geoTree');
-      container.innerHTML = Object.entries(mockData.geography).map(([country, data]) => 
+      const filteredGeography = filterGeographyWithUsers(realData.geography);
+      
+      if (Object.keys(filteredGeography).length === 0) {
+        container.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">No geographic data available</div>';
+        document.getElementById('geoCount').textContent = '0';
+        return;
+      }
+      
+      container.innerHTML = Object.entries(filteredGeography).map(([country, data]) => 
         generateGeoItem(country, data, 'country')
       ).join('');
       
-      document.getElementById('geoCount').textContent = Object.keys(mockData.geography).length;
+      document.getElementById('geoCount').textContent = Object.keys(filteredGeography).length;
+    }
+    
+    function filterGeographyWithUsers(geography) {
+      const filtered = {};
+      
+      Object.entries(geography).forEach(([country, countryData]) => {
+        const filteredStates = {};
+        let countryHasUsers = false;
+        
+        if (countryData.states) {
+          Object.entries(countryData.states).forEach(([state, stateData]) => {
+            const filteredCities = {};
+            let stateHasUsers = false;
+            
+            if (stateData.cities) {
+              Object.entries(stateData.cities).forEach(([city, cityData]) => {
+                if (cityData.users && cityData.users.length > 0) {
+                  filteredCities[city] = cityData;
+                  stateHasUsers = true;
+                  countryHasUsers = true;
+                }
+              });
+            }
+            
+            if (stateHasUsers) {
+              filteredStates[state] = {
+                ...stateData,
+                cities: filteredCities
+              };
+            }
+          });
+        }
+        
+        if (countryHasUsers) {
+          filtered[country] = {
+            ...countryData,
+            states: filteredStates
+          };
+        }
+      });
+      
+      return filtered;
     }
 
     function generateGeoItem(name, data, type) {
@@ -972,7 +947,14 @@
 
     function loadJusticeCases() {
       const container = document.getElementById('justiceCases');
-      container.innerHTML = mockData.justiceCases.map(caseItem => `
+      
+      if (realData.justiceCases.length === 0) {
+        container.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">No justice cases found</div>';
+        document.getElementById('justiceCount').textContent = '0';
+        return;
+      }
+      
+      container.innerHTML = realData.justiceCases.map(caseItem => `
         <div class="case-item">
           <div class="case-header">
             <div class="case-title">Case #${caseItem.id}: ${caseItem.mission}</div>
@@ -1002,17 +984,14 @@
               <div class="requirements-title">⚖️ Resolution Process:</div>
               <div class="requirements-list">
                 <strong>For Bounty Hunters:</strong> Post evidence with <span style="color: #04aa6d;">#missionmischiefevidenceyourmessage</span><br>
-                <strong>For Accused Players:</strong><br>
-                • Post clown selfie with <span style="color: #04aa6d;">#missionmischiefclown</span><br>
-                • Buy bounty hunter a beer via Buy Me A Coffee and post screenshot with <span style="color: #04aa6d;">#missionmischiefpaidbaler</span><br>
-                • Complete both requirements same day to remove case from system
+                <strong>For Accused Players:</strong> <a href="app.html#cheater-redemption" style="color: #ff4444; text-decoration: none; font-weight: bold;">🤡 CHEATER REDEMPTION ZONE 🤡</a>
               </div>
             </div>
           </div>
         </div>
       `).join('');
       
-      document.getElementById('justiceCount').textContent = mockData.justiceCases.length;
+      document.getElementById('justiceCount').textContent = realData.justiceCases.length;
     }
 
     // Toggle functions
@@ -1090,6 +1069,21 @@
       
       nextUpdateText.textContent = nextUpdate;
     }
+    
+    // Back to top functionality
+    window.addEventListener('scroll', function() {
+      const backToTop = document.getElementById('backToTop');
+      if (window.scrollY > 300) {
+        backToTop.style.display = 'flex';
+      } else {
+        backToTop.style.display = 'none';
+      }
+    });
+    
+    document.getElementById('backToTop').addEventListener('click', function(e) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
   </script>
 
 </body>
