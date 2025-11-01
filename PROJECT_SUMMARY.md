@@ -1,6 +1,6 @@
 # Mission Mischief - Project Summary
 
-## Current Status: PHASE 5 COMPLETE - LIVE PRODUCTION SYSTEM
+## Current Status: PHASE 2 - FEATURE POLISH
 
 ### Overview
 Mission Mischief is a real-world scavenger hunt game where players complete hilarious missions in public places, earn badges, and compete on leaderboards. The system uses social media hashtag scraping to track player activity and points.
@@ -163,18 +163,23 @@ Redemption: #missionmischiefclown #missionmischiefpaidbail
 - ✅ Complete mission system (51 missions)
 - ✅ Bounty hunter tracking with real data
 - ✅ Justice system operational
-- ✅ Mobile-responsive design
+- ✅ Mobile-responsive design improvements
 - ✅ TikTok completely removed from game functionality
 - ✅ Buy-in system removed for streamlined UX
 - ✅ Real data integration replacing all mock data
 - ✅ Comprehensive US location data integrated
 - ✅ Back-to-top navigation implemented
+- ✅ All help pages with contextual links
+- ✅ iPhone safe area support
+- 🔄 Mobile testing in progress
+- ⏳ Mugshot, Honor Score, Overlay systems pending
 
-### Current Focus: Mobile Optimization
-- Reviewing mobile responsiveness across all pages
-- 99% of users expected to be on mobile devices
-- Optimizing for phone-first experience
-- Testing touch interactions and scrolling
+### Current Focus: Phase 2 Feature Polish
+- ✅ All help pages created with images (qr-help.html, how-to-play.html, buy-me-a-coffee-help.html)
+- ✅ Contextual help links integrated
+- ✅ Mobile UX improvements (header positioning, safe area support)
+- 🔄 Mobile device testing in progress
+- ⏳ Remaining: Mugshot flow, Honor Score system, Camera Overlay system
 
 ### Key Technical Decisions
 - **No TikTok**: API unavailable, completely removed to prevent user confusion
@@ -190,18 +195,58 @@ Redemption: #missionmischiefclown #missionmischiefpaidbail
 - **Error Handling**: Graceful fallbacks throughout system
 - **CORS Configuration**: Properly configured for cross-origin requests
 
-### Next Steps
-- Complete mobile optimization review (in progress)
-- Performance testing on mobile devices
-- User testing and feedback collection
-- Potential expansion to additional countries (CA, UK, AU location data)
+### Phase 2: Feature Polish - Remaining Tasks
+
+#### ✅ Completed
+- City filter input with search functionality
+- Form sizing fixes for mobile
+- Header adjustments and iPhone safe area support
+- Page positioning (scroll-to-top)
+- All help pages created (qr-help.html, how-to-play.html, buy-me-a-coffee-help.html)
+- Contextual help links integrated
+- Mobile layout fixes for index.html
+
+#### ⏳ Remaining Tasks
+- **Mugshot Flow** - Improve FAFO mission photo capture and validation
+- **Honor Score System** - Implement scoring algorithm and display
+- **Camera Overlay System** - Complete badge/mascot overlay functionality
+- **Performance Optimization** - Review and optimize for webview app
+- **Security Headers** - Add no-index, no-sniff, and webview-specific headers
+
+### Webview App Configuration
+**Deployment**: https://missionmischief.online (SSL/DNS complete)
+**Type**: Webview app (not public web)
+**Security Requirements**:
+- `<meta name="robots" content="noindex, nofollow, nosnippet">`
+- `<meta http-equiv="X-Content-Type-Options" content="nosniff">`
+- `<meta http-equiv="X-Frame-Options" content="DENY">`
+- `<meta http-equiv="Content-Security-Policy" content="default-src 'self'">`
+
+#### Phase 3: The Big Kahuna (Next) 🐍 Days/weeks
+- **Python scraper fallback** - Selenium-based scraper as AWS backup
+- **Buy Me A Coffee integration** - Complete setup with how-to page
+- **App store deployment** - Prepare for Google Play and App Store
+- **Additional features** - Clown overlay positioning, security headers
+
+#### Identified Mobile Issues from Testing:
+- Index.html: Top section cut off, header not visible on load
+- funny-tos.html: Title box doesn't fit mobile, bullet alignment issues
+- Form inputs: Oversized boxes extending beyond screen width
+- City dropdown: Needs filter input, remove zip codes
+- Dashboard: Opens mid-page instead of top
+- Bounty hunter badge: Causing page overflow
+- Mugshot: Download not working, share URL incorrect
+- Mock data: Still present in bounty-hunter.html and admin-panel.html
+
+### Current Development Focus
+**Phase 1 Mobile UX Blitz in progress** - Fixing critical mobile usability issues identified during phone testing.
 
 ### For New Conversations
 When starting a new conversation about this project:
 
 1. **Context**: 18+ social scavenger hunt game with legal comedy framework
 2. **Architecture**: Single-page app using localStorage, AWS Lambda backend
-3. **Current Status**: PHASE 5 COMPLETE - LIVE PRODUCTION SYSTEM
+3. **Current Status**: PHASE 2 - FEATURE POLISH
 4. **Key Achievement**: Fully operational social media scraping with real API integration
 5. **Brand**: #04aa6d green, dark theme, Mayhem mascot, comedy + legal binding
 6. **Technical**: Frontend + AWS Lambda, real social media verification, device-only storage
