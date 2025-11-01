@@ -4,6 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   
+  <!-- Webview Security Headers -->
+  <meta name="robots" content="noindex, nofollow, nosnippet">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:;">
+  
   <!-- Mobile WebView Optimizations -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -41,29 +47,84 @@
     
     /* Mobile-First Responsive Design */
     @media (max-width: 768px) {
-      .container { padding: 0 15px; }
-      .mission-card { margin-bottom: 15px; font-size: 14px; }
-      .mission-btn { padding: 8px 12px; font-size: 12px; margin: 2px; word-wrap: break-word; max-width: 100%; }
-      .mission-actions { display: flex; flex-wrap: wrap; gap: 5px; }
-      .mission-actions .mission-btn { flex: 1; min-width: 80px; text-align: center; }
-      .user-stats { flex-wrap: wrap; gap: 10px; }
-      .stat-card { min-width: calc(50% - 5px); }
-      .feature-cards { flex-direction: column; }
-      .buyin-card { margin-bottom: 15px; }
-      #missionUploadModal { padding: 10px; }
-      #missionUploadModal > div { max-width: 95vw; padding: 15px; }
+      .container { 
+        padding: 0 15px;
+        max-width: 100%;
+        overflow-x: hidden;
+      }
+      
+      body {
+        overflow-x: hidden;
+        width: 100%;
+      }
+      
+      .mission-card { 
+        margin-bottom: 15px; 
+        font-size: 14px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+      
+      .mission-btn { 
+        padding: 8px 12px; 
+        font-size: 12px; 
+        margin: 2px; 
+        word-wrap: break-word; 
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+      
+      .mission-actions { 
+        display: flex; 
+        flex-wrap: wrap; 
+        gap: 5px; 
+      }
+      
+      .mission-actions .mission-btn { 
+        flex: 1; 
+        min-width: 80px; 
+        text-align: center; 
+      }
+      
+      .user-stats { 
+        flex-wrap: wrap; 
+        gap: 10px; 
+      }
+      
+      .stat-card { 
+        min-width: calc(50% - 5px); 
+      }
+      
+      .feature-cards { 
+        flex-direction: column; 
+      }
+      
+      .buyin-card { 
+        margin-bottom: 15px; 
+      }
+      
+      #missionUploadModal { 
+        padding: 10px; 
+      }
+      
+      #missionUploadModal > div { 
+        max-width: 95vw; 
+        padding: 15px; 
+      }
       
       /* Fix form input sizing on mobile */
       .form-control {
         width: 100% !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
+        padding: 8px 12px;
       }
       
-      .mission-card {
-        width: 100% !important;
+      /* Expand form container on mobile */
+      .col-lg-6 {
         max-width: 100% !important;
-        box-sizing: border-box !important;
+        padding: 0 10px;
       }
       
       /* Header adjustments for mobile */
@@ -117,7 +178,7 @@
     <section id="userSetup" class="section-bg" style="display: none; padding-top: calc(100px + env(safe-area-inset-top));">
       <div class="container">
         <div class="row justify-content-center">
-          <div class="col-lg-6">
+          <div class="col-lg-6" style="max-width: 90%; margin: 0 auto;">
             <div class="mission-card">
               <h2 class="text-center mb-4">Welcome to Mission Mischief!</h2>
               <form id="setupForm">
@@ -1147,27 +1208,33 @@
       if (navigator.share && processedResult) {
         const file = new File([processedResult], `mission-${mission.id}.jpg`, { type: 'image/jpeg' });
         
-        navigator.share({
-          title: `Mission ${mission.id}: ${mission.title}`,
-          text: shareText,
-          files: [file]
-        }).catch(err => {
-          // Fallback to text with hashtags
-          navigator.clipboard.writeText(shareText).then(() => {
-            showToast('Hashtags copied! Paste when posting your photo', 'success');
-          }).catch(() => {
-            showToast('Manual copy: ' + hashtags, 'info');
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          navigator.share({
+            title: `Mission ${mission.id}: ${mission.title}`,
+            text: shareText,
+            files: [file]
+          }).catch(err => {
+            fallbackShare(shareText, hashtags);
           });
-        });
+        } else {
+          fallbackShare(shareText, hashtags);
+        }
       } else {
-        // Copy hashtags to clipboard
+        fallbackShare(shareText, hashtags);
+      }
+    };
+    
+    function fallbackShare(shareText, hashtags) {
+      if (navigator.clipboard) {
         navigator.clipboard.writeText(shareText).then(() => {
           showToast('Hashtags copied! Paste when posting your photo', 'success');
         }).catch(() => {
           showToast('Manual copy: ' + hashtags, 'info');
         });
+      } else {
+        showToast('Manual copy: ' + hashtags, 'info');
       }
-    };
+    }
     
     window.closeMissionUpload = function() {
       const modal = document.getElementById('missionUploadModal');
@@ -1211,26 +1278,15 @@
       const hashtags = generateMissionHashtags(mission, user);
       const shareText = `Just completed: ${mission.title}\n\n${hashtags}`;
       
-      if (navigator.share) {
-        navigator.share({
-          title: `Mission ${mission.id}: ${mission.title}`,
-          text: shareText,
-          url: window.location.origin
-        }).catch(err => {
-          // Fallback to clipboard
-          navigator.clipboard.writeText(shareText).then(() => {
-            showToast('Hashtags copied - paste when sharing!', 'success');
-          }).catch(() => {
-            showToast('Manual copy: ' + hashtags, 'info');
-          });
-        });
-      } else {
-        // Direct clipboard fallback
+      // Copy hashtags to clipboard for manual sharing
+      if (navigator.clipboard) {
         navigator.clipboard.writeText(shareText).then(() => {
-          showToast('Hashtags copied - paste when sharing!', 'success');
+          showToast('Hashtags copied! Take your photo/video and paste when posting', 'success');
         }).catch(() => {
           showToast('Manual copy: ' + hashtags, 'info');
         });
+      } else {
+        showToast('Manual copy: ' + hashtags, 'info');
       }
     }
     
@@ -1417,12 +1473,17 @@
           delete user.missionPoints[missionId];
           user.totalPoints = Object.values(user.missionPoints).reduce((sum, p) => sum + p, 0);
         }
+        // Deduct honor score for cheating
+        user.honorScore = Math.max(0, (user.honorScore || 100) - 10);
+        user.isCheater = true;
         Storage.saveUser(user);
-        showToast(`Mission ${missionId} marked incomplete`, 'success');
+        showToast(`Mission ${missionId} marked incomplete. Honor score deducted.`, 'success');
         loadUserStats();
         loadMissions();
       }
     };
+    
+    let processedClownImage = null;
     
     window.processClownSelfie = function() {
       const file = document.getElementById('clownSelfie').files[0];
@@ -1460,33 +1521,134 @@
         ctx.textAlign = 'center';
         ctx.fillText('CLOWN', centerX, canvas.height - 50);
         
-        // Download result
+        // Store processed image
         canvas.toBlob(blob => {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = 'clown-selfie.jpg';
-          a.click();
-          URL.revokeObjectURL(url);
+          processedClownImage = blob;
           
-          btn.textContent = '✅ CLOWN SELFIE READY';
-          showToast('Clown selfie ready! Post with #missionmischiefclown', 'success');
+          // Update button to show options
+          btn.innerHTML = '✅ CLOWN READY';
+          btn.disabled = false;
+          btn.onclick = downloadClownSelfie;
+          
+          // Add share button
+          const shareBtn = document.createElement('button');
+          shareBtn.textContent = '📤 SHARE CLOWN';
+          shareBtn.style.cssText = 'background: #04aa6d; color: #000; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; margin-left: 10px;';
+          shareBtn.onclick = shareClownSelfie;
+          btn.parentNode.appendChild(shareBtn);
+          
+          showToast('Clown selfie ready! Download or share with #missionmischiefclown', 'success');
         });
       };
       
       img.src = URL.createObjectURL(file);
     };
     
+    function downloadClownSelfie() {
+      if (processedClownImage) {
+        const url = URL.createObjectURL(processedClownImage);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'mission-mischief-clown-selfie.jpg';
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('Clown selfie downloaded!', 'success');
+      }
+    }
+    
+    function shareClownSelfie() {
+      if (processedClownImage) {
+        const file = new File([processedClownImage], 'clown-selfie.jpg', { type: 'image/jpeg' });
+        const shareText = 'I got caught cheating in Mission Mischief and had to take a clown selfie! \n\n#missionmischiefclown #missionmischief #realworldgame';
+        
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+          navigator.share({
+            title: 'Mission Mischief - Clown Selfie',
+            text: shareText,
+            files: [file]
+          }).catch(() => {
+            fallbackClownShare(shareText);
+          });
+        } else {
+          fallbackClownShare(shareText);
+        }
+      }
+    }
+    
+    function fallbackClownShare(shareText) {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(shareText).then(() => {
+          showToast('Hashtags copied! Download your clown selfie and paste when posting', 'success');
+        });
+      } else {
+        showToast('Manual copy: #missionmischiefclown', 'info');
+      }
+    }
+    
+    let beerProofImage = null;
+    
     window.uploadBeerProof = function() {
       const file = document.getElementById('beerProof').files[0];
       if (!file) return;
       
       const btn = document.getElementById('beerBtn');
-      btn.textContent = '✅ BEER PROOF UPLOADED';
-      btn.disabled = true;
+      beerProofImage = file;
       
-      showToast('Beer proof ready! Post with #missionmischiefpaidbail', 'success');
+      // Update button to show options
+      btn.innerHTML = '✅ BEER PROOF READY';
+      btn.disabled = false;
+      btn.onclick = downloadBeerProof;
+      
+      // Add share button
+      const shareBtn = document.createElement('button');
+      shareBtn.textContent = '📤 SHARE PROOF';
+      shareBtn.style.cssText = 'background: #04aa6d; color: #000; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; margin-left: 10px;';
+      shareBtn.onclick = shareBeerProof;
+      btn.parentNode.appendChild(shareBtn);
+      
+      showToast('Beer proof ready! Download or share with #missionmischiefpaidbail', 'success');
     };
+    
+    function downloadBeerProof() {
+      if (beerProofImage) {
+        const url = URL.createObjectURL(beerProofImage);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'mission-mischief-beer-proof.jpg';
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('Beer proof downloaded!', 'success');
+      }
+    }
+    
+    function shareBeerProof() {
+      if (beerProofImage) {
+        const file = new File([beerProofImage], 'beer-proof.jpg', { type: 'image/jpeg' });
+        const shareText = 'I paid my bounty hunter their beer money! Honor restored in Mission Mischief \n\n#missionmischiefpaidbail #missionmischief #realworldgame';
+        
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+          navigator.share({
+            title: 'Mission Mischief - Beer Proof',
+            text: shareText,
+            files: [file]
+          }).catch(() => {
+            fallbackBeerShare(shareText);
+          });
+        } else {
+          fallbackBeerShare(shareText);
+        }
+      }
+    }
+    
+    function fallbackBeerShare(shareText) {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(shareText).then(() => {
+          showToast('Hashtags copied! Upload your beer proof and paste when posting', 'success');
+        });
+      } else {
+        showToast('Manual copy: #missionmischiefpaidbail', 'info');
+      }
+    }
     
     // Initialize app
     window.addEventListener('load', function() {

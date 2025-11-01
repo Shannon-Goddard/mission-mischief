@@ -1,0 +1,54 @@
+Mission Mischief notes:
+
+
+
+https://missionmischief.online 
+
+onload “YOU FOUND THE EVIDENCE
+Welcome to Mission Mischief: The World's Most Sociopathic Scavenger Hunt” is aligned left partly going off screen. Needs to be centered.
+The rest is great
+
+
+https://missionmischief.online/funny-tos.html
+
+“🎭 MISSION 1: FAFO 🎭
+F*** Around and Find Out Welcome to the most legally binding comedy show on Earth!” Seems too bulky. Would like to see if “🎭 MISSION 1: FAFO 🎭” as 1 line instead of two would help the visual.
+
+🎮 THE GAME BASICS: section’s bullet points are causing each bullet points text to have too much padding.
+After thoughts: Would be nice to have section titles be one line. Love the font and color and emojis. Maybe smaller; test.
+after box is checked, need obvious cue to scroll down to take mugshot button. Either page auto scrolls down or an arrow down appears.
+
+
+Mugshot
+
+remove text: Hold sign with date/time
+“Booking Instructions” on separate line which is okay. Just need to move siren emoji to the other side of the word “Booking” so it looks centered.
+Mugshot share button shares website address, should be mugshot image.
+Mugshot does not download to device photos when continue with game button is pressed. Does on pc. Mobile looks like the page is just too fast to move on.
+
+
+Form page
+
+The box all the input and dropdowns are in is too skinny. A lot of room on each side (it’s centered) to expand.
+
+
+https://missionmischief.online/app.html
+
+The dashboard
+
+on load it is too wide. Able to pinch down, but shouldn’t have to.
+How to play buttons back to game (both top and bottom) takes you to index not dashboard.
+Honor score deduction when found cheating.
+Looks like all missions are setup to share the web address, not the missions pic or video 
+Need to go over business card setup. All information is there. Just need to setup so multiple cards are printed on a single page. 2-3 columns. Idk rows. Need to test.
+Choose your destiny mission needs more detail on the 4 paths missions and proof requirements. Also, section that was removed must have been connected to the js to unlock the rest of the mission. I have all 4 marked complete and the other missions are not showing.
+Clown overlay. Be able to move nose on preview or just add clown.png on bottom right 
+Button says clown selfie is ready, but does nothing. Need to be able to download or share.
+Beer proof upload button does nothing. Need to be able to download or share.
+
+
+Bounty hunter and admin panel, not same results. Need to inspect admin panel error. Try to get real data from lambda before python scrape secondary method is made.
+
+
+
+Double check that buy me a coffee help tells user to put their social media address as their website.

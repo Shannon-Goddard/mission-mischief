@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Webview Security Headers -->
+    <meta name="robots" content="noindex, nofollow, nosnippet">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:;">
     <title>Mission Mischief - FAFO (Mission 1)</title>
     <link href="assets/css/mugshot.css" rel="stylesheet">
     <style>
@@ -34,6 +40,18 @@
             border-radius: 8px;
             text-align: center;
             margin-bottom: 30px;
+        }
+        
+        .mission-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+        
+        @media (max-width: 768px) {
+            .mission-header h1 {
+                font-size: 1.5rem;
+            }
         }
         
         .funny-tos {
@@ -166,12 +184,12 @@
             
             <div class="important">
                 <h3>🎮 THE GAME BASICS:</h3>
-                <ul>
-                    <li><strong>Social Media Uploads:</strong> Every mission needs proof via photo/video posted to social media with the mission hashtag</li>
-                    <li><strong>Respect Privacy:</strong> Don't post videos or pictures of people without their permission (seriously, don't be creepy)</li>
-                    <li><strong>Age Limit:</strong> Must be 18+ (we don't want angry parents calling us)</li>
-                    <li><strong>Don't Break Laws:</strong> Creative mischief ≠ criminal activity (use your brain)</li>
-                    <li><strong>Proof Required:</strong> No pic/vid with hashtag = mission doesn't count</li>
+                <ul style="padding-left: 20px; margin: 10px 0;">
+                    <li style="margin-bottom: 8px;"><strong>Social Media Uploads:</strong> Every mission needs proof via photo/video posted to social media with the mission hashtag</li>
+                    <li style="margin-bottom: 8px;"><strong>Respect Privacy:</strong> Don't post videos or pictures of people without their permission (seriously, don't be creepy)</li>
+                    <li style="margin-bottom: 8px;"><strong>Age Limit:</strong> Must be 18+ (we don't want angry parents calling us)</li>
+                    <li style="margin-bottom: 8px;"><strong>Don't Break Laws:</strong> Creative mischief ≠ criminal activity (use your brain)</li>
+                    <li style="margin-bottom: 8px;"><strong>Proof Required:</strong> No pic/vid with hashtag = mission doesn't count</li>
                 </ul>
             </div>
             
@@ -251,8 +269,8 @@
         
         <!-- Instructions -->
         <div class="mugshot-instructions">
-            <strong>🚨 BOOKING INSTRUCTIONS 🚨</strong><br>
-            Look directly at camera • Serious expression • Hold sign with date/time
+            <strong>🚨 🚨 BOOKING INSTRUCTIONS 🚨 🚨</strong><br>
+            Look directly at camera • Serious expression
         </div>
         
         <!-- Main Camera View -->
@@ -297,6 +315,10 @@
             
             if (checkbox.checked) {
                 instructions.style.display = 'block';
+                // Auto-scroll to mugshot button
+                setTimeout(() => {
+                    instructions.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 300);
             } else {
                 instructions.style.display = 'none';
                 closeMugshotOverlay();
@@ -371,26 +393,44 @@
             const hashtag = '#iwillnotsuemissionmischieforitsaffiliatedteambecausedoingsowouldbeadickmoveandisignaconsentformpromisingtonotbeadickandtakeaselfieandpostitwithmelookinglikeacriminalholdingasignwithtodaysdateandtimeinamugshotandifithinkimsmarterthanthembynottakingaselfiebutuploadingapictureofanythingotherthanmeornopictureatalltheniwilloweallplayersexposingmefivedollarsandnotlimitedtotheonlybeingexposedoncerulebecauseiobviouslyamadick';
             const shareText = `Just completed Mission 1: FAFO!\n\n${hashtag}\n\n#missionmischief #realworldgame`;
             
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Mission Mischief - FAFO Complete!',
-                    text: shareText,
-                    url: window.location.origin
-                }).catch(err => {
-                    // Fallback to clipboard
-                    navigator.clipboard.writeText(shareText).then(() => {
-                        alert('📤 Share text copied! Paste when posting your mugshot!');
-                    }).catch(() => {
-                        alert('📋 Manual copy: ' + hashtag);
-                    });
-                });
+            // Share mugshot image if available
+            if (mugshotCamera && mugshotCamera.canvas) {
+                mugshotCamera.canvas.toBlob((blob) => {
+                    const file = new File([blob], 'mission-mischief-mugshot.jpg', { type: 'image/jpeg' });
+                    
+                    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                        navigator.share({
+                            title: 'Mission Mischief - FAFO Complete!',
+                            text: shareText,
+                            files: [file]
+                        }).catch(err => {
+                            shareTextOnly(shareText, hashtag);
+                        });
+                    } else {
+                        // Download image and copy text
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'mission-mischief-mugshot.jpg';
+                        a.click();
+                        URL.revokeObjectURL(url);
+                        shareTextOnly(shareText, hashtag);
+                    }
+                }, 'image/jpeg', 0.9);
             } else {
-                // Direct clipboard fallback
+                shareTextOnly(shareText, hashtag);
+            }
+        }
+        
+        function shareTextOnly(shareText, hashtag) {
+            if (navigator.clipboard) {
                 navigator.clipboard.writeText(shareText).then(() => {
-                    alert('📤 Share text copied! Paste when posting your mugshot!');
+                    alert('📤 Hashtags copied! Download your mugshot and paste the text when posting!');
                 }).catch(() => {
                     alert('📋 Manual copy: ' + hashtag);
                 });
+            } else {
+                alert('📋 Manual copy: ' + hashtag);
             }
         }
         

@@ -88,7 +88,7 @@ const Missions = {
     { id: 3, title: 'Buy Me A Beer 🍺', location: 'Anywhere', description: 'Setup Buy Me A Coffee account, change to beer. Message: "I bought a stupid game #missionmischief and it told me if I made this account and followed all the rules and completed all the missions I would most likely, not promised, more like a maybe, get my money back with interest on a mission by getting someone to buy me a beer. Which cost $5. The game cost me $4.99. Wow! These guys are geniuses!" Then get ANYONE to buy you a beer ($5)', proof: 'Screenshot of the message on your account + Screenshot of anyone buying you a beer', hashtag: '#missionmischiefbuymeabeer', badgeId: 'beer', type: 'setup', requiresBuyIn: false, points: '1 / 3', cardDrop: 'N/A (setup mission)', mayhem: 'EXCITED' },
     
     // M4: Path Selection
-    { id: 4, title: 'Choose Your Destiny', location: 'Anywhere', description: 'Captain Planet (2x50gal recyclables) OR Oscar (2x50gal trash) OR Sign up 3 players + Bye-Bye-Bye dance OR do nothing (clown badge)', proof: 'Photo of you posing as a super hero in front of two 50 gallon bags of recycling', hashtag: '#missionmischiefdestiny', badgeId: null, type: 'buyin', requiresBuyIn: false, points: '0-3', cardDrop: 'Leave with donation/give to audience', mayhem: 'EXCITED' },
+    { id: 4, title: 'Choose Your Destiny', location: 'Anywhere', description: 'Choose your path to unlock missions:\n\n🌍 GREEN WARRIOR: Recycle 2x50gal bags of cans/bottles. Proof: Superhero pose with recycling voucher\n\n🗑️ OSCAR THE GROUCH: Clean up 2x50gal bags of public trash. Proof: Oscar pose with trash bags\n\n🎵 BYE BYE BYE: Sign up 3 new players. Proof: All 4 do NSYNC dance together\n\n🤡 LICENSE TO ILL: Do nothing, unlock missions one at a time. Proof: Your patience', proof: 'Complete ONE of the four paths above', hashtag: '#missionmischiefdestiny', badgeId: null, type: 'buyin', requiresBuyIn: false, points: '0-3', cardDrop: 'Varies by path chosen', mayhem: 'EXCITED' },
     
     // M5-M6: Slim Shady Badge
     { id: 5, title: 'The Real Slim Shady', location: 'Bookstore/Library', description: 'Find "Art of Not Giving A F*ck", pose with book (title needs to be shown) in one hand while flipping off the camera with the other, leave card in page #69', proof: 'Hold book, flip off camera (pinkie=1pt, middle=3pts)', hashtag: '#missionmischiefslimshady', badgeId: 'slimshady', type: 'prank', requiresBuyIn: false, points: '1-3', cardDrop: 'Leave card in page #69 of book', mayhem: 'EXCITED' },
@@ -209,29 +209,24 @@ const Missions = {
       return this.missionData.slice(0, 4);
     }
     
-    // If user has no buy-in selected and no completed buy-ins, show setup missions
-    if (!user.currentBuyIn && completedBuyIns.length === 0) {
-      // Show first 4 missions: FAFO, License to Ill, Buy Me Beer, Choose Destiny
-      return this.missionData.slice(0, 4);
+    // After setup is complete, check buy-in status
+    // If Mission 4 (Choose Your Destiny) is completed, unlock all missions
+    if (user.completedMissions.includes(4)) {
+      // Mission 4 completed means they chose a path, unlock all missions except 50
+      const missions1to49 = Array.from({length: 49}, (_, i) => i + 1);
+      const allPreviousCompleted = missions1to49.every(id => user.completedMissions.includes(id));
+      
+      // If missions 1-49 not all completed, exclude mission 50
+      if (!allPreviousCompleted) {
+        return this.missionData.filter(m => m.id !== 50);
+      }
+      
+      // All missions available
+      return this.missionData;
     }
     
-    // If user selected 'nothing' buy-in, unlock one mission at a time
-    if (user.currentBuyIn === 'nothing' && completedBuyIns.length === 0) {
-      const completedCount = user.completedMissions.length;
-      return this.missionData.slice(0, Math.min(completedCount + 5, this.missionData.length));
-    }
-    
-    // Has real buy-in or completed buy-ins: check for mission 50 lock
-    const missions1to49 = Array.from({length: 49}, (_, i) => i + 1);
-    const allPreviousCompleted = missions1to49.every(id => user.completedMissions.includes(id));
-    
-    // If missions 1-49 not all completed, exclude mission 50
-    if (!allPreviousCompleted) {
-      return this.missionData.filter(m => m.id !== 50);
-    }
-    
-    // All missions available
-    return this.missionData;
+    // Setup complete but Mission 4 not done yet, show setup missions only
+    return this.missionData.slice(0, 4);
   },
 
   // Check if mission is completed
