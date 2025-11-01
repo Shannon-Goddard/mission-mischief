@@ -50,11 +50,31 @@ class SimpleScraper {
 
       if (response.ok) {
         const result = await response.json();
-        if (result.success && result.data) {
+        console.log('📡 Lambda response:', result);
+        
+        // Check for different response formats
+        if (result.leaderboard || result.geography || result.missions) {
+          // Direct data format
+          this.data = result;
+          console.log('✅ AWS Lambda scraping successful - using real data');
+          this.updateDisplay();
+          return this.data;
+        } else if (result.success && result.data) {
+          // Wrapped data format
           this.data = result.data;
-          console.log('✅ AWS Lambda scraping successful');
+          console.log('✅ AWS Lambda scraping successful - using real data');
+          this.updateDisplay();
+          return this.data;
+        } else if (result.body) {
+          // API Gateway wrapped format
+          const bodyData = typeof result.body === 'string' ? JSON.parse(result.body) : result.body;
+          this.data = bodyData;
+          console.log('✅ AWS Lambda scraping successful - using real data');
+          this.updateDisplay();
+          return this.data;
         } else {
-          console.warn('⚠️ Lambda returned no data, using demo data');
+          console.warn('⚠️ Lambda returned unexpected format:', result);
+          console.warn('⚠️ Using demo data as fallback');
         }
       } else if (response.status === 502) {
         console.warn('🔧 Lambda function not deployed (502), using demo data');

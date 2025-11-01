@@ -303,18 +303,35 @@
         
         function loadDataStatistics() {
             const scraper = window.SimpleScraper;
-            if (!scraper) return;
+            if (!scraper) {
+                console.log('❌ SimpleScraper not available for stats');
+                return;
+            }
             
             const data = scraper.getData();
+            console.log('📊 Loading stats from data:', data);
             
-            document.getElementById('totalPlayers').textContent = data.leaderboard.length.toLocaleString();
-            document.getElementById('totalPosts').textContent = Object.values(data.missions).reduce((sum, m) => sum + (m.total || 0), 0).toLocaleString();
-            document.getElementById('totalPoints').textContent = data.leaderboard.reduce((sum, p) => sum + p.points, 0).toLocaleString();
-            document.getElementById('activeCases').textContent = data.justice.length;
+            // Calculate total posts from missions
+            let totalPosts = 0;
+            if (data.missions && typeof data.missions === 'object') {
+                totalPosts = Object.values(data.missions).reduce((sum, mission) => {
+                    if (typeof mission === 'object') {
+                        return sum + (mission.instagram || 0) + (mission.facebook || 0) + (mission.x || 0) + (mission.twitter || 0);
+                    }
+                    return sum;
+                }, 0);
+            }
+            
+            document.getElementById('totalPlayers').textContent = (data.leaderboard?.length || 0).toLocaleString();
+            document.getElementById('totalPosts').textContent = totalPosts.toLocaleString();
+            document.getElementById('totalPoints').textContent = (data.leaderboard?.reduce((sum, p) => sum + (p.points || 0), 0) || 0).toLocaleString();
+            document.getElementById('activeCases').textContent = (data.justice?.length || 0);
             
             // Calculate cache size
             const cacheSize = JSON.stringify(data).length;
             document.getElementById('cacheSize').textContent = `${Math.round(cacheSize / 1024)} KB`;
+            
+            console.log('📊 Stats updated - Players:', data.leaderboard?.length, 'Posts:', totalPosts);
         }
         
         function loadAPIStatus() {
