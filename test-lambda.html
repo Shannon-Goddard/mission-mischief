@@ -64,6 +64,7 @@
         
         <button class="test-button" onclick="testLambda()">🚀 Test Lambda Endpoint</button>
         <button class="test-button" onclick="testPython()">🐍 Test Python Server</button>
+        <button class="test-button" onclick="testECS()">⚡ Test AWS ECS Scraper</button>
         <button class="test-button" onclick="clearResults()">🗑️ Clear Results</button>
         
         <div id="status"></div>
@@ -85,6 +86,11 @@
         async function testPython() {
             const endpoint = 'http://localhost:8000/scrape';
             await testEndpoint(endpoint, 'Python Server');
+        }
+        
+        async function testECS() {
+            const endpoint = 'http://44.221.47.182:5000/scrape';
+            await testEndpoint(endpoint, 'AWS ECS Scraper');
         }
         
         async function testEndpoint(endpoint, name) {
