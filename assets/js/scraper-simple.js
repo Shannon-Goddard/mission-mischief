@@ -29,7 +29,7 @@ class SimpleScraper {
   }
 
   async startScraping() {
-    console.log('🚀 Starting simplified scraping...');
+    console.log('🎯 Starting BULLETPROOF scraping (Phase 1)...');
     this.status.active = true;
     this.status.lastUpdate = new Date();
     // Set next update to 3am tomorrow
@@ -39,7 +39,7 @@ class SimpleScraper {
     this.status.nextUpdate = tomorrow;
 
     try {
-      console.log('📡 Attempting AWS Lambda connection...');
+      console.log('📡 Connecting to optimized Lambda endpoint...');
       const response = await fetch(this.endpoint, {
         method: 'GET',
         headers: {
@@ -56,7 +56,7 @@ class SimpleScraper {
         if (result.leaderboard || result.geography || result.missions) {
           // Direct data format
           this.data = result;
-          console.log('✅ AWS Lambda scraping successful - using real data');
+          console.log('✅ BULLETPROOF Lambda scraping successful - using real data');
           this.updateDisplay();
           return this.data;
         } else if (result.success && result.data) {
@@ -81,7 +81,8 @@ class SimpleScraper {
             }
           } else {
             this.data = lambdaData;
-            console.log('✅ AWS Lambda scraping successful - using real data');
+            console.log('✅ BULLETPROOF Lambda scraping successful - using real data');
+            console.log(`📊 Coverage: ${result.coverage?.totalPosts || 0} posts, ${result.coverage?.hashtags || 0} hashtags, ${result.coverage?.platforms || 0} platforms`);
           }
           
           this.updateDisplay();
