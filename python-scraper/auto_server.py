@@ -136,6 +136,15 @@ def scrape_endpoint():
             'timestamp': datetime.now().isoformat()
         }), 500
 
+@app.route('/health', methods=['GET'])
+def health_endpoint():
+    """Health check endpoint for ALB"""
+    return jsonify({
+        'status': 'healthy',
+        'service': 'mission-mischief-python-scraper',
+        'timestamp': datetime.now().isoformat()
+    })
+
 @app.route('/status', methods=['GET'])
 def status_endpoint():
     """Status endpoint"""
