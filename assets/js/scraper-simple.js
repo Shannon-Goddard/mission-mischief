@@ -144,8 +144,8 @@ class SimpleScraper {
     try {
       console.log('🐍 Attempting Python scraper backup...');
       
-      // Try deployed AWS ECS server first
-      const pythonEndpoint = 'http://44.221.47.182:5000/scrape';
+      // Try enterprise ALB endpoint first
+      const pythonEndpoint = 'http://mission-mischief-alb-1979839755.us-east-1.elb.amazonaws.com/scrape';
       const response = await fetch(pythonEndpoint, {
         method: 'GET',
         headers: {
