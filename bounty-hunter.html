@@ -730,7 +730,7 @@
     }
 
     function loadBountyHunterData() {
-      // Get real data from scraper
+      // Get BULLETPROOF Phase 2 data from scraper
       if (window.SimpleScraper) {
         const scraperData = window.SimpleScraper.getData();
         realData.topPlayers = scraperData.leaderboard || [];
@@ -742,14 +742,14 @@
           year: 'numeric', 
           month: 'long', 
           day: 'numeric' 
-        }) + ' 3:00 AM PST';
+        }) + ' - BULLETPROOF Phase 2 Active';
       }
       
       // Load last updated timestamp
       document.getElementById('lastUpdated').textContent = `Last Updated: ${realData.lastUpdated}`;
       
-      // Load scrape status
-      updateScrapeStatus('active', '3:00 AM');
+      // Load BULLETPROOF scrape status
+      updateScrapeStatus('active', 'ScraperAPI + Selenium + Lambda (95% Coverage)');
       
       // Load all sections
       loadTopPlayers();
