@@ -20,7 +20,19 @@ const CONFIG = {
     platforms: ['instagram', 'facebook', 'x']
 };
 
-exports.handler = async (event) => {
+export const handler = async (event, context) => {
+    // Handle OPTIONS preflight request
+    if (event.httpMethod === 'OPTIONS') {
+        return {
+            statusCode: 200,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+            },
+            body: ''
+        };
+    }
     console.log('🎯 BULLETPROOF Lambda scraper starting...');
     
     try {
