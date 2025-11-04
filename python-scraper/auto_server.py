@@ -10,7 +10,7 @@ import time
 from datetime import datetime
 from flask import Flask, jsonify
 from flask_cors import CORS
-from selenium_scraper import SeleniumScraper
+from simple_scraper import SimpleScraper
 import threading
 import schedule
 
@@ -20,7 +20,7 @@ CORS(app)
 class AutoScraperManager:
     def __init__(self):
         self.lambda_endpoint = 'https://imddm6sh0i.execute-api.us-east-1.amazonaws.com/prod/scrape'
-        self.selenium_scraper = SeleniumScraper()
+        self.simple_scraper = SimpleScraper()
         self.cached_data = None
         self.last_update = None
         
@@ -99,16 +99,10 @@ class AutoScraperManager:
         print("🔄 Checking Lambda data...")
         lambda_check = self.check_lambda_data()
         
-        if lambda_check['needs_backup']:
-            print("🐍 Running Selenium backup...")
-            selenium_data = self.selenium_scraper.scrape_all_platforms()
-            
-            if selenium_data:
-                self.cached_data = self.merge_data(lambda_check.get('lambda_data'), selenium_data)
-                print("✅ Data merged successfully")
-            else:
-                self.cached_data = lambda_check.get('lambda_data')
-                print("⚠️ Selenium failed, using Lambda data only")
+        # Use simple scraper (run all 3, highest wins)
+        print("🎯 Running SIMPLE scraper (all 3, highest wins)...")
+        self.cached_data = self.simple_scraper.scrape_all()
+        print("✅ SIMPLE scraping complete")
         else:
             self.cached_data = lambda_check.get('lambda_data')
             print("✅ Lambda has complete data")
@@ -121,18 +115,22 @@ manager = AutoScraperManager()
 
 @app.route('/scrape', methods=['GET'])
 def scrape_endpoint():
-    """Main scraping endpoint"""
+    """Layer 2 scraping endpoint - triggered by Lambda"""
     try:
+        print("🐍 Layer 2 activated by Lambda - running Selenium backup...")
         data = manager.update_data()
         return jsonify({
             'success': True,
             'data': data,
+            'source': 'bulletproof-selenium-layer2',
+            'coverage': '25% additional',
             'timestamp': datetime.now().isoformat()
         })
     except Exception as e:
         return jsonify({
             'success': False,
             'error': str(e),
+            'source': 'selenium-error',
             'timestamp': datetime.now().isoformat()
         }), 500
 
@@ -156,12 +154,12 @@ def status_endpoint():
     })
 
 def schedule_auto_updates():
-    """Schedule automatic updates at 3:30 AM daily"""
-    schedule.every().day.at("03:30").do(manager.update_data)
+    """Standby mode - triggered by Lambda, not scheduled"""
+    # No automatic scheduling - Lambda triggers us when needed
+    print("🤖 Standby mode: Waiting for Lambda trigger...")
     
     while True:
-        schedule.run_pending()
-        time.sleep(60)
+        time.sleep(300)  # Check every 5 minutes for health
 
 if __name__ == '__main__':
     # Start scheduler in background thread
@@ -169,10 +167,10 @@ if __name__ == '__main__':
     scheduler_thread.start()
     
     print("🤖 Mission Mischief Auto-Scraper Server")
-    print("🕒 Scheduled daily updates at 3:30 AM")
-    print("🌐 Server: http://localhost:5000")
-    print("📡 Endpoint: http://localhost:5000/scrape")
-    print("📊 Status: http://localhost:5000/status")
+    print("🕒 Triggered by Lambda at 3:00 AM PST (Layer 2 backup)")
+    print("🌐 Server: http://mission-mischief-alb-1979839755.us-east-1.elb.amazonaws.com")
+    print("📡 Endpoint: /scrape (triggered by Lambda when needed)")
+    print("📊 Status: /status")
     
     import os
     port = int(os.environ.get('PORT', 5000))

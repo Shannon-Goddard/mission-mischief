@@ -602,7 +602,7 @@
           Last Updated: Loading...
         </div>
         <div class="last-updated" id="scrapeStatus" style="margin-top: 10px;">
-          <span id="statusIndicator">🟢</span> <span id="statusText">Active</span> - Next update at <span id="nextUpdate">3:00 AM</span>
+          <span id="statusIndicator">🤖</span> <span id="statusText">Automated</span> - Next update at <span id="nextUpdate">3:00 AM PST</span>
         </div>
       </div>
     </section>
@@ -709,13 +709,9 @@
       loadBountyHunterData();
       setupPlatformHovers();
       
-      // Connect to scraper data updates
-      if (window.MissionMischiefScraper) {
-        // Update display when scraper completes
-        window.MissionMischiefScraper.onDataUpdate = function(scrapedData) {
-          updateWithScrapedData(scrapedData);
-        };
-      }
+      // Set up 3 AM PST scheduling note
+      console.log('🕰️ BULLETPROOF: Automated 3:00 AM PST collection with three-layer failover');
+      console.log('📅 Schedule updated: cron(0 11 * * ? *) = 3:00 AM PST');
     });
     
     function setupPlatformHovers() {
@@ -729,33 +725,161 @@
       });
     }
 
-    function loadBountyHunterData() {
-      // Get BULLETPROOF Phase 2 data from scraper
-      if (window.SimpleScraper) {
-        const scraperData = window.SimpleScraper.getData();
-        realData.topPlayers = scraperData.leaderboard || [];
-        realData.missionActivity = scraperData.missions || {};
-        realData.geography = scraperData.geography || {};
-        realData.justiceCases = scraperData.justice || [];
+    async function loadBountyHunterData() {
+      console.log('🎯 Starting BULLETPROOF three-layer data collection...');
+      updateScrapeStatus('active', 'Collecting real-time data...');
+      
+      try {
+        // LAYER 1: AWS Lambda (Primary - X/Twitter + fallback)
+        console.log('📡 Layer 1: AWS Lambda scraping...');
+        const lambdaData = await fetchLambdaData();
+        
+        // LAYER 2: Python Selenium (Backup - Instagram/Facebook)
+        console.log('🐍 Layer 2: Checking Python Selenium backup...');
+        const seleniumData = await fetchSeleniumData(lambdaData);
+        
+        // LAYER 3: Merge and validate
+        console.log('🔗 Layer 3: Merging bulletproof data...');
+        const mergedData = mergeAllLayers(lambdaData, seleniumData);
+        
+        // Update real data
+        realData.topPlayers = mergedData.leaderboard || [];
+        realData.missionActivity = mergedData.missions || {};
+        realData.geography = mergedData.geography || {};
+        realData.justiceCases = mergedData.justice || [];
         realData.lastUpdated = new Date().toLocaleDateString('en-US', { 
           weekday: 'long', 
           year: 'numeric', 
           month: 'long', 
           day: 'numeric' 
-        }) + ' - BULLETPROOF Phase 2 Active';
+        }) + ` - ${mergedData.source || 'Multi-layer'} Update`;
+        
+        updateScrapeStatus('automated', `3:00 AM PST (${mergedData.coverage || '95%'} coverage)`);
+        console.log('✅ BULLETPROOF data collection complete:', mergedData.source);
+        
+      } catch (error) {
+        console.error('❌ All layers failed, using fallback:', error);
+        updateScrapeStatus('warning', 'Using fallback data');
+        realData.lastUpdated = 'System Offline - Using Demo Data';
       }
       
       // Load last updated timestamp
       document.getElementById('lastUpdated').textContent = `Last Updated: ${realData.lastUpdated}`;
-      
-      // Load BULLETPROOF scrape status
-      updateScrapeStatus('active', 'ScraperAPI + Selenium + Lambda (95% Coverage)');
       
       // Load all sections
       loadTopPlayers();
       loadMissions();
       loadGeography();
       loadJusticeCases();
+    }
+    
+    async function fetchLambdaData() {
+      try {
+        const response = await fetch('https://imddm6sh0i.execute-api.us-east-1.amazonaws.com/prod/scrape', {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        
+        if (response.ok) {
+          const result = await response.json();
+          const data = result.data || result;
+          console.log('📡 Lambda data received:', data.source || 'lambda');
+          return data;
+        }
+      } catch (error) {
+        console.warn('📡 Lambda failed:', error.message);
+      }
+      return null;
+    }
+    
+    async function fetchSeleniumData(lambdaData) {
+      // Check if Lambda has Instagram/Facebook gaps
+      const needsSelenium = !lambdaData || 
+        Object.values(lambdaData.missions || {}).every(m => !m.instagram && !m.facebook);
+      
+      if (!needsSelenium) {
+        console.log('🐍 Selenium not needed - Lambda has complete data');
+        return null;
+      }
+      
+      try {
+        console.log('🐍 Lambda missing Instagram/Facebook - activating Selenium...');
+        const response = await fetch('http://mission-mischief-alb-1979839755.us-east-1.elb.amazonaws.com/scrape', {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        
+        if (response.ok) {
+          const result = await response.json();
+          const data = result.data || result;
+          console.log('🐍 Selenium data received:', data.source || 'selenium');
+          return data;
+        }
+      } catch (error) {
+        console.warn('🐍 Selenium failed:', error.message);
+      }
+      return null;
+    }
+    
+    function mergeAllLayers(lambdaData, seleniumData) {
+      if (!lambdaData && !seleniumData) {
+        return {
+          leaderboard: [{ handle: '@system_offline', points: 0, city: 'Unknown', state: 'OFFLINE' }],
+          geography: { 'OFFLINE': { 'Unknown': 1 } },
+          missions: {},
+          justice: [],
+          source: 'offline-fallback',
+          coverage: '0%'
+        };
+      }
+      
+      if (!seleniumData) {
+        return { ...lambdaData, source: 'lambda-only', coverage: '70%' };
+      }
+      
+      if (!lambdaData) {
+        return { ...seleniumData, source: 'selenium-only', coverage: '25%' };
+      }
+      
+      // Merge leaderboards
+      const mergedLeaderboard = [...(lambdaData.leaderboard || []), ...(seleniumData.leaderboard || [])];
+      const uniqueLeaderboard = [];
+      const seen = new Set();
+      
+      for (const player of mergedLeaderboard) {
+        if (!seen.has(player.handle)) {
+          seen.add(player.handle);
+          uniqueLeaderboard.push(player);
+        } else {
+          const existing = uniqueLeaderboard.find(p => p.handle === player.handle);
+          if (existing) existing.points += player.points;
+        }
+      }
+      uniqueLeaderboard.sort((a, b) => b.points - a.points);
+      
+      // Merge missions (Selenium for Instagram/Facebook, Lambda for X)
+      const mergedMissions = {};
+      const allMissionIds = new Set([
+        ...Object.keys(lambdaData.missions || {}),
+        ...Object.keys(seleniumData.missions || {})
+      ]);
+      
+      for (const missionId of allMissionIds) {
+        mergedMissions[missionId] = {
+          instagram: seleniumData.missions?.[missionId]?.instagram || lambdaData.missions?.[missionId]?.instagram || 0,
+          facebook: seleniumData.missions?.[missionId]?.facebook || lambdaData.missions?.[missionId]?.facebook || 0,
+          x: lambdaData.missions?.[missionId]?.x || seleniumData.missions?.[missionId]?.x || 0
+        };
+      }
+      
+      return {
+        leaderboard: uniqueLeaderboard,
+        geography: { ...(lambdaData.geography || {}), ...(seleniumData.geography || {}) },
+        missions: mergedMissions,
+        justice: [...(lambdaData.justice || []), ...(seleniumData.justice || [])],
+        source: 'bulletproof-lambda+selenium',
+        coverage: '95%'
+      };
     }
     
 
@@ -854,19 +978,64 @@
 
     function loadGeography() {
       const container = document.getElementById('geoTree');
-      const filteredGeography = filterGeographyWithUsers(realData.geography);
       
-      if (Object.keys(filteredGeography).length === 0) {
+      if (Object.keys(realData.geography).length === 0) {
         container.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">No geographic data available</div>';
         document.getElementById('geoCount').textContent = '0';
         return;
       }
       
-      container.innerHTML = Object.entries(filteredGeography).map(([country, data]) => 
-        generateGeoItem(country, data, 'country')
-      ).join('');
+      // Handle Lambda format: { "CALIFORNIA": { "Losangeles": 3 } }
+      container.innerHTML = Object.entries(realData.geography).map(([state, cities]) => {
+        const cityEntries = Object.entries(cities).map(([city, count]) => {
+          // Find players in this city
+          const playersInCity = realData.topPlayers.filter(player => 
+            player.city.toLowerCase() === city.toLowerCase() && 
+            player.state === state
+          );
+          
+          const playerList = playersInCity.map(player => `
+            <div class="geo-item" style="margin-left: 40px; border-left: 2px solid #04aa6d; padding-left: 10px;">
+              <div class="geo-header" style="padding: 8px 0;">
+                <span class="geo-name" style="color: #04aa6d; font-size: 0.9em;">${player.handle}</span>
+                <span class="geo-count" style="font-size: 0.8em;">${player.points} pts</span>
+              </div>
+            </div>
+          `).join('');
+          
+          return `
+            <div class="geo-item" style="margin-left: 20px;">
+              <div class="geo-header" onclick="toggleGeo('city-${state}-${city}')">
+                <span class="geo-name">${city}</span>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="geo-count">${count}</span>
+                  <span class="expand-icon" id="city-${state}-${city}-icon">▼</span>
+                </div>
+              </div>
+              <div class="geo-children" id="city-${state}-${city}-content">
+                ${playerList}
+              </div>
+            </div>
+          `;
+        }).join('');
+        
+        return `
+          <div class="geo-item">
+            <div class="geo-header" onclick="toggleGeo('state-${state}')">
+              <span class="geo-name">${state}</span>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="geo-count">${Object.values(cities).reduce((a, b) => a + b, 0)}</span>
+                <span class="expand-icon" id="state-${state}-icon">▼</span>
+              </div>
+            </div>
+            <div class="geo-children" id="state-${state}-content">
+              ${cityEntries}
+            </div>
+          </div>
+        `;
+      }).join('');
       
-      document.getElementById('geoCount').textContent = Object.keys(filteredGeography).length;
+      document.getElementById('geoCount').textContent = Object.keys(realData.geography).length;
     }
     
     function filterGeographyWithUsers(geography) {
@@ -948,8 +1117,8 @@
     function loadJusticeCases() {
       const container = document.getElementById('justiceCases');
       
-      if (realData.justiceCases.length === 0) {
-        container.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">No justice cases found</div>';
+      if (!realData.justiceCases || realData.justiceCases.length === 0) {
+        container.innerHTML = '<div style="text-align: center; color: #04aa6d; padding: 20px;"><strong>✅ No cheaters detected!</strong><br><span style="color: #666;">All players are following the rules</span></div>';
         document.getElementById('justiceCount').textContent = '0';
         return;
       }

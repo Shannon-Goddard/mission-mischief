@@ -135,13 +135,58 @@ function processData(facebookData, instagramData, twitterData, hashtags) {
   // Sort leaderboard by points
   leaderboard.sort((a, b) => b.points - a.points);
 
+  // Parse justice cases from scraped data
+  const justiceCases = parseJusticeCases([facebookData, instagramData, twitterData]);
+
   return {
     leaderboard: leaderboard.slice(0, 50),
     geography,
     missions,
-    justice,
+    justice: justiceCases,
     lastUpdated: new Date().toISOString()
   };
+}
+
+// Parse justice cases from social media data
+function parseJusticeCases(platformData) {
+  const cases = [];
+  
+  platformData.forEach(data => {
+    if (data.data) {
+      data.data.forEach((post, index) => {
+        const postText = (post.message || post.text || '').toLowerCase();
+        
+        // Look for evidence posts
+        const evidenceMatch = postText.match(/#missionmischiefevidenc([^\s]+)/);
+        const accusedMatch = postText.match(/#missionmischiefaccused@([^\s]+)/);
+        const missionMatch = postText.match(/#missionmischief([a-z]+)(?!evidence|accused|country|state|city|points|user)/);
+        
+        if (evidenceMatch && accusedMatch) {
+          const caseId = `${Date.now()}-${index}`;
+          const accused = `@${accusedMatch[1]}`;
+          const mission = missionMatch ? missionMatch[1] : 'unknown';
+          const evidenceTag = `#missionmischiefevidenc${evidenceMatch[1]}`;
+          const author = post.from?.username || post.author_id || 'unknown';
+          
+          cases.push({
+            id: caseId,
+            mission: `Mission: ${mission}`,
+            accused: accused,
+            accuser: `@${author}`,
+            evidenceHashtag: evidenceTag,
+            date: new Date(post.created_time || post.created_at || Date.now()).toLocaleDateString(),
+            requirements: [
+              { hashtag: '#missionmischiefclown', completed: false },
+              { hashtag: '#missionmischiefpaidbail', completed: false }
+            ],
+            status: 'pending'
+          });
+        }
+      });
+    }
+  });
+  
+  return cases;
 }
 
 exports.handler = async (event) => {
@@ -252,6 +297,8 @@ exports.handler = async (event) => {
 
     // Process and return data
     const processedData = processData(facebookData, instagramData, twitterData, hashtags);
+    
+    console.log(`🕵️ Justice cases found: ${processedData.justice.length}`);
 
     return {
       statusCode: 200,
@@ -259,7 +306,13 @@ exports.handler = async (event) => {
       body: JSON.stringify({
         success: true,
         data: processedData,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        source: 'bulletproof-lambda',
+        coverage: {
+          totalPosts: processedData.totalPosts || 0,
+          hashtags: hashtags.length,
+          platforms: 3
+        }
       })
     };
 
