@@ -23,10 +23,7 @@ class LoginScraper:
     def get_credentials(self, platform):
         """Get login credentials from AWS Parameter Store"""
         try:
-            if platform == 'twitter':
-                username = self.ssm.get_parameter(Name='/mission-mischief/twitter/email', WithDecryption=True)['Parameter']['Value']
-            else:
-                username = self.ssm.get_parameter(Name=f'/mission-mischief/{platform}/email', WithDecryption=True)['Parameter']['Value']
+            username = self.ssm.get_parameter(Name=f'/mission-mischief/{platform}/email', WithDecryption=True)['Parameter']['Value']
             password = self.ssm.get_parameter(Name=f'/mission-mischief/{platform}/password', WithDecryption=True)['Parameter']['Value']
             return username, password
         except Exception as e:
