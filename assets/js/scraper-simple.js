@@ -149,7 +149,7 @@ class SimpleScraper {
     try {
       console.log('🐍 INDEPENDENT: Selenium scraper running...');
       
-      const seleniumEndpoint = 'https://mission-mischief-alb-1979839755.us-east-1.elb.amazonaws.com/scrape';
+      const seleniumEndpoint = 'https://scraper.missionmischief.online/scrape';
       const response = await fetch(seleniumEndpoint, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
@@ -174,8 +174,8 @@ class SimpleScraper {
     try {
       console.log('⚡ INDEPENDENT: ScraperAPI running...');
       
-      // Call Python scraper's ScraperAPI endpoint via ALB
-      const scraperAPIEndpoint = 'https://mission-mischief-alb-1979839755.us-east-1.elb.amazonaws.com/scraperapi';
+      // Call Python scraper's ScraperAPI endpoint via CloudFront
+      const scraperAPIEndpoint = 'https://scraper.missionmischief.online/scraperapi';
       const response = await fetch(scraperAPIEndpoint, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
