@@ -269,13 +269,19 @@
         
         function initializeAdminPanel() {
             loadSystemStatus();
-            loadDataStatistics();
             loadAPIStatus();
             loadSystemLogs();
             
-            // Add log listener
-            if (window.SimpleScraper) {
+            // Wait for scraper data before loading stats
+            if (window.SimpleScraper && window.SimpleScraper.getData()) {
+                loadDataStatistics();
                 console.log('✅ SimpleScraper connected to admin panel');
+            } else {
+                // Wait for scraper to load data
+                setTimeout(() => {
+                    loadDataStatistics();
+                }, 2000);
+                console.log('⏳ Waiting for SimpleScraper data...');
             }
         }
         
@@ -306,11 +312,28 @@
             const scraper = window.SimpleScraper;
             if (!scraper) {
                 console.log('❌ SimpleScraper not available for stats');
+                // Set default values
+                document.getElementById('totalPlayers').textContent = '0';
+                document.getElementById('totalPosts').textContent = '0';
+                document.getElementById('totalPoints').textContent = '0';
+                document.getElementById('activeCases').textContent = '0';
+                document.getElementById('cacheSize').textContent = '0 KB';
                 return;
             }
             
             const data = scraper.getData();
             console.log('📊 Loading stats from data:', data);
+            
+            // Handle null or undefined data
+            if (!data) {
+                console.log('⏳ Data not yet available, using defaults');
+                document.getElementById('totalPlayers').textContent = '0';
+                document.getElementById('totalPosts').textContent = '0';
+                document.getElementById('totalPoints').textContent = '0';
+                document.getElementById('activeCases').textContent = '0';
+                document.getElementById('cacheSize').textContent = '0 KB';
+                return;
+            }
             
             // Calculate total posts from missions
             let totalPosts = 0;
@@ -392,7 +415,7 @@
                 loadSystemStatus();
                 loadDataStatistics();
                 loadAPIStatus();
-            }, 30000); // Refresh every 30 seconds
+            }, 10000); // Refresh every 10 seconds for real-time updates
         }
         
         // Admin actions

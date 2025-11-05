@@ -111,72 +111,89 @@ class SimpleScraper {
   }
 
   async processThreeLayers(lambdaData) {
-    // LAYER 1: Lambda data (already received)
-    console.log('📡 Layer 1 (Lambda): Processing...');
+    console.log('🎯 INDEPENDENT: Running all 3 layers in parallel...');
     
-    // LAYER 2: Check if Selenium backup needed
-    const needsSelenium = this.checkSeleniumNeeded(lambdaData);
-    let seleniumData = null;
+    // Run all 3 scrapers independently (no dependencies)
+    const [layer1, layer2, layer3] = await Promise.allSettled([
+      Promise.resolve(lambdaData), // Layer 1 already complete
+      this.trySeleniumScraper(),   // Layer 2 independent
+      this.tryScraperAPI()         // Layer 3 independent
+    ]);
     
-    if (needsSelenium) {
-      console.log('🐍 Layer 2 (Selenium): Instagram/Facebook gaps detected, activating backup...');
-      seleniumData = await this.trySeleniumBackup();
-    } else {
-      console.log('🐍 Layer 2 (Selenium): Not needed - Lambda has complete coverage');
-    }
+    // Extract successful results
+    const lambdaResult = layer1.status === 'fulfilled' ? layer1.value : null;
+    const seleniumResult = layer2.status === 'fulfilled' ? layer2.value : null;
+    const scraperAPIResult = layer3.status === 'fulfilled' ? layer3.value : null;
     
-    // LAYER 3: Merge and validate
-    console.log('🔗 Layer 3 (Merge): Combining all data sources...');
-    return this.mergeScraperData(lambdaData, seleniumData);
+    console.log('📊 COMPARISON RESULTS:');
+    console.log('📡 Lambda:', this.getDataSummary(lambdaResult));
+    console.log('🐍 Selenium:', this.getDataSummary(seleniumResult));
+    console.log('⚡ ScraperAPI:', this.getDataSummary(scraperAPIResult));
+    
+    // Compare and merge using "highest count wins" strategy
+    return this.compareAndMerge(lambdaResult, seleniumResult, scraperAPIResult);
   }
   
-  checkSeleniumNeeded(lambdaData) {
-    if (!lambdaData || !lambdaData.missions) return true;
+  getDataSummary(data) {
+    if (!data) return 'No data';
     
-    // Check if any mission has data from each platform
-    const hasInstagram = Object.values(lambdaData.missions).some(m => m.instagram > 0);
-    const hasFacebook = Object.values(lambdaData.missions).some(m => m.facebook > 0);
-    const hasX = Object.values(lambdaData.missions).some(m => m.x > 0);
+    const players = data.leaderboard?.length || 0;
+    const missions = Object.keys(data.missions || {}).length;
+    const totalPosts = Object.values(data.missions || {}).reduce((sum, m) => 
+      sum + (m.instagram || 0) + (m.facebook || 0) + (m.x || 0), 0);
     
-    console.log(`📊 Platform check: Instagram=${hasInstagram}, Facebook=${hasFacebook}, X=${hasX}`);
-    
-    // Need Selenium if ANY platform is missing data
-    return !hasInstagram || !hasFacebook || !hasX;
+    return `${players} players, ${missions} missions, ${totalPosts} posts`;
   }
   
-  async trySeleniumBackup() {
+  async trySeleniumScraper() {
     try {
-      console.log('🐍 Attempting Selenium scraper backup...');
+      console.log('🐍 INDEPENDENT: Selenium scraper running...');
       
       const seleniumEndpoint = 'http://mission-mischief-alb-1979839755.us-east-1.elb.amazonaws.com/scrape';
       const response = await fetch(seleniumEndpoint, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
+        timeout: 10000
       });
       
       if (response.ok) {
         const result = await response.json();
         const data = result.data || result;
-        console.log('🐍 Selenium data received:', data.source || 'selenium');
-        return data;
+        console.log('✅ Selenium: Success -', this.getDataSummary(data));
+        return { ...data, source: 'selenium' };
+      } else {
+        throw new Error(`HTTP ${response.status}`);
       }
     } catch (error) {
-      console.warn('🐍 Selenium backup failed:', error.message);
+      console.log('❌ Selenium: Failed -', error.message);
+      return null;
     }
-    
-    // Enhanced fallback with real test data
-    console.log('🐍 Using enhanced fallback data (simulated Selenium)');
-    return {
-      leaderboard: [
-        { handle: '@casper', points: 9, city: 'Losangeles', state: 'CALIFORNIA' },
-        { handle: '@shady', points: 6, city: 'Losangeles', state: 'CALIFORNIA' },
-        { handle: '@mayhem', points: 6, city: 'Losangeles', state: 'CALIFORNIA' }
-      ],
-      geography: { 'CALIFORNIA': { 'Losangeles': 3 } },
-      missions: { '5': { instagram: 3, facebook: 3, x: 0 } },
-      justice: [],
-      source: 'selenium-fallback'
-    };
+  }
+  
+  async tryScraperAPI() {
+    try {
+      console.log('⚡ INDEPENDENT: ScraperAPI running...');
+      
+      // Call Python scraper's ScraperAPI endpoint via ALB
+      const scraperAPIEndpoint = 'http://mission-mischief-alb-1979839755.us-east-1.elb.amazonaws.com/scraperapi';
+      const response = await fetch(scraperAPIEndpoint, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        timeout: 15000
+      });
+      
+      if (response.ok) {
+        const result = await response.json();
+        const data = result.data || result;
+        console.log('✅ ScraperAPI: Success -', this.getDataSummary(data));
+        return { ...data, source: 'scraperapi' };
+      } else {
+        throw new Error(`HTTP ${response.status}`);
+      }
+    } catch (error) {
+      console.log('❌ ScraperAPI: Failed -', error.message);
+      return null;
+    }
   }
   
   async tryPythonBackup() {
@@ -184,68 +201,88 @@ class SimpleScraper {
     return await this.trySeleniumBackup();
   }
 
-  mergeScraperData(lambdaData, seleniumData) {
-    if (!seleniumData) {
+  compareAndMerge(lambdaData, seleniumData, scraperAPIData) {
+    const sources = [];
+    if (lambdaData) sources.push('lambda');
+    if (seleniumData) sources.push('selenium');
+    if (scraperAPIData) sources.push('scraperapi');
+    
+    console.log(`🏆 HIGHEST COUNT WINS: Comparing ${sources.length} sources`);
+    
+    // If no data from any source, return empty
+    if (sources.length === 0) {
       return {
-        ...lambdaData,
-        source: 'lambda-only',
-        coverage: '70%',
-        lastUpdated: new Date().toISOString()
+        leaderboard: [],
+        geography: {},
+        missions: {},
+        justice: [],
+        lastUpdated: new Date().toISOString(),
+        source: 'no-data',
+        coverage: '0%'
       };
     }
     
-    if (!lambdaData) {
-      return {
-        ...seleniumData,
-        source: 'selenium-only', 
-        coverage: '25%',
-        lastUpdated: new Date().toISOString()
-      };
-    }
-    
-    // Merge leaderboards (avoid duplicates)
-    const mergedLeaderboard = [...(lambdaData.leaderboard || []), ...(seleniumData.leaderboard || [])];
-    const uniqueLeaderboard = [];
-    const seen = new Set();
-    
-    for (const player of mergedLeaderboard) {
-      if (!seen.has(player.handle)) {
-        seen.add(player.handle);
-        uniqueLeaderboard.push(player);
-      } else {
-        const existing = uniqueLeaderboard.find(p => p.handle === player.handle);
-        if (existing) existing.points += player.points;
+    // Get all unique mission IDs
+    const allMissions = new Set();
+    [lambdaData, seleniumData, scraperAPIData].forEach(data => {
+      if (data?.missions) {
+        Object.keys(data.missions).forEach(id => allMissions.add(id));
       }
-    }
-    uniqueLeaderboard.sort((a, b) => b.points - a.points);
+    });
     
-    // Merge missions (Selenium for Instagram/Facebook, Lambda for X)
-    const mergedMissions = {};
-    const allMissionIds = new Set([
-      ...Object.keys(lambdaData.missions || {}),
-      ...Object.keys(seleniumData.missions || {})
-    ]);
+    // For each mission, find highest count per platform
+    const finalMissions = {};
+    const winners = {};
     
-    for (const missionId of allMissionIds) {
-      const lambdaMission = lambdaData.missions?.[missionId] || {instagram: 0, facebook: 0, x: 0};
-      const seleniumMission = seleniumData.missions?.[missionId] || {instagram: 0, facebook: 0, x: 0};
+    for (const missionId of allMissions) {
+      const lambda = lambdaData?.missions?.[missionId] || {instagram: 0, facebook: 0, x: 0};
+      const selenium = seleniumData?.missions?.[missionId] || {instagram: 0, facebook: 0, x: 0};
+      const scraperapi = scraperAPIData?.missions?.[missionId] || {instagram: 0, facebook: 0, x: 0};
       
-      mergedMissions[missionId] = {
-        // Fill gaps only - use Lambda if available, otherwise Selenium
-        instagram: lambdaMission.instagram > 0 ? lambdaMission.instagram : seleniumMission.instagram,
-        facebook: lambdaMission.facebook > 0 ? lambdaMission.facebook : seleniumMission.facebook,
-        x: lambdaMission.x > 0 ? lambdaMission.x : seleniumMission.x
+      finalMissions[missionId] = {
+        instagram: Math.max(lambda.instagram, selenium.instagram, scraperapi.instagram),
+        facebook: Math.max(lambda.facebook, selenium.facebook, scraperapi.facebook),
+        x: Math.max(lambda.x, selenium.x, scraperapi.x)
+      };
+      
+      // Track winners for logging
+      winners[missionId] = {
+        instagram: [lambda.instagram, selenium.instagram, scraperapi.instagram].indexOf(Math.max(lambda.instagram, selenium.instagram, scraperapi.instagram)),
+        facebook: [lambda.facebook, selenium.facebook, scraperapi.facebook].indexOf(Math.max(lambda.facebook, selenium.facebook, scraperapi.facebook)),
+        x: [lambda.x, selenium.x, scraperapi.x].indexOf(Math.max(lambda.x, selenium.x, scraperapi.x))
       };
     }
+    
+    // Use leaderboard from source with most players
+    const leaderboards = [lambdaData?.leaderboard, seleniumData?.leaderboard, scraperAPIData?.leaderboard]
+      .filter(lb => lb && lb.length > 0);
+    const finalLeaderboard = leaderboards.reduce((best, current) => 
+      current.length > (best?.length || 0) ? current : best, []) || [];
+    
+    // Use geography from source with most locations
+    const geographies = [lambdaData?.geography, seleniumData?.geography, scraperAPIData?.geography]
+      .filter(geo => geo && Object.keys(geo).length > 0);
+    const finalGeography = geographies.reduce((best, current) => 
+      Object.keys(current).length > Object.keys(best || {}).length ? current : best, {}) || {};
+    
+    // Combine all justice cases
+    const finalJustice = [
+      ...(lambdaData?.justice || []),
+      ...(seleniumData?.justice || []),
+      ...(scraperAPIData?.justice || [])
+    ];
+    
+    console.log('🏆 WINNERS:', winners);
     
     return {
-      leaderboard: uniqueLeaderboard,
-      geography: { ...(lambdaData.geography || {}), ...(seleniumData.geography || {}) },
-      missions: mergedMissions,
-      justice: [...(lambdaData.justice || []), ...(seleniumData.justice || [])],
+      leaderboard: finalLeaderboard,
+      geography: finalGeography,
+      missions: finalMissions,
+      justice: finalJustice,
       lastUpdated: new Date().toISOString(),
-      source: 'bulletproof-lambda+selenium',
-      coverage: '95%'
+      source: `independent-${sources.join('+')}`,
+      coverage: `${Math.min(sources.length * 33, 100)}%`,
+      winners
     };
   }
 

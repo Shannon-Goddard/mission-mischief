@@ -8,7 +8,7 @@ import requests
 import json
 import time
 from datetime import datetime
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request, make_response
 from flask_cors import CORS
 from simple_scraper import SimpleScraper
 import threading
@@ -99,10 +99,11 @@ class AutoScraperManager:
         print("🔄 Checking Lambda data...")
         lambda_check = self.check_lambda_data()
         
-        # Use simple scraper (run all 3, highest wins)
-        print("🎯 Running SIMPLE scraper (all 3, highest wins)...")
-        self.cached_data = self.simple_scraper.scrape_all()
-        print("✅ SIMPLE scraping complete")
+        if lambda_check.get('needs_backup'):
+            # Use simple scraper (run all 3, highest wins)
+            print("🎯 Running SIMPLE scraper (all 3, highest wins)...")
+            self.cached_data = self.simple_scraper.scrape_all()
+            print("✅ SIMPLE scraping complete")
         else:
             self.cached_data = lambda_check.get('lambda_data')
             print("✅ Lambda has complete data")
@@ -142,6 +143,65 @@ def health_endpoint():
         'service': 'mission-mischief-python-scraper',
         'timestamp': datetime.now().isoformat()
     })
+
+@app.route('/scraperapi', methods=['GET', 'OPTIONS'])
+def scraperapi_endpoint():
+    """Layer 3: ScraperAPI-only scraping endpoint"""
+    # Handle CORS preflight
+    if request.method == 'OPTIONS':
+        response = make_response()
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+        response.headers.add('Access-Control-Allow-Methods', 'GET, OPTIONS')
+        return response
+    
+    try:
+        print("⚡ Layer 3 activated: ScraperAPI independent scraping...")
+        
+        # Use AWS Parameter Store ScraperAPI scraper
+        from aws_parameter_scraper import AWSScraperAPIScraper
+        scraper = AWSScraperAPIScraper()
+        
+        # Scrape all platforms with ScraperAPI
+        result = scraper.scrape_all_platforms()
+        
+        if result:
+            print(f"✅ ScraperAPI found {len(result.get('leaderboard', []))} players")
+            response = jsonify({
+                'success': True,
+                'data': result,
+                'source': 'scraperapi-independent',
+                'coverage': '33% ScraperAPI layer',
+                'timestamp': datetime.now().isoformat()
+            })
+        else:
+            response = jsonify({
+                'success': True,
+                'data': {
+                    'leaderboard': [],
+                    'geography': {},
+                    'missions': {},
+                    'justice': [],
+                    'lastUpdated': datetime.now().isoformat()
+                },
+                'source': 'scraperapi-empty',
+                'timestamp': datetime.now().isoformat()
+            })
+        
+        # Add CORS headers
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response
+            
+    except Exception as e:
+        print(f"❌ ScraperAPI layer failed: {e}")
+        response = jsonify({
+            'success': False,
+            'error': str(e),
+            'source': 'scraperapi-error',
+            'timestamp': datetime.now().isoformat()
+        })
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response, 500
 
 @app.route('/status', methods=['GET'])
 def status_endpoint():
