@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎭 Premium Scraper Test - Mission Mischief</title>
+    <!-- <link rel="stylesheet" href="assets/css/style.css"> -->
+    <style>
+        .test-panel {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            color: white;
+        }
+        .test-button {
+            background: #04aa6d;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+        .test-button:hover {
+            background: #038855;
+            transform: translateY(-2px);
+        }
+        .test-button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .results {
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .status.success { background: #d4edda; color: #155724; }
+        .status.error { background: #f8d7da; color: #721c24; }
+        .status.info { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎭 Premium Scraper Test Lab</h1>
+            <p>Test your bulletproof hashtag blockchain system</p>
+        </header>
+
+        <div class="test-panel">
+            <h2>🚀 Premium API Testing</h2>
+            <p>Test the premium scraper without waiting for 3:00 AM!</p>
+            
+            <button class="test-button" onclick="testConnection()">
+                🔌 Test Connection
+            </button>
+            
+            <button class="test-button" onclick="runScraper()">
+                🕷️ Run Scraper Now
+            </button>
+            
+            <button class="test-button" onclick="loadData()">
+                📊 Load Current Data
+            </button>
+            
+            <button class="test-button" onclick="clearCache()">
+                🗑️ Clear Cache
+            </button>
+        </div>
+
+        <div id="status-panel"></div>
+        
+        <div class="test-panel">
+            <h3>📋 Test Results</h3>
+            <div id="results" class="results">
+                Ready to test premium scraper...
+            </div>
+        </div>
+
+        <div class="test-panel">
+            <h3>📊 Live Data Display</h3>
+            <div id="data-display">
+                <div id="leaderboard-section">
+                    <h4>🏆 Leaderboard</h4>
+                    <div id="leaderboard-data">No data loaded</div>
+                </div>
+                
+                <div id="stats-section">
+                    <h4>📈 Statistics</h4>
+                    <div id="stats-data">No stats available</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="premium-api-client.js"></script>
+    <script>
+        let isLoading = false;
+
+        function log(message, type = 'info') {
+            const results = document.getElementById('results');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}\n`;
+            results.textContent += logEntry;
+            results.scrollTop = results.scrollHeight;
+            
+            showStatus(message, type);
+        }
+
+        function showStatus(message, type) {
+            const statusPanel = document.getElementById('status-panel');
+            statusPanel.innerHTML = `<div class="status ${type}">${message}</div>`;
+            
+            setTimeout(() => {
+                statusPanel.innerHTML = '';
+            }, 5000);
+        }
+
+        async function testConnection() {
+            if (isLoading) return;
+            isLoading = true;
+            
+            try {
+                log('🔌 Testing API connection...', 'info');
+                updateButtons(true);
+                
+                const response = await fetch(premiumApi.apiEndpoint, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' }
+                });
+                
+                if (response.ok) {
+                    log('✅ Connection successful!', 'success');
+                    log(`📡 Endpoint: ${premiumApi.apiEndpoint}`, 'info');
+                } else {
+                    log(`❌ Connection failed: ${response.status} ${response.statusText}`, 'error');
+                }
+                
+            } catch (error) {
+                log(`❌ Connection error: ${error.message}`, 'error');
+            } finally {
+                isLoading = false;
+                updateButtons(false);
+            }
+        }
+
+        async function runScraper() {
+            if (isLoading) return;
+            isLoading = true;
+            
+            try {
+                log('🕷️ Running premium scraper...', 'info');
+                updateButtons(true);
+                
+                const result = await premiumApi.testScraper();
+                
+                if (result.success) {
+                    log('✅ Scraper executed successfully!', 'success');
+                    log(`📊 Result: ${JSON.stringify(result, null, 2)}`, 'info');
+                    
+                    // Auto-load data after successful scrape
+                    setTimeout(loadData, 1000);
+                } else {
+                    log(`❌ Scraper failed: ${result.error}`, 'error');
+                }
+                
+            } catch (error) {
+                log(`❌ Scraper error: ${error.message}`, 'error');
+            } finally {
+                isLoading = false;
+                updateButtons(false);
+            }
+        }
+
+        async function loadData() {
+            if (isLoading) return;
+            isLoading = true;
+            
+            try {
+                log('📊 Loading current data...', 'info');
+                updateButtons(true);
+                
+                const data = await premiumApi.getData();
+                
+                log('✅ Data loaded successfully!', 'success');
+                displayData(data);
+                
+            } catch (error) {
+                log(`❌ Data load error: ${error.message}`, 'error');
+            } finally {
+                isLoading = false;
+                updateButtons(false);
+            }
+        }
+
+        function clearCache() {
+            premiumApi.clearCache();
+            log('🗑️ Cache cleared', 'info');
+        }
+
+        function displayData(data) {
+            // Display leaderboard
+            const leaderboardDiv = document.getElementById('leaderboard-data');
+            if (data.leaderboard && data.leaderboard.length > 0) {
+                leaderboardDiv.innerHTML = data.leaderboard
+                    .slice(0, 5)
+                    .map((player, index) => 
+                        `<div>${index + 1}. ${player.handle} - ${player.points} pts (${player.city}, ${player.state})</div>`
+                    ).join('');
+            } else {
+                leaderboardDiv.innerHTML = 'No players found';
+            }
+            
+            // Display stats
+            const statsDiv = document.getElementById('stats-data');
+            if (data.stats) {
+                statsDiv.innerHTML = `
+                    <div>Posts Processed: ${data.stats.posts_processed}</div>
+                    <div>Posts Verified: ${data.stats.posts_verified}</div>
+                    <div>Verification Rate: ${(data.stats.verification_rate * 100).toFixed(1)}%</div>
+                    <div>Last Updated: ${new Date(data.lastUpdated).toLocaleString()}</div>
+                    <div>Source: ${data.source}</div>
+                `;
+            } else {
+                statsDiv.innerHTML = 'No statistics available';
+            }
+            
+            log(`📈 Displayed ${data.leaderboard?.length || 0} players`, 'info');
+        }
+
+        function updateButtons(disabled) {
+            const buttons = document.querySelectorAll('.test-button');
+            buttons.forEach(button => {
+                button.disabled = disabled;
+            });
+        }
+
+        // Auto-load on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            log('🎭 Premium Scraper Test Lab initialized', 'success');
+            log(`🔗 API Endpoint: ${premiumApi.apiEndpoint}`, 'info');
+        });
+    </script>
+</body>
+</html>
