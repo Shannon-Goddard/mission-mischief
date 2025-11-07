@@ -1,7 +1,11 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: 'Mission Mischief Premium Scraper Infrastructure'
 
-# No parameters needed - using existing Secrets Manager secret
+Parameters:
+  SSLCertificateArn:
+    Type: String
+    Description: 'ARN of SSL certificate for custom domain'
+    Default: 'arn:aws:acm:us-east-1:ACCOUNT_ID:certificate/CERT_ID'
 
 Resources:
   # DynamoDB Table for posts
@@ -93,7 +97,7 @@ Resources:
               - Effect: Allow
                 Action:
                   - secretsmanager:GetSecretValue
-                Resource: 'arn:aws:secretsmanager:us-east-1:170377509849:secret:mission-mischief/bright-data-api-key-*'
+                Resource: !Sub 'arn:aws:secretsmanager:us-east-1:${AWS::AccountId}:secret:mission-mischief/bright-data-api-key-*'
               - Effect: Allow
                 Action:
                   - cloudwatch:PutMetricData
@@ -228,7 +232,7 @@ Resources:
           - StatusCode: 200
             ResponseParameters:
               method.response.header.Access-Control-Allow-Origin: "'*'"
-              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,Origin'"
               method.response.header.Access-Control-Allow-Methods: "'GET,POST,OPTIONS'"
             ResponseTemplates:
               application/json: '{}'
@@ -273,7 +277,7 @@ Resources:
     Type: AWS::ApiGateway::DomainName
     Properties:
       DomainName: scraper.missionmischief.online
-      CertificateArn: arn:aws:acm:us-east-1:170377509849:certificate/e30d873d-2343-483a-99ff-068dffe78131
+      CertificateArn: !Ref SSLCertificateArn
       SecurityPolicy: TLS_1_2
       EndpointConfiguration:
         Types:
