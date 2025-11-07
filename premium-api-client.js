@@ -22,12 +22,10 @@ class PremiumApiClient {
         try {
             console.log('🚀 Fetching fresh data from premium API...');
             const response = await fetch(this.apiEndpoint, {
-                method: 'POST',
+                method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Accept': 'application/json'
-                },
-                body: JSON.stringify({ action: 'scrape' })
+                }
             });
 
             if (!response.ok) {
@@ -61,12 +59,10 @@ class PremiumApiClient {
         try {
             console.log('🧪 Testing premium scraper...');
             const response = await fetch(this.apiEndpoint, {
-                method: 'POST',
+                method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Accept': 'application/json'
-                },
-                body: JSON.stringify({ test: true })
+                }
             });
 
             const result = await response.json();
