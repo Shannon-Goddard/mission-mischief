@@ -22,11 +22,12 @@ class PremiumApiClient {
         try {
             console.log('🚀 Fetching fresh data from premium API...');
             const response = await fetch(this.apiEndpoint, {
-                method: 'GET',
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
-                }
+                },
+                body: JSON.stringify({ action: 'scrape' })
             });
 
             if (!response.ok) {

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CORS Proxy Test</title>
+</head>
+<body>
+    <h1>Direct Lambda Test</h1>
+    <button onclick="testDirect()">Test Direct Lambda</button>
+    <div id="result"></div>
+
+    <script>
+        async function testDirect() {
+            try {
+                // Test the Lambda directly via AWS SDK (if available) or simple GET
+                const response = await fetch('https://56uo9dqgte.execute-api.us-east-1.amazonaws.com/prod/scrape', {
+                    method: 'GET',
+                    mode: 'no-cors'
+                });
+                
+                document.getElementById('result').innerHTML = 'Response received (no-cors mode)';
+                console.log('Direct test completed');
+                
+            } catch (error) {
+                document.getElementById('result').innerHTML = `Error: ${error.message}`;
+                console.error('Direct test failed:', error);
+            }
+        }
+    </script>
+</body>
+</html>
