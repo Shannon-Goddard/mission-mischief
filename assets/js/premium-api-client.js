@@ -5,9 +5,9 @@
 
 class PremiumApiClient {
     constructor() {
-        // Will be set after deployment
-        this.apiEndpoint = 'https://your-api-gateway-url/prod/scrape';
-        this.lambdaEndpoint = 'https://your-lambda-function-url'; // Alternative direct Lambda URL
+        // Production endpoint
+        this.apiEndpoint = 'https://scraper.missionmischief.online/scrape';
+        this.lambdaEndpoint = null; // Using custom domain only
         
         this.cache = {
             data: null,
@@ -177,6 +177,36 @@ class PremiumApiClient {
         
         // Convert back to local time
         return new Date(nextUpdate.getTime() - (pstOffset * 60 * 60 * 1000)).toISOString();
+    }
+
+    /**
+     * Test the scraper endpoint directly
+     * @returns {Promise<Object>} Test result
+     */
+    async testScraper() {
+        console.log('🧪 Testing premium scraper...');
+        
+        try {
+            const response = await fetch(this.apiEndpoint, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            });
+            
+            const result = await response.json();
+            console.log('🔬 Test result:', result);
+            
+            return result;
+            
+        } catch (error) {
+            console.error('❌ Test failed:', error);
+            return {
+                success: false,
+                error: error.message
+            };
+        }
     }
 
     /**
