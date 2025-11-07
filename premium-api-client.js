@@ -5,7 +5,7 @@
 
 class PremiumApiClient {
     constructor() {
-        this.apiEndpoint = 'https://56uo9dqgte.execute-api.us-east-1.amazonaws.com/prod/scrape';
+        this.apiEndpoint = 'https://scraper.missionmischief.online/scrape';
         this.cache = new Map();
         this.cacheTimeout = 5 * 60 * 1000; // 5 minutes
     }
