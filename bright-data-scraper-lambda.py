@@ -328,6 +328,37 @@ def get_social_url(handle, platform):
     else:  # default to instagram
         return f"https://instagram.com/{username}"
 
+def cleanup_deleted_posts():
+    """Remove posts from DynamoDB if they no longer exist on social media"""
+    try:
+        table = dynamodb.Table(TABLE_NAME)
+        response = table.scan()
+        posts = response.get('Items', [])
+        
+        deleted_count = 0
+        for post in posts:
+            post_id = post.get('post_id', '')
+            platform = post.get('platform', '')
+            
+            # Check if post still exists by trying to scrape it directly
+            if platform in ['x', 'facebook'] and not post_exists_on_platform(post):
+                # Post was deleted - remove from DynamoDB
+                table.delete_item(Key={'post_id': post_id})
+                deleted_count += 1
+                logger.info(f"Removed deleted post: {post_id}")
+        
+        if deleted_count > 0:
+            logger.info(f"Cleaned up {deleted_count} deleted posts (cheater point deduction)")
+            
+    except Exception as e:
+        logger.error(f"Failed to cleanup deleted posts: {e}")
+
+def post_exists_on_platform(post):
+    """Check if a post still exists on its platform (simplified check)"""
+    # For now, assume posts exist unless we implement specific URL checking
+    # This would require platform-specific URL validation
+    return True  # TODO: Implement actual post existence checking
+
 def get_processed_data():
     """Get processed data from DynamoDB with player links"""
     try:
@@ -445,8 +476,12 @@ def lambda_handler(event, context):
                 body = json.loads(body) if body else {}
             is_manual = body.get('manual_trigger', False)
         
-        if is_manual:
-            logger.info("Manual trigger detected - scraping all platforms with Bright Data")
+        # Always scrape on both manual triggers AND scheduled runs
+        should_scrape = is_manual or not event.get('queryStringParameters')  # Scheduled runs have no query params
+        
+        if should_scrape:
+            trigger_type = "Manual" if is_manual else "Scheduled (3:00 AM PST)"
+            logger.info(f"{trigger_type} trigger detected - scraping all platforms with Bright Data")
             
             # Scrape all platforms
             instagram_posts = scrape_instagram_with_bright_data()
@@ -459,6 +494,11 @@ def lambda_handler(event, context):
             # Store in DynamoDB
             stored_count = store_posts_in_dynamodb(all_posts)
             logger.info(f"Stored {stored_count} new posts")
+            
+            # Clean up deleted posts (for cheater point deduction)
+            cleanup_deleted_posts()
+        else:
+            logger.info("No scraping needed - returning cached data")
         
         # Get processed data
         data = get_processed_data()
