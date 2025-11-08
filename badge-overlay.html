@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Mission Mischief - Badge Overlay</title>
+    <link href="assets/css/main.css" rel="stylesheet">
+    <style>
+        body {
+            background: #000;
+            margin: 0;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+        }
+
+        .upload-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: #111;
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid #04aa6d;
+        }
+
+        .upload-area {
+            border: 2px dashed #333;
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: #04aa6d;
+            color: #04aa6d;
+        }
+
+        .upload-area.dragover {
+            border-color: #04aa6d;
+            background: rgba(4, 170, 109, 0.1);
+        }
+
+        .preview-container {
+            position: relative;
+            max-width: 400px;
+            margin: 20px auto;
+            border-radius: 12px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .media-preview {
+            width: 100%;
+            max-height: 600px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .badge-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .overlay-badge {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #04aa6d;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(2px);
+            box-shadow: 0 0 10px rgba(4, 170, 109, 0.5);
+        }
+
+        .overlay-badge img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+        }
+
+        .overlay-badge.gold {
+            border-color: #ffd700;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .overlay-badge.locked {
+            opacity: 0.3;
+            border-color: #666;
+            box-shadow: none;
+        }
+
+        .mayhem-mascot {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 80px;
+            height: 80px;
+            z-index: 20;
+        }
+
+        .mayhem-mascot img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.7));
+        }
+
+        .bounty-hunter-badge {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #ff6b6b;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(2px);
+            z-index: 20;
+        }
+
+        .bounty-hunter-badge img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+        }
+
+        .red-strikes {
+            position: absolute;
+            bottom: 2px;
+            left: 2px;
+            right: 2px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+            z-index: 25;
+        }
+
+        .red-strike {
+            width: 8px;
+            height: 8px;
+            background: #ff0000;
+            border-radius: 50%;
+            box-shadow: 0 0 4px rgba(255, 0, 0, 0.8);
+        }
+
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .btn {
+            background: #04aa6d;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 16px;
+        }
+
+        .btn:hover {
+            background: #038a5a;
+        }
+
+        .btn:disabled {
+            background: #333;
+            cursor: not-allowed;
+        }
+
+        .toggle-btn {
+            background: #333;
+            color: #04aa6d;
+            border: 1px solid #04aa6d;
+        }
+
+        .toggle-btn.active {
+            background: #04aa6d;
+            color: white;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .overlay-badge {
+                width: 30px;
+                height: 30px;
+            }
+
+            .overlay-badge img {
+                width: 20px;
+                height: 20px;
+            }
+
+            .mayhem-mascot {
+                width: 55px;
+                height: 55px;
+            }
+
+            .bounty-hunter-badge {
+                width: 30px;
+                height: 30px;
+            }
+
+            .bounty-hunter-badge img {
+                width: 20px;
+                height: 20px;
+            }
+
+            .red-strike {
+                width: 5px;
+                height: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="upload-container">
+        <h2 style="color: #04aa6d; text-align: center; margin-top: 0;">🏆 Badge Overlay System</h2>
+        
+        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+            <div style="font-size: 3em;">📸</div>
+            <div>Click to upload photo or video</div>
+            <div style="font-size: 0.8em; margin-top: 10px;">Or drag and drop files here</div>
+        </div>
+        
+        <input type="file" id="fileInput" accept="image/*,video/*">
+    </div>
+
+    <div class="preview-container" id="previewContainer">
+        <img id="mediaPreview" class="media-preview" style="display: none;">
+        <video id="videoPreview" class="media-preview" controls style="display: none;"></video>
+        
+        <div class="badge-overlay" id="badgeOverlay">
+            <!-- Badges will be populated here -->
+        </div>
+    </div>
+
+    <div class="controls" id="controls" style="display: none;">
+        <button class="toggle-btn" id="toggleBadges" onclick="toggleBadges()">Hide Badges</button>
+        <button class="btn" onclick="downloadImage()">📥 Download</button>
+    </div>
+
+    <script>
+        let currentFile = null;
+        let badgesVisible = true;
+        
+        // Sample user progress (replace with real data)
+        const userProgress = {
+            earnedBadges: ['coffee', 'beer-emoji', 'slim-shady', 'liger', 'apple-pie', 'dobby', 'mic', 'netflix', 'recycle-symbol'],
+            goldBadges: ['towlie', 'googly-eyes'],
+            bountyStrikes: 2
+        };
+
+        const sampleBadges = [
+            { name: 'coffee', position: { top: '10px', left: '10px' } },
+            { name: 'beer-emoji', position: { top: '10px', right: '100px' } },
+            { name: 'slim-shady', position: { top: '60px', left: '10px' } },
+            { name: 'liger', position: { top: '60px', right: '100px' } },
+            { name: 'towlie', position: { bottom: '100px', left: '10px' } },
+            { name: 'apple-pie', position: { bottom: '100px', right: '100px' } },
+            { name: 'dobby', position: { top: '50%', left: '10px', transform: 'translateY(-50%)' } },
+            { name: 'googly-eyes', position: { top: '50%', right: '100px', transform: 'translateY(-50%)' } }
+        ];
+
+        function getBadgeState(badgeName) {
+            if (userProgress.goldBadges.includes(badgeName)) return 'gold';
+            if (userProgress.earnedBadges.includes(badgeName)) return 'earned';
+            return 'locked';
+        }
+
+        function createBadgeElement(badge) {
+            const state = getBadgeState(badge.name);
+            const badgeEl = document.createElement('div');
+            badgeEl.className = `overlay-badge ${state}`;
+            
+            Object.assign(badgeEl.style, badge.position);
+            
+            const img = document.createElement('img');
+            let imagePath;
+            
+            if (state === 'locked') {
+                imagePath = `assets/images/badges/${badge.name}-black.png`;
+            } else if (state === 'gold') {
+                imagePath = `assets/images/badges/${badge.name}-gold.png`;
+            } else {
+                imagePath = `assets/images/badges/${badge.name}-color.png`;
+            }
+            
+            img.src = imagePath;
+            img.alt = badge.name;
+            img.onerror = () => { img.src = 'assets/images/badges/clown.png'; };
+            
+            badgeEl.appendChild(img);
+            return badgeEl;
+        }
+
+        function populateBadges() {
+            const overlay = document.getElementById('badgeOverlay');
+            overlay.innerHTML = `
+                <div class="mayhem-mascot">
+                    <img src="assets/images/mascot/mayhem-excited.png" alt="Mayhem" onerror="this.src='assets/images/mascot/mayhem.png'">
+                </div>
+                
+                <div class="bounty-hunter-badge">
+                    <img src="assets/images/badges/bounty-hunter-badge-color.png" alt="Bounty Hunter">
+                </div>
+                
+                <div class="red-strikes">
+                    ${Array(userProgress.bountyStrikes).fill('<div class="red-strike"></div>').join('')}
+                </div>
+            `;
+
+            sampleBadges.forEach(badge => {
+                const badgeEl = createBadgeElement(badge);
+                overlay.appendChild(badgeEl);
+            });
+        }
+
+        function handleFileSelect(file) {
+            if (!file) return;
+            
+            currentFile = file;
+            const url = URL.createObjectURL(file);
+            const previewContainer = document.getElementById('previewContainer');
+            const imgPreview = document.getElementById('mediaPreview');
+            const videoPreview = document.getElementById('videoPreview');
+            const controls = document.getElementById('controls');
+            
+            if (file.type.startsWith('image/')) {
+                imgPreview.src = url;
+                imgPreview.style.display = 'block';
+                videoPreview.style.display = 'none';
+            } else if (file.type.startsWith('video/')) {
+                videoPreview.src = url;
+                videoPreview.style.display = 'block';
+                imgPreview.style.display = 'none';
+            }
+            
+            previewContainer.style.display = 'block';
+            controls.style.display = 'block';
+            
+            populateBadges();
+        }
+
+        function toggleBadges() {
+            const overlay = document.getElementById('badgeOverlay');
+            const btn = document.getElementById('toggleBadges');
+            
+            badgesVisible = !badgesVisible;
+            overlay.style.display = badgesVisible ? 'block' : 'none';
+            btn.textContent = badgesVisible ? 'Hide Badges' : 'Show Badges';
+            btn.className = badgesVisible ? 'toggle-btn' : 'toggle-btn active';
+        }
+
+        function downloadImage() {
+            if (!currentFile) return;
+            
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const preview = currentFile.type.startsWith('image/') ? 
+                document.getElementById('mediaPreview') : 
+                document.getElementById('videoPreview');
+            
+            canvas.width = preview.naturalWidth || preview.videoWidth || 800;
+            canvas.height = preview.naturalHeight || preview.videoHeight || 600;
+            
+            if (currentFile.type.startsWith('image/')) {
+                ctx.drawImage(preview, 0, 0, canvas.width, canvas.height);
+            } else {
+                // For video, capture current frame
+                ctx.drawImage(preview, 0, 0, canvas.width, canvas.height);
+            }
+            
+            if (badgesVisible) {
+                // Draw badges on canvas (simplified - would need proper scaling)
+                // This is a basic implementation
+            }
+            
+            // Download
+            const link = document.createElement('a');
+            link.download = `mission-mischief-${Date.now()}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        // File input handling
+        document.getElementById('fileInput').addEventListener('change', (e) => {
+            handleFileSelect(e.target.files[0]);
+        });
+
+        // Drag and drop
+        const uploadArea = document.querySelector('.upload-area');
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            handleFileSelect(e.dataTransfer.files[0]);
+        });
+
+        console.log('🏆 Badge overlay system ready for iPhone 16 Pro testing!');
+    </script>
+</body>
+</html>
