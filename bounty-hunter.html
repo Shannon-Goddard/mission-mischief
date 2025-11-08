@@ -912,7 +912,7 @@
             <div class="geo-header" onclick="toggleGeo('state-${state}')">
               <span class="geo-name">${state}</span>
               <div style="display: flex; align-items: center; gap: 8px;">
-                <span class="geo-count">${Object.values(cities).reduce((a, b) => a + b, 0)}</span>
+                <span class="geo-count">${Object.values(cities).reduce((a, b) => a + (typeof b === 'object' ? b.count : b), 0)}</span>
                 <span class="expand-icon" id="state-${state}-icon">▼</span>
               </div>
             </div>
