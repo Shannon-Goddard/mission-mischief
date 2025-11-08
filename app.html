@@ -1276,18 +1276,16 @@
       const mission = Missions.getMission(missionId);
       const user = Storage.getUser();
       const hashtags = generateMissionHashtags(mission, user);
-      const shareText = `Just completed: ${mission.title}\n\n${hashtags}`;
       
-      // Copy hashtags to clipboard for manual sharing
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(shareText).then(() => {
-          showToast('Hashtags copied! Take your photo/video and paste when posting', 'success');
-        }).catch(() => {
-          showToast('Manual copy: ' + hashtags, 'info');
-        });
-      } else {
-        showToast('Manual copy: ' + hashtags, 'info');
-      }
+      // Store mission data for badge overlay
+      sessionStorage.setItem('currentMission', JSON.stringify({
+        id: missionId,
+        title: mission.title,
+        hashtags: hashtags
+      }));
+      
+      // Redirect to badge overlay system
+      window.location.href = 'badge-overlay.html';
     }
     
     function generateMissionHashtags(mission, user) {

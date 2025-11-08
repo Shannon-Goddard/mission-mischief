@@ -397,6 +397,16 @@
             link.href = canvas.toDataURL();
             link.click();
         }
+        
+        function copyHashtags() {
+            if (window.currentHashtags && navigator.clipboard) {
+                navigator.clipboard.writeText(window.currentHashtags).then(() => {
+                    alert('Hashtags copied! Paste when posting your photo/video.');
+                }).catch(() => {
+                    alert('Copy failed. Manual copy: ' + window.currentHashtags);
+                });
+            }
+        }
 
         // File input handling
         document.getElementById('fileInput').addEventListener('change', (e) => {
@@ -421,6 +431,26 @@
             handleFileSelect(e.dataTransfer.files[0]);
         });
 
+        // Load mission data if coming from app
+        const missionData = sessionStorage.getItem('currentMission');
+        if (missionData) {
+            const mission = JSON.parse(missionData);
+            document.querySelector('h2').textContent = `Mission ${mission.id}: ${mission.title}`;
+            
+            // Add hashtag display
+            const container = document.querySelector('.upload-container');
+            const hashtagDiv = document.createElement('div');
+            hashtagDiv.style.cssText = 'background: rgba(4, 170, 109, 0.1); border: 1px solid #04aa6d; border-radius: 8px; padding: 15px; margin-bottom: 20px; text-align: center;';
+            hashtagDiv.innerHTML = `
+                <h3 style="color: #04aa6d; margin: 0 0 10px 0; font-size: 16px;">📱 Your Hashtags</h3>
+                <p style="color: #fff; margin: 0; font-size: 12px; font-family: monospace; word-break: break-all;">${mission.hashtags}</p>
+                <button onclick="copyHashtags()" style="background: #04aa6d; color: #000; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-top: 10px; font-size: 12px;">📋 Copy Hashtags</button>
+            `;
+            container.appendChild(hashtagDiv);
+            
+            window.currentHashtags = mission.hashtags;
+        }
+        
         console.log('🏆 Badge overlay system ready for iPhone 16 Pro testing!');
     </script>
 </body>
