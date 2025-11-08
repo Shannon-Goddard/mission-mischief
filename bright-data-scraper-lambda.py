@@ -84,6 +84,123 @@ def scrape_instagram_with_bright_data():
         # Fallback to mock data
         return create_mock_posts_from_your_instagram()
 
+def scrape_x_with_bright_data():
+    """Scrape X (Twitter) using Bright Data API"""
+    try:
+        api_key = get_bright_data_api_key()
+        
+        # X scraper endpoint with hashtag search
+        url = "https://api.brightdata.com/datasets/v3/scrape"
+        
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
+        }
+        
+        # Search for #missionmischief hashtag on X
+        params = {
+            "dataset_id": "gd_lwxkxvnf1cynvib9co",
+            "custom_output_fields": "error,error_code,timestamp,user_id,external_image_urls,hashtags",
+            "notify": "false",
+            "include_errors": "true"
+        }
+        
+        # Search X for hashtag posts
+        payload = {
+            "input": [
+                {"url": "https://x.com/search?q=%23missionmischief&src=hashtag_click"}
+            ]
+        }
+        
+        logger.info("Calling Bright Data API for X #missionmischief posts")
+        response = requests.post(url, headers=headers, params=params, json=payload, timeout=60)
+        
+        if response.status_code == 200:
+            result = response.json()
+            logger.info(f"X API success: {len(result)} posts found")
+            
+            # Convert X format to our format
+            posts = []
+            for item in result:
+                if item.get('hashtags') and 'missionmischief' in [h.lower() for h in item.get('hashtags', [])]:
+                    posts.append({
+                        'id': item.get('id', 'unknown'),
+                        'text': item.get('description', ''),
+                        'user': {'username': item.get('user_posted', 'unknown')},
+                        'created_at': item.get('date_posted', datetime.now().isoformat()),
+                        'platform': 'x'
+                    })
+            
+            logger.info(f"Found {len(posts)} X posts with #missionmischief")
+            return posts
+            
+        else:
+            logger.error(f"X API error: {response.status_code} - {response.text}")
+            return []
+            
+    except Exception as e:
+        logger.error(f"X scraping failed: {e}")
+        return []
+
+def scrape_facebook_with_bright_data():
+    """Scrape Facebook using Bright Data API"""
+    try:
+        api_key = get_bright_data_api_key()
+        
+        # Facebook scraper endpoint
+        url = "https://api.brightdata.com/datasets/v3/scrape"
+        
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
+        }
+        
+        # Search for #missionmischief hashtag on Facebook
+        params = {
+            "dataset_id": "gd_lyclm1571iy3mv57zw",
+            "custom_output_fields": "error,error_code,timestamp,user_handle,post_image,hashtags",
+            "notify": "false",
+            "include_errors": "true"
+        }
+        
+        # Search Facebook for hashtag posts
+        payload = {
+            "input": [
+                {"url": "https://www.facebook.com/hashtag/missionmischief"}
+            ]
+        }
+        
+        logger.info("Calling Bright Data API for Facebook #missionmischief posts")
+        response = requests.post(url, headers=headers, params=params, json=payload, timeout=60)
+        
+        if response.status_code == 200:
+            result = response.json()
+            logger.info(f"Facebook API success: {len(result)} posts found")
+            
+            # Convert Facebook format to our format
+            posts = []
+            for item in result:
+                content = item.get('content', '')
+                if 'missionmischief' in content.lower():
+                    posts.append({
+                        'id': item.get('post_id', 'unknown'),
+                        'text': content,
+                        'user': {'username': item.get('user_handle', 'unknown')},
+                        'created_at': item.get('date_posted', datetime.now().isoformat()),
+                        'platform': 'facebook'
+                    })
+            
+            logger.info(f"Found {len(posts)} Facebook posts with #missionmischief")
+            return posts
+            
+        else:
+            logger.error(f"Facebook API error: {response.status_code} - {response.text}")
+            return []
+            
+    except Exception as e:
+        logger.error(f"Facebook scraping failed: {e}")
+        return []
+
 def create_mock_posts_from_your_instagram():
     """Create posts based on your actual Instagram posts"""
     posts = [
@@ -201,6 +318,16 @@ def store_posts_in_dynamodb(posts: List[Dict]):
     
     return stored_count
 
+def get_social_url(handle, platform):
+    """Get appropriate social media URL based on platform"""
+    username = handle.replace('@', '')
+    if platform == 'x':
+        return f"https://x.com/{username}"
+    elif platform == 'facebook':
+        return f"https://facebook.com/{username}"
+    else:  # default to instagram
+        return f"https://instagram.com/{username}"
+
 def get_processed_data():
     """Get processed data from DynamoDB with player links"""
     try:
@@ -229,7 +356,7 @@ def get_processed_data():
                     'city': city,
                     'state': state,
                     'country': country,
-                    'social_url': f"https://instagram.com/{handle.replace('@', '')}"
+                    'social_url': get_social_url(handle, platform)
                 }
             leaderboard[handle]['points'] += points
             
@@ -246,7 +373,7 @@ def get_processed_data():
             if not player_exists:
                 geography[state][city]['players'].append({
                     'handle': handle,
-                    'social_url': f"https://instagram.com/{handle.replace('@', '')}"
+                    'social_url': get_social_url(handle, platform)
                 })
             
             # Update missions
@@ -319,14 +446,18 @@ def lambda_handler(event, context):
             is_manual = body.get('manual_trigger', False)
         
         if is_manual:
-            logger.info("Manual trigger detected - scraping Instagram with Bright Data")
+            logger.info("Manual trigger detected - scraping all platforms with Bright Data")
             
-            # Scrape Instagram
-            posts = scrape_instagram_with_bright_data()
-            logger.info(f"Found {len(posts)} posts from Instagram")
+            # Scrape all platforms
+            instagram_posts = scrape_instagram_with_bright_data()
+            x_posts = scrape_x_with_bright_data()
+            facebook_posts = scrape_facebook_with_bright_data()
+            
+            all_posts = instagram_posts + x_posts + facebook_posts
+            logger.info(f"Found {len(instagram_posts)} Instagram + {len(x_posts)} X + {len(facebook_posts)} Facebook = {len(all_posts)} total")
             
             # Store in DynamoDB
-            stored_count = store_posts_in_dynamodb(posts)
+            stored_count = store_posts_in_dynamodb(all_posts)
             logger.info(f"Stored {stored_count} new posts")
         
         # Get processed data
