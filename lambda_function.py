@@ -305,9 +305,11 @@ def lambda_handler(event, context):
         logger.info("Starting Bright Data Instagram scraper")
         
         # Check if this is a manual trigger
-        body = event.get('body', '{}')
-        if isinstance(body, str):
-            body = json.loads(body) if body else {}
+        body = {}
+        if event and event.get('body'):
+            body = event.get('body', '{}')
+            if isinstance(body, str):
+                body = json.loads(body) if body else {}
         
         is_manual = body.get('manual_trigger', False)
         

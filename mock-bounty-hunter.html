@@ -89,7 +89,7 @@
       showStatus('Triggering Instagram scraper...', 'loading');
       
       try {
-        const response = await fetch('https://56uo9dqgte.execute-api.us-east-1.amazonaws.com/prod/scrape', {
+        const response = await fetch('https://scraper.missionmischief.online/scrape', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ manual_trigger: true })
@@ -124,7 +124,7 @@
     // Load current data on page load
     window.addEventListener('load', async () => {
       try {
-        const response = await fetch('https://56uo9dqgte.execute-api.us-east-1.amazonaws.com/prod/scrape');
+        const response = await fetch('https://scraper.missionmischief.online/scrape');
         const result = await response.json();
         document.getElementById('resultData').textContent = JSON.stringify(result.data, null, 2);
       } catch (error) {

@@ -879,18 +879,14 @@
       
       // Handle Lambda format: { "CALIFORNIA": { "Losangeles": 3 } }
       container.innerHTML = Object.entries(realData.geography).map(([state, cities]) => {
-        const cityEntries = Object.entries(cities).map(([city, count]) => {
-          // Find players in this city
-          const playersInCity = realData.topPlayers.filter(player => 
-            player.city.toLowerCase() === city.toLowerCase() && 
-            player.state === state
-          );
-          
-          const playerList = playersInCity.map(player => `
+        const cityEntries = Object.entries(cities).map(([city, cityData]) => {
+          const count = typeof cityData === 'object' ? cityData.count : cityData;
+          const players = typeof cityData === 'object' ? cityData.players || [] : [];
+          const playerList = players.map(player => `
             <div class="geo-item" style="margin-left: 40px; border-left: 2px solid #04aa6d; padding-left: 10px;">
               <div class="geo-header" style="padding: 8px 0;">
-                <span class="geo-name" style="color: #04aa6d; font-size: 0.9em;">${player.handle}</span>
-                <span class="geo-count" style="font-size: 0.8em;">${player.points} pts</span>
+                <a href="${player.social_url}" target="_blank" class="geo-name" style="color: #04aa6d; font-size: 0.9em; text-decoration: none;">${player.handle}</a>
+                <span class="geo-count" style="font-size: 0.8em;">📱</span>
               </div>
             </div>
           `).join('');
