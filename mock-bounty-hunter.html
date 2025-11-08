@@ -89,10 +89,9 @@
       showStatus('Triggering Instagram scraper...', 'loading');
       
       try {
-        const response = await fetch('https://scraper.missionmischief.online/scrape', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ manual_trigger: true })
+        const response = await fetch('https://scraper.missionmischief.online/scrape?manual_trigger=true', {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' }
         });
         
         const result = await response.json();
