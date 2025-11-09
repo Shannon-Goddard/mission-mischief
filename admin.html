@@ -251,6 +251,12 @@
         async function refreshAllData() {
             console.log('🔄 Refreshing admin dashboard data...');
             
+            // Show loading state
+            const refreshBtn = document.querySelector('.refresh-btn');
+            const originalText = refreshBtn.textContent;
+            refreshBtn.textContent = '⏳ Loading...';
+            refreshBtn.disabled = true;
+            
             try {
                 // Get admin data from dedicated endpoint
                 const adminResponse = await fetch('https://4q1ybupwm0.execute-api.us-east-1.amazonaws.com/prod/admin');
@@ -262,19 +268,34 @@
                     updateBrightDataMetrics(adminApiData.data.brightdata_usage);
                     updateSystemHealth(adminApiData.data.system_metrics);
                     updatePlayerMetrics({ leaderboard: [], stats: { posts_processed: 0, verification_rate: 100 }, geography: {} });
+                    console.log('✅ Admin data refreshed successfully');
+                    addAlert('info', '✅ Data refreshed successfully');
                 } else {
                     // Fallback to simulated data
                     updateCostMetrics();
                     updateBrightDataMetrics();
                     updateSystemHealth({ lastUpdated: new Date().toISOString(), stats: { posts_processed: 0 } });
                     updatePlayerMetrics({ leaderboard: [], stats: { posts_processed: 0, verification_rate: 100 }, geography: {} });
+                    console.log('⚠️ Using fallback data - API returned error');
+                    addAlert('warning', '⚠️ Using fallback data - API unavailable');
                 }
                 
                 updateAlerts();
                 
             } catch (error) {
                 console.error('❌ Failed to refresh admin data:', error);
-                addAlert('error', `Failed to refresh data: ${error.message}`);
+                addAlert('error', `❌ Refresh failed: ${error.message}`);
+                
+                // Use fallback data on error
+                updateCostMetrics();
+                updateBrightDataMetrics();
+                updateSystemHealth({ lastUpdated: new Date().toISOString(), stats: { posts_processed: 0 } });
+                updatePlayerMetrics({ leaderboard: [], stats: { posts_processed: 0, verification_rate: 100 }, geography: {} });
+                updateAlerts();
+            } finally {
+                // Restore button state
+                refreshBtn.textContent = originalText;
+                refreshBtn.disabled = false;
             }
         }
 
