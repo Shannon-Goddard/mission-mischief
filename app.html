@@ -909,8 +909,19 @@
     }
 
     function startMissionCapture(missionId) {
-      // Show mission camera modal
-      showMissionCamera(missionId);
+      // Store mission data for badge overlay page
+      const mission = Missions.getMission(missionId);
+      const user = Storage.getUser();
+      const hashtags = generateMissionHashtags(mission, user);
+      
+      sessionStorage.setItem('currentMission', JSON.stringify({
+        id: missionId,
+        title: mission.title,
+        hashtags: hashtags
+      }));
+      
+      // Redirect to badge overlay page
+      window.location.href = 'badge-overlay.html';
     }
     
     function showMissionCamera(missionId) {
@@ -1277,12 +1288,12 @@
       const user = Storage.getUser();
       const hashtags = generateMissionHashtags(mission, user);
       
-      // Copy hashtags to clipboard
+      // Copy hashtags to clipboard with toast notification
       if (navigator.clipboard) {
         navigator.clipboard.writeText(hashtags).then(() => {
-          showToast('Hashtags copied to clipboard! 📋', 'success');
+          showToast('Hashtags copied! 📋 Paste when posting your photo/video', 'success');
         }).catch(() => {
-          showToast('Copy failed. Hashtags: ' + hashtags, 'info');
+          showToast('Copy failed. Manual copy: ' + hashtags, 'info');
         });
       } else {
         // Fallback for older browsers
@@ -1292,9 +1303,9 @@
         textArea.select();
         try {
           document.execCommand('copy');
-          showToast('Hashtags copied to clipboard! 📋', 'success');
+          showToast('Hashtags copied! 📋 Paste when posting your photo/video', 'success');
         } catch (err) {
-          showToast('Copy failed. Hashtags: ' + hashtags, 'info');
+          showToast('Copy failed. Manual copy: ' + hashtags, 'info');
         }
         document.body.removeChild(textArea);
       }
