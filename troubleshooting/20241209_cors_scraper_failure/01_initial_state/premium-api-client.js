@@ -5,8 +5,7 @@
 
 class PremiumApiClient {
     constructor() {
-        this.primaryEndpoint = 'https://scraper.missionmischief.online/scrape';
-        this.fallbackEndpoint = null; // Will be set to direct API Gateway if needed
+        this.apiEndpoint = 'https://scraper.missionmischief.online/scrape';
         this.cache = new Map();
         this.cacheTimeout = 5 * 60 * 1000; // 5 minutes
     }
@@ -20,70 +19,53 @@ class PremiumApiClient {
             return cached.data;
         }
 
-        // Try primary endpoint first
         try {
             console.log('🚀 Fetching fresh data from premium API...');
-            const result = await this.fetchFromEndpoint(this.primaryEndpoint);
+            const response = await fetch(this.apiEndpoint, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`API responded with ${response.status}: ${response.statusText}`);
+            }
+
+            const result = await response.json();
             
             if (result.success && result.data) {
+                // Cache the successful result
                 this.cache.set(cacheKey, {
                     data: result.data,
                     timestamp: Date.now()
                 });
+                
                 console.log('✅ Premium data loaded successfully');
                 return result.data;
             } else {
-                throw new Error(result.error || 'No data received');
+                throw new Error(result.error || 'Unknown API error');
             }
             
         } catch (error) {
-            console.error('❌ Primary endpoint failed:', error);
-            
-            // Try fallback endpoint if available
-            if (this.fallbackEndpoint) {
-                try {
-                    console.log('🔄 Trying fallback endpoint...');
-                    const result = await this.fetchFromEndpoint(this.fallbackEndpoint);
-                    
-                    if (result.success && result.data) {
-                        this.cache.set(cacheKey, {
-                            data: result.data,
-                            timestamp: Date.now()
-                        });
-                        console.log('✅ Fallback endpoint successful');
-                        return result.data;
-                    }
-                } catch (fallbackError) {
-                    console.error('❌ Fallback endpoint also failed:', fallbackError);
-                }
-            }
+            console.error('❌ Premium API error:', error);
             
             // Return fallback data structure
             return this.getFallbackData();
         }
     }
 
-    async fetchFromEndpoint(endpoint) {
-        const response = await fetch(endpoint, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            mode: 'cors'
-        });
-
-        if (!response.ok) {
-            throw new Error(`API responded with ${response.status}: ${response.statusText}`);
-        }
-
-        return await response.json();
-    }
-
     async testScraper() {
         try {
             console.log('🧪 Testing premium scraper...');
-            const result = await this.fetchFromEndpoint(this.primaryEndpoint);
+            const response = await fetch(this.apiEndpoint, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            const result = await response.json();
             console.log('🔬 Test result:', result);
             return result;
             
@@ -91,11 +73,6 @@ class PremiumApiClient {
             console.error('❌ Test failed:', error);
             return { success: false, error: error.message };
         }
-    }
-
-    setFallbackEndpoint(endpoint) {
-        this.fallbackEndpoint = endpoint;
-        console.log('🔧 Fallback endpoint set:', endpoint);
     }
 
     getFallbackData() {

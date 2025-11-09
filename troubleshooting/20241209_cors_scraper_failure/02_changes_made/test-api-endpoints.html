@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Endpoint Test</title>
+</head>
+<body>
+    <h1>Mission Mischief API Endpoint Test</h1>
+    <div id="results"></div>
+    
+    <script>
+        async function testEndpoints() {
+            const results = document.getElementById('results');
+            
+            // Test custom domain
+            results.innerHTML += '<h2>Testing Custom Domain</h2>';
+            try {
+                const response = await fetch('https://scraper.missionmischief.online/scrape', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    mode: 'cors'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    results.innerHTML += `<p style="color: green;">✅ Custom domain works: ${JSON.stringify(data, null, 2)}</p>`;
+                } else {
+                    results.innerHTML += `<p style="color: red;">❌ Custom domain failed: ${response.status} ${response.statusText}</p>`;
+                }
+            } catch (error) {
+                results.innerHTML += `<p style="color: red;">❌ Custom domain error: ${error.message}</p>`;
+            }
+            
+            // Test direct API Gateway (you'll need to replace with actual endpoint)
+            results.innerHTML += '<h2>Testing Direct API Gateway</h2>';
+            results.innerHTML += '<p>⚠️ Need actual API Gateway endpoint URL to test</p>';
+            
+            // Test CORS preflight
+            results.innerHTML += '<h2>Testing CORS Preflight</h2>';
+            try {
+                const response = await fetch('https://scraper.missionmischief.online/scrape', {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Access-Control-Request-Method': 'GET',
+                        'Access-Control-Request-Headers': 'Content-Type'
+                    }
+                });
+                
+                results.innerHTML += `<p style="color: ${response.ok ? 'green' : 'red'};">${response.ok ? '✅' : '❌'} CORS preflight: ${response.status}</p>`;
+                
+                // Show CORS headers
+                const corsHeaders = {};
+                response.headers.forEach((value, key) => {
+                    if (key.toLowerCase().includes('access-control')) {
+                        corsHeaders[key] = value;
+                    }
+                });
+                results.innerHTML += `<pre>CORS Headers: ${JSON.stringify(corsHeaders, null, 2)}</pre>`;
+                
+            } catch (error) {
+                results.innerHTML += `<p style="color: red;">❌ CORS preflight error: ${error.message}</p>`;
+            }
+        }
+        
+        // Run tests on page load
+        testEndpoints();
+    </script>
+</body>
+</html>

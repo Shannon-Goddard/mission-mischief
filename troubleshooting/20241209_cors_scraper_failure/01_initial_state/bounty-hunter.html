@@ -604,10 +604,6 @@
         <div class="last-updated" id="scrapeStatus" style="margin-top: 10px;">
           <span id="statusIndicator">🤖</span> <span id="statusText">Automated</span> - Next update at <span id="nextUpdate">3:00 AM PST</span>
         </div>
-        <div style="margin-top: 15px;">
-          <button onclick="testApiEndpoint()" style="background: #04aa6d; color: #000; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold;">🧪 Test API</button>
-          <button onclick="manualRefresh()" style="background: #ff6b6b; color: #fff; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-left: 10px;">🔄 Force Refresh</button>
-        </div>
       </div>
     </section>
 
@@ -756,13 +752,8 @@
         
       } catch (error) {
         console.error('❌ Premium API failed:', error);
-        console.error('Error details:', {
-          message: error.message,
-          stack: error.stack,
-          endpoint: premiumApi.primaryEndpoint
-        });
-        updateScrapeStatus('warning', 'Premium API offline - check console');
-        realData.lastUpdated = 'Premium API Offline - ' + error.message;
+        updateScrapeStatus('warning', 'Premium API offline');
+        realData.lastUpdated = 'Premium API Offline';
         
         // Use fallback empty data
         realData.topPlayers = [];
@@ -1150,36 +1141,6 @@
       e.preventDefault();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
-    
-    // Test functions for troubleshooting
-    window.testApiEndpoint = async function() {
-      console.log('🧪 Testing API endpoint...');
-      updateScrapeStatus('active', 'Testing API endpoint...');
-      
-      try {
-        const result = await premiumApi.testScraper();
-        console.log('🔬 Test result:', result);
-        
-        if (result.success) {
-          updateScrapeStatus('active', 'API test successful!');
-          alert('✅ API test successful! Check console for details.');
-        } else {
-          updateScrapeStatus('warning', 'API test failed');
-          alert('❌ API test failed: ' + result.error);
-        }
-      } catch (error) {
-        console.error('❌ Test failed:', error);
-        updateScrapeStatus('warning', 'API test failed');
-        alert('❌ API test failed: ' + error.message);
-      }
-    };
-    
-    window.manualRefresh = async function() {
-      console.log('🔄 Manual refresh triggered...');
-      premiumApi.clearCache();
-      await loadBountyHunterData();
-      alert('🔄 Data refreshed! Check console for details.');
-    };
   </script>
 
 </body>
