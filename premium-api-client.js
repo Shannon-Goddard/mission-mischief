@@ -6,7 +6,7 @@
 class PremiumApiClient {
     constructor() {
         this.primaryEndpoint = 'https://scraper.missionmischief.online/scrape';
-        this.fallbackEndpoint = null; // Will be set to direct API Gateway if needed
+        this.fallbackEndpoint = 'https://56uo9dqgte.execute-api.us-east-1.amazonaws.com/prod/scrape';
         this.cache = new Map();
         this.cacheTimeout = 5 * 60 * 1000; // 5 minutes
     }
@@ -39,8 +39,9 @@ class PremiumApiClient {
         } catch (error) {
             console.error('❌ Primary endpoint failed:', error);
             
-            // Try fallback endpoint if available
+            // Try direct API Gateway endpoint
             if (this.fallbackEndpoint) {
+                console.log('🔄 Custom domain failed, trying direct API Gateway...');
                 try {
                     console.log('🔄 Trying fallback endpoint...');
                     const result = await this.fetchFromEndpoint(this.fallbackEndpoint);
