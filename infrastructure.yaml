@@ -93,7 +93,10 @@ Resources:
                 Action:
                   - s3:PutObject
                   - s3:GetObject
-                Resource: !Sub '${RawDataBucket.Arn}/*'
+                  - s3:ListBucket
+                Resource: 
+                  - !GetAtt RawDataBucket.Arn
+                  - !Sub '${RawDataBucket.Arn}/*'
               - Effect: Allow
                 Action:
                   - secretsmanager:GetSecretValue

@@ -7,6 +7,7 @@ class PremiumApiClient {
     constructor() {
         this.primaryEndpoint = 'https://scraper.missionmischief.online/scrape';
         this.fallbackEndpoint = 'https://56uo9dqgte.execute-api.us-east-1.amazonaws.com/prod/scrape';
+        this.s3Endpoint = 'https://mission-mischief-raw-data-170377509849.s3.amazonaws.com/bounty-data.json';
         this.cache = new Map();
         this.cacheTimeout = 5 * 60 * 1000; // 5 minutes
     }
@@ -20,43 +21,44 @@ class PremiumApiClient {
             return cached.data;
         }
 
-        // Try primary endpoint first
+        // Try S3 static data first (fastest)
         try {
-            console.log('🚀 Fetching fresh data from premium API...');
-            const result = await this.fetchFromEndpoint(this.primaryEndpoint);
+            console.log('🚀 Fetching data from S3 cache...');
+            const response = await fetch(this.s3Endpoint, {
+                method: 'GET',
+                headers: { 'Accept': 'application/json' }
+            });
             
-            if (result.success && result.data) {
+            if (response.ok) {
+                const data = await response.json();
                 this.cache.set(cacheKey, {
-                    data: result.data,
+                    data: data,
                     timestamp: Date.now()
                 });
-                console.log('✅ Premium data loaded successfully');
-                return result.data;
+                console.log('✅ S3 data loaded successfully');
+                return data;
             } else {
-                throw new Error(result.error || 'No data received');
+                throw new Error(`S3 responded with ${response.status}`);
             }
             
         } catch (error) {
-            console.error('❌ Primary endpoint failed:', error);
+            console.error('❌ S3 endpoint failed:', error);
             
-            // Try direct API Gateway endpoint
-            if (this.fallbackEndpoint) {
-                console.log('🔄 Custom domain failed, trying direct API Gateway...');
-                try {
-                    console.log('🔄 Trying fallback endpoint...');
-                    const result = await this.fetchFromEndpoint(this.fallbackEndpoint);
-                    
-                    if (result.success && result.data) {
-                        this.cache.set(cacheKey, {
-                            data: result.data,
-                            timestamp: Date.now()
-                        });
-                        console.log('✅ Fallback endpoint successful');
-                        return result.data;
-                    }
-                } catch (fallbackError) {
-                    console.error('❌ Fallback endpoint also failed:', fallbackError);
+            // Fallback to API Gateway
+            try {
+                console.log('🔄 S3 failed, trying API Gateway...');
+                const result = await this.fetchFromEndpoint(this.fallbackEndpoint);
+                
+                if (result.success && result.data) {
+                    this.cache.set(cacheKey, {
+                        data: result.data,
+                        timestamp: Date.now()
+                    });
+                    console.log('✅ API Gateway fallback successful');
+                    return result.data;
                 }
+            } catch (apiError) {
+                console.error('❌ API Gateway also failed:', apiError);
             }
             
             // Return fallback data structure

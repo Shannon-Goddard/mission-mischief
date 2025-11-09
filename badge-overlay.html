@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Mission Mischief - Badge Overlay</title>
     <link href="assets/css/main.css" rel="stylesheet">
+    <script src="assets/js/storage.js"></script>
+    <script src="assets/js/missions.js"></script>
     <style>
         body {
             background: #000;
@@ -259,50 +261,67 @@
         let currentFile = null;
         let badgesVisible = true;
         
-        // Sample user progress (replace with real data)
-        const userProgress = {
-            earnedBadges: ['coffee', 'beer-emoji', 'slim-shady', 'liger', 'apple-pie', 'dobby', 'mic', 'netflix', 'recycle-symbol'],
-            goldBadges: ['towlie', 'googly-eyes'],
-            bountyStrikes: 2
-        };
-
-        const sampleBadges = [
-            { name: 'coffee', position: { top: '10px', left: '10px' } },
-            { name: 'beer-emoji', position: { top: '10px', right: '100px' } },
-            { name: 'slim-shady', position: { top: '60px', left: '10px' } },
-            { name: 'liger', position: { top: '60px', right: '100px' } },
-            { name: 'towlie', position: { bottom: '100px', left: '10px' } },
-            { name: 'apple-pie', position: { bottom: '100px', right: '100px' } },
-            { name: 'dobby', position: { top: '50%', left: '10px', transform: 'translateY(-50%)' } },
-            { name: 'googly-eyes', position: { top: '50%', right: '100px', transform: 'translateY(-50%)' } }
+        // Load real user data and missions
+        const user = Storage.getUser();
+        const badgeStates = Missions.getAllBadgeStates(user);
+        
+        // Badge positions (25 badges total)
+        const badgePositions = [
+            { top: '10px', left: '10px' },
+            { top: '10px', left: '60px' },
+            { top: '10px', right: '100px' },
+            { top: '10px', right: '50px' },
+            { top: '60px', left: '10px' },
+            { top: '60px', left: '60px' },
+            { top: '60px', right: '100px' },
+            { top: '60px', right: '50px' },
+            { top: '50%', left: '10px', transform: 'translateY(-50%)' },
+            { top: '50%', left: '60px', transform: 'translateY(-50%)' },
+            { top: '50%', right: '100px', transform: 'translateY(-50%)' },
+            { top: '50%', right: '50px', transform: 'translateY(-50%)' },
+            { bottom: '100px', left: '10px' },
+            { bottom: '100px', left: '60px' },
+            { bottom: '100px', right: '100px' },
+            { bottom: '100px', right: '50px' },
+            { bottom: '150px', left: '10px' },
+            { bottom: '150px', left: '60px' },
+            { bottom: '150px', right: '100px' },
+            { bottom: '150px', right: '50px' },
+            { top: '110px', left: '10px' },
+            { top: '110px', left: '60px' },
+            { top: '110px', right: '100px' },
+            { top: '110px', right: '50px' },
+            { top: '160px', left: '10px' }
         ];
-
-        function getBadgeState(badgeName) {
-            if (userProgress.goldBadges.includes(badgeName)) return 'gold';
-            if (userProgress.earnedBadges.includes(badgeName)) return 'earned';
-            return 'locked';
+        
+        function getEarnedBadges() {
+            const earnedBadges = [];
+            let positionIndex = 0;
+            
+            Object.entries(badgeStates).forEach(([badgeId, badgeData]) => {
+                if (badgeData.state !== 'locked' && positionIndex < badgePositions.length) {
+                    earnedBadges.push({
+                        id: badgeId,
+                        state: badgeData.state,
+                        icon: badgeData.icon,
+                        position: badgePositions[positionIndex]
+                    });
+                    positionIndex++;
+                }
+            });
+            
+            return earnedBadges;
         }
 
         function createBadgeElement(badge) {
-            const state = getBadgeState(badge.name);
             const badgeEl = document.createElement('div');
-            badgeEl.className = `overlay-badge ${state}`;
+            badgeEl.className = `overlay-badge ${badge.state}`;
             
             Object.assign(badgeEl.style, badge.position);
             
             const img = document.createElement('img');
-            let imagePath;
-            
-            if (state === 'locked') {
-                imagePath = `assets/images/badges/${badge.name}-black.png`;
-            } else if (state === 'gold') {
-                imagePath = `assets/images/badges/${badge.name}-gold.png`;
-            } else {
-                imagePath = `assets/images/badges/${badge.name}-color.png`;
-            }
-            
-            img.src = imagePath;
-            img.alt = badge.name;
+            img.src = badge.icon;
+            img.alt = badge.id;
             img.onerror = () => { img.src = 'assets/images/badges/clown.png'; };
             
             badgeEl.appendChild(img);
@@ -325,7 +344,8 @@
                 </div>
             `;
 
-            sampleBadges.forEach(badge => {
+            const earnedBadges = getEarnedBadges();
+            earnedBadges.forEach(badge => {
                 const badgeEl = createBadgeElement(badge);
                 overlay.appendChild(badgeEl);
             });
@@ -415,8 +435,8 @@
                 const badgeSize = 40 * Math.min(scaleX, scaleY);
                 ctx.drawImage(bountyBadge, 10, canvasHeight - badgeSize - 10, badgeSize, badgeSize);
                 
-                // Draw red strikes
-                const strikes = userProgress.bountyStrikes;
+                // Draw red strikes (bounty hunter strikes)
+                const strikes = user.bountyStrikes || 0;
                 for (let i = 0; i < strikes; i++) {
                     ctx.fillStyle = '#ff0000';
                     ctx.beginPath();

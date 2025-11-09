@@ -22,10 +22,13 @@ logger.setLevel(logging.INFO)
 dynamodb = boto3.resource('dynamodb')
 cloudwatch = boto3.client('cloudwatch')
 secrets_manager = boto3.client('secretsmanager')
+s3 = boto3.client('s3')
 
 # Configuration
 TABLE_NAME = os.environ.get('DYNAMODB_TABLE', 'mission-mischief-posts')
 SCRAPER_SECRET_NAME = os.environ.get('SCRAPER_SECRET', 'mission-mischief/bright-data-api-key')
+S3_BUCKET = os.environ.get('S3_BUCKET', 'mission-mischief-raw-data-170377509849')
+S3_DATA_KEY = 'bounty-data.json'
 
 def get_bright_data_api_key():
     """Get Bright Data API key from Secrets Manager"""
@@ -424,7 +427,7 @@ def get_processed_data():
             'missions': missions,
             'justice': [],
             'lastUpdated': datetime.now(timezone.utc).isoformat(),
-            'source': 'bright-data-scraper',
+            'source': 'dynamodb',
             'stats': {
                 'posts_processed': len(posts),
                 'posts_verified': len(posts),
@@ -443,6 +446,33 @@ def get_processed_data():
             'source': 'error',
             'stats': {'posts_processed': 0, 'posts_verified': 0, 'verification_rate': 0}
         }
+
+def upload_data_to_s3(data):
+    """Upload processed data to S3 for fast frontend access"""
+    try:
+        data['source'] = 's3-cache'
+        s3.put_object(
+            Bucket=S3_BUCKET,
+            Key=S3_DATA_KEY,
+            Body=json.dumps(data),
+            ContentType='application/json',
+            CacheControl='max-age=3600',  # 1 hour cache
+            ACL='public-read'  # Make file publicly accessible
+        )
+        logger.info(f"Data uploaded to S3: s3://{S3_BUCKET}/{S3_DATA_KEY}")
+    except Exception as e:
+        logger.error(f"Failed to upload data to S3: {e}")
+
+def get_data_from_s3():
+    """Get cached data from S3 for fast API responses"""
+    try:
+        response = s3.get_object(Bucket=S3_BUCKET, Key=S3_DATA_KEY)
+        data = json.loads(response['Body'].read())
+        logger.info("Data loaded from S3 cache")
+        return data
+    except Exception as e:
+        logger.warning(f"Failed to get data from S3: {e}")
+        return None
 
 def lambda_handler(event, context):
     """Main Lambda handler with proper CORS"""
@@ -476,12 +506,9 @@ def lambda_handler(event, context):
                 body = json.loads(body) if body else {}
             is_manual = body.get('manual_trigger', False)
         
-        # Always scrape on both manual triggers AND scheduled runs
-        should_scrape = is_manual or not event.get('queryStringParameters')  # Scheduled runs have no query params
-        
-        if should_scrape:
-            trigger_type = "Manual" if is_manual else "Scheduled (3:00 AM PST)"
-            logger.info(f"{trigger_type} trigger detected - scraping all platforms with Bright Data")
+        # Check if this is scheduled scrape (3 AM) or API request
+        if event.get('source') == 'aws.events':  # EventBridge trigger
+            logger.info("Scheduled (3:00 AM PST) trigger detected - scraping all platforms with Bright Data")
             
             # Scrape all platforms
             instagram_posts = scrape_instagram_with_bright_data()
@@ -495,15 +522,23 @@ def lambda_handler(event, context):
             stored_count = store_posts_in_dynamodb(all_posts)
             logger.info(f"Stored {stored_count} new posts")
             
-            # Clean up deleted posts (for cheater point deduction)
+            # Clean up deleted posts
             cleanup_deleted_posts()
-        else:
-            logger.info("No scraping needed - returning cached data")
+            
+            # Generate static data file for fast frontend access
+            data = get_processed_data()
+            upload_data_to_s3(data)
+            
+            return {
+                'statusCode': 200,
+                'body': json.dumps({'success': True, 'message': 'Scraping completed and data uploaded to S3'})
+            }
+            
+        else:  # API Gateway request - return S3 data or DynamoDB fallback
+            logger.info("API request - returning cached data from S3")
+            data = get_data_from_s3() or get_processed_data()
         
-        # Get processed data
-        data = get_processed_data()
-        
-        logger.info(f"Returning data with {len(data['leaderboard'])} players")
+        logger.info(f"Returning data with {len(data['leaderboard'])} players from {data.get('source', 'unknown')}")
         
         return {
             'statusCode': 200,
@@ -537,3 +572,4 @@ def lambda_handler(event, context):
                 'timestamp': datetime.now(timezone.utc).isoformat()
             })
         }
+        
