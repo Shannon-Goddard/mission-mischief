@@ -234,8 +234,8 @@
         
         <div class="upload-area" onclick="document.getElementById('fileInput').click()">
             <div style="font-size: 3em;">📸</div>
-            <div>Click to upload photo or video</div>
-            <div style="font-size: 0.8em; margin-top: 10px;">Or drag and drop files here</div>
+            <div>Tap to upload photo or video</div>
+            <div style="font-size: 0.8em; margin-top: 10px;">From your camera roll</div>
         </div>
         
         <input type="file" id="fileInput" accept="image/*,video/*">
@@ -379,16 +379,11 @@
             canvas.width = preview.naturalWidth || preview.videoWidth || 800;
             canvas.height = preview.naturalHeight || preview.videoHeight || 600;
             
-            if (currentFile.type.startsWith('image/')) {
-                ctx.drawImage(preview, 0, 0, canvas.width, canvas.height);
-            } else {
-                // For video, capture current frame
-                ctx.drawImage(preview, 0, 0, canvas.width, canvas.height);
-            }
+            // Draw original image/video frame
+            ctx.drawImage(preview, 0, 0, canvas.width, canvas.height);
             
             if (badgesVisible) {
-                // Draw badges on canvas (simplified - would need proper scaling)
-                // This is a basic implementation
+                drawOverlaysOnCanvas(ctx, canvas.width, canvas.height);
             }
             
             // Download
@@ -396,6 +391,72 @@
             link.download = `mission-mischief-${Date.now()}.png`;
             link.href = canvas.toDataURL();
             link.click();
+        }
+        
+        function drawOverlaysOnCanvas(ctx, canvasWidth, canvasHeight) {
+            const overlay = document.getElementById('badgeOverlay');
+            const previewContainer = document.getElementById('previewContainer');
+            const containerRect = previewContainer.getBoundingClientRect();
+            
+            // Scale factors
+            const scaleX = canvasWidth / containerRect.width;
+            const scaleY = canvasHeight / containerRect.height;
+            
+            // Draw Mayhem mascot
+            const mascot = overlay.querySelector('.mayhem-mascot img');
+            if (mascot && mascot.complete) {
+                const mascotSize = 80 * Math.min(scaleX, scaleY);
+                ctx.drawImage(mascot, canvasWidth - mascotSize - 10, canvasHeight - mascotSize - 10, mascotSize, mascotSize);
+            }
+            
+            // Draw bounty hunter badge
+            const bountyBadge = overlay.querySelector('.bounty-hunter-badge img');
+            if (bountyBadge && bountyBadge.complete) {
+                const badgeSize = 40 * Math.min(scaleX, scaleY);
+                ctx.drawImage(bountyBadge, 10, canvasHeight - badgeSize - 10, badgeSize, badgeSize);
+                
+                // Draw red strikes
+                const strikes = userProgress.bountyStrikes;
+                for (let i = 0; i < strikes; i++) {
+                    ctx.fillStyle = '#ff0000';
+                    ctx.beginPath();
+                    const strikeSize = 8 * Math.min(scaleX, scaleY);
+                    const x = 15 + (i % 3) * (strikeSize + 3);
+                    const y = canvasHeight - 15 - Math.floor(i / 3) * (strikeSize + 3);
+                    ctx.arc(x, y, strikeSize / 2, 0, 2 * Math.PI);
+                    ctx.fill();
+                }
+            }
+            
+            // Draw earned badges
+            const badges = overlay.querySelectorAll('.overlay-badge');
+            badges.forEach(badge => {
+                const img = badge.querySelector('img');
+                if (img && img.complete && !badge.classList.contains('locked')) {
+                    const badgeRect = badge.getBoundingClientRect();
+                    const containerRect = previewContainer.getBoundingClientRect();
+                    
+                    const x = (badgeRect.left - containerRect.left) * scaleX;
+                    const y = (badgeRect.top - containerRect.top) * scaleY;
+                    const size = 40 * Math.min(scaleX, scaleY);
+                    
+                    // Draw badge background circle
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                    ctx.beginPath();
+                    ctx.arc(x + size/2, y + size/2, size/2, 0, 2 * Math.PI);
+                    ctx.fill();
+                    
+                    // Draw badge border
+                    ctx.strokeStyle = badge.classList.contains('gold') ? '#ffd700' : '#04aa6d';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    
+                    // Draw badge image
+                    const imgSize = 28 * Math.min(scaleX, scaleY);
+                    const imgOffset = (size - imgSize) / 2;
+                    ctx.drawImage(img, x + imgOffset, y + imgOffset, imgSize, imgSize);
+                }
+            });
         }
         
         function copyHashtags() {
@@ -413,23 +474,7 @@
             handleFileSelect(e.target.files[0]);
         });
 
-        // Drag and drop
-        const uploadArea = document.querySelector('.upload-area');
-        
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.classList.add('dragover');
-        });
-        
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('dragover');
-        });
-        
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.classList.remove('dragover');
-            handleFileSelect(e.dataTransfer.files[0]);
-        });
+        // Mobile-focused: Remove drag and drop, focus on tap to upload
 
         // Load mission data if coming from app
         const missionData = sessionStorage.getItem('currentMission');

@@ -1277,15 +1277,27 @@
       const user = Storage.getUser();
       const hashtags = generateMissionHashtags(mission, user);
       
-      // Store mission data for badge overlay
-      sessionStorage.setItem('currentMission', JSON.stringify({
-        id: missionId,
-        title: mission.title,
-        hashtags: hashtags
-      }));
-      
-      // Redirect to badge overlay system
-      window.location.href = 'badge-overlay.html';
+      // Copy hashtags to clipboard
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(hashtags).then(() => {
+          showToast('Hashtags copied to clipboard! 📋', 'success');
+        }).catch(() => {
+          showToast('Copy failed. Hashtags: ' + hashtags, 'info');
+        });
+      } else {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = hashtags;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+          document.execCommand('copy');
+          showToast('Hashtags copied to clipboard! 📋', 'success');
+        } catch (err) {
+          showToast('Copy failed. Hashtags: ' + hashtags, 'info');
+        }
+        document.body.removeChild(textArea);
+      }
     }
     
     function generateMissionHashtags(mission, user) {

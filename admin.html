@@ -267,7 +267,7 @@
                     updateCostMetrics(adminApiData.data.costs);
                     updateBrightDataMetrics(adminApiData.data.brightdata_usage);
                     updateSystemHealth(adminApiData.data.system_metrics);
-                    updatePlayerMetrics({ leaderboard: [], stats: { posts_processed: 0, verification_rate: 100 }, geography: {} });
+                    updatePlayerMetrics(adminApiData.data.game_data);
                     console.log('✅ Admin data refreshed successfully');
                     addAlert('info', '✅ Data refreshed successfully');
                 } else {
@@ -391,10 +391,10 @@
         }
 
         function updatePlayerMetrics(gameData) {
-            const activePlayers = gameData.leaderboard?.length || 0;
-            const postsToday = gameData.stats?.posts_processed || 0;
-            const verificationRate = gameData.stats?.verification_rate || 100;
-            const geoSpread = Object.keys(gameData.geography || {}).length;
+            const activePlayers = gameData?.active_players || 0;
+            const postsToday = gameData?.posts_today || 0;
+            const verificationRate = gameData?.verification_rate || 100;
+            const geoSpread = gameData?.geographic_spread || 0;
             
             document.getElementById('active-players').textContent = activePlayers;
             document.getElementById('posts-today').textContent = postsToday;
