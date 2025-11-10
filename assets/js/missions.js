@@ -210,19 +210,31 @@ const Missions = {
     }
     
     // After setup is complete, check buy-in status
-    // If Mission 4 (Choose Your Destiny) is completed, unlock all missions
+    // If Mission 4 (Choose Your Destiny) is completed, unlock missions based on buy-in
     if (user.completedMissions.includes(4)) {
-      // Mission 4 completed means they chose a path, unlock all missions except 50
-      const missions1to49 = Array.from({length: 49}, (_, i) => i + 1);
-      const allPreviousCompleted = missions1to49.every(id => user.completedMissions.includes(id));
-      
-      // If missions 1-49 not all completed, exclude mission 50
-      if (!allPreviousCompleted) {
-        return this.missionData.filter(m => m.id !== 50);
+      // Check if user chose "do nothing" - unlock one mission at a time
+      if (user.currentBuyIn === 'nothing') {
+        const completedCount = user.completedMissions.length;
+        const nextMissionId = completedCount + 1;
+        
+        // Return missions up to the next available one (excluding mission 50 until all others done)
+        if (nextMissionId <= 49) {
+          return this.missionData.filter(m => m.id <= nextMissionId && m.id !== 50);
+        } else {
+          // All missions 1-49 completed, now show mission 50
+          return this.missionData;
+        }
+      } else {
+        // Other buy-ins unlock all missions at once (except 50 until all done)
+        const missions1to49 = Array.from({length: 49}, (_, i) => i + 1);
+        const allPreviousCompleted = missions1to49.every(id => user.completedMissions.includes(id));
+        
+        if (!allPreviousCompleted) {
+          return this.missionData.filter(m => m.id !== 50);
+        }
+        
+        return this.missionData;
       }
-      
-      // All missions available
-      return this.missionData;
     }
     
     // Setup complete but Mission 4 not done yet, show setup missions only

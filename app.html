@@ -164,9 +164,11 @@
       </div>
       <div style="display: flex; align-items: center; gap: 10px;">
         <div class="user-info" id="userInfo" style="color: #04aa6d; font-weight: bold;"></div>
-        <a href="bounty-hunter.html" style="display: inline-block;">
-          <img src="assets/images/badges/bounty-hunter-badge-color.png" alt="Bounty Hunter" style="width: 32px; height: 32px; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-        </a>
+        <div id="headerBadge" style="display: none;">
+          <a href="bounty-hunter.html" style="display: inline-block;">
+            <img src="assets/images/badges/bounty-hunter-badge-color.png" alt="Bounty Hunter" style="width: 32px; height: 32px; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+          </a>
+        </div>
       </div>
     </div>
   </header>
@@ -777,6 +779,9 @@
       document.getElementById('userSetup').style.display = 'none';
       document.getElementById('dashboard').style.display = 'block';
       
+      // Show bounty hunter badge now that setup is complete
+      document.getElementById('headerBadge').style.display = 'block';
+      
       // Force immediate scroll to top
       window.scrollTo(0, 0);
       
@@ -1016,11 +1021,26 @@
       const user = Storage.getUser();
       const hashtags = generateMissionHashtags(mission, user);
       
+      // For Mission 4, determine buy-in badge
+      let buyInBadge = null;
+      if (missionId === 4 && user.currentBuyIn) {
+        const buyInBadges = {
+          'recycling': 'captain-planet-color.png',
+          'cleanup': 'oscar-the-grouch-color.png', 
+          'referral': 'justin-timberlake-color.png'
+          // 'nothing' gets no badge
+        };
+        buyInBadge = buyInBadges[user.currentBuyIn] || null;
+      }
+      
       sessionStorage.setItem('currentMission', JSON.stringify({
         id: missionId,
         title: mission.title,
-        hashtags: hashtags
+        hashtags: hashtags,
+        buyInBadge: buyInBadge
       }));
+      
+      console.log('🎭 Mission ${missionId} overlay - Buy-in badge:', buyInBadge);
       
       // Redirect to badge overlay page
       window.location.href = 'badge-overlay.html';

@@ -91,12 +91,12 @@ class MugshotCamera {
 
     const ctx = this.canvas.getContext('2d');
     
-    // Draw video frame to canvas
+    // Draw video frame to canvas with grayscale filter
+    ctx.filter = 'grayscale(100%) contrast(120%)';
     ctx.drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
     
-    // Apply grayscale filter
-    ctx.filter = 'grayscale(100%) contrast(120%)';
-    ctx.drawImage(this.canvas, 0, 0);
+    // Reset filter for overlay drawing
+    ctx.filter = 'none';
     
     // Add booking board overlay to the image
     this.addBookingOverlay(ctx);
@@ -139,7 +139,7 @@ class MugshotCamera {
         🔄 RETAKE MUGSHOT
       </button>
       <button class="mugshot-btn" onclick="downloadMugshot()">
-        💾 DOWNLOAD
+        📱 SAVE TO PHOTOS
       </button>
       <button class="mugshot-btn" id="continueBtn" onclick="saveMugshotAndContinue()" disabled style="background: #666; cursor: not-allowed;">
         ✅ CONTINUE TO GAME
@@ -246,33 +246,82 @@ window.saveMugshotAndContinue = function() {
 };
 
 window.downloadMugshot = function() {
-  // Download the mugshot image only
+  // Save mugshot - mobile optimized
   if (mugshotCamera.canvas) {
-    mugshotCamera.canvas.toBlob((blob) => {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `mission-mischief-mugshot-${Date.now()}.jpg`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+    mugshotCamera.canvas.toBlob(async (blob) => {
+      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       
-      console.log('💾 Mugshot downloaded successfully');
-      
-      // Enable continue button after download
-      const continueBtn = document.getElementById('continueBtn');
-      if (continueBtn) {
-        continueBtn.disabled = false;
-        continueBtn.style.background = 'rgba(4, 170, 109, 0.9)';
-        continueBtn.style.cursor = 'pointer';
-        console.log('✅ Continue button enabled after download');
+      try {
+        if (isMobile) {
+          // Mobile: Try multiple approaches
+          const file = new File([blob], `mission-mischief-mugshot-${Date.now()}.jpg`, { type: 'image/jpeg' });
+          
+          // Try Web Share API first
+          if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              title: 'Mission Mischief Mugshot',
+              text: 'My Mission Mischief FAFO mugshot!',
+              files: [file]
+            });
+            console.log('📱 Mugshot shared via Web Share API');
+          } else {
+            // Fallback: Create download link with mobile-friendly name
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'mission-mischief-mugshot.jpg';
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            // Show mobile-specific instruction
+            alert('📱 Mugshot downloaded! Check your Downloads folder or browser downloads.');
+            console.log('💾 Mobile download fallback used');
+          }
+        } else {
+          // Desktop: Standard download
+          downloadFallback(blob);
+        }
+        
+        // Enable continue button after save attempt
+        const continueBtn = document.getElementById('continueBtn');
+        if (continueBtn) {
+          continueBtn.disabled = false;
+          continueBtn.style.background = 'rgba(4, 170, 109, 0.9)';
+          continueBtn.style.cursor = 'pointer';
+          console.log('✅ Continue button enabled after save');
+        }
+      } catch (error) {
+        console.log('⚠️ Save failed, using download fallback:', error);
+        downloadFallback(blob);
+        
+        // Still enable continue button
+        const continueBtn = document.getElementById('continueBtn');
+        if (continueBtn) {
+          continueBtn.disabled = false;
+          continueBtn.style.background = 'rgba(4, 170, 109, 0.9)';
+          continueBtn.style.cursor = 'pointer';
+        }
       }
     }, 'image/jpeg', 0.9);
   } else {
-    alert('📸 No mugshot to download! Take a photo first.');
+    alert('📸 No mugshot to save! Take a photo first.');
   }
 };
+
+function downloadFallback(blob) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `mission-mischief-mugshot-${Date.now()}.jpg`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  console.log('💾 Mugshot downloaded (fallback)');
+}
 
 window.closeMugshotCamera = function() {
   mugshotCamera.stopCamera();
