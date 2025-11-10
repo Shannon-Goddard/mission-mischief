@@ -119,6 +119,7 @@
                 <p style="color: #999;">Real-time system monitoring and cost management</p>
                 <div style="margin-top: 15px;">
                     <button class="refresh-btn" onclick="refreshAllData()">🔄 Refresh Data</button>
+                    <button class="refresh-btn" onclick="clearAdminCache(); refreshAllData()">🗑️ Clear Cache</button>
                     <button class="refresh-btn" onclick="testAlerts()">📱 Test Alerts</button>
                 </div>
             </div>
@@ -248,6 +249,10 @@
             players: { active: 0, posts: 0, verification: 0, geo: 0 }
         };
 
+        // Admin data cache
+        let adminCache = { data: null, timestamp: 0 };
+        const CACHE_TIMEOUT = 5 * 60 * 1000; // 5 minutes
+        
         async function refreshAllData() {
             console.log('🔄 Refreshing admin dashboard data...');
             
@@ -258,45 +263,61 @@
             refreshBtn.disabled = true;
             
             try {
-                // Get admin data from dedicated endpoint
-                const adminResponse = await fetch('https://4q1ybupwm0.execute-api.us-east-1.amazonaws.com/prod/admin');
-                const adminApiData = await adminResponse.json();
-                
-                if (adminApiData.success) {
-                    // Use real admin data
-                    updateCostMetrics(adminApiData.data.costs);
-                    updateBrightDataMetrics(adminApiData.data.brightdata_usage);
-                    updateSystemHealth(adminApiData.data.system_metrics);
-                    updatePlayerMetrics(adminApiData.data.game_data);
-                    console.log('✅ Admin data refreshed successfully');
-                    addAlert('info', '✅ Data refreshed successfully');
-                } else {
-                    // Fallback to simulated data
-                    updateCostMetrics();
-                    updateBrightDataMetrics();
-                    updateSystemHealth({ lastUpdated: new Date().toISOString(), stats: { posts_processed: 0 } });
-                    updatePlayerMetrics({ leaderboard: [], stats: { posts_processed: 0, verification_rate: 100 }, geography: {} });
-                    console.log('⚠️ Using fallback data - API returned error');
-                    addAlert('warning', '⚠️ Using fallback data - API unavailable');
+                // Check cache first
+                if (adminCache.data && Date.now() - adminCache.timestamp < CACHE_TIMEOUT) {
+                    console.log('📦 Using cached admin data');
+                    processAdminData(adminCache.data);
+                    addAlert('info', '📦 Using cached data');
+                    return;
                 }
                 
-                updateAlerts();
+                // Try admin API endpoint
+                console.log('🚀 Fetching from admin API...');
+                const adminResponse = await fetch('https://4q1ybupwm0.execute-api.us-east-1.amazonaws.com/prod/admin');
+                
+                if (adminResponse.ok) {
+                    const adminApiData = await adminResponse.json();
+                    
+                    if (adminApiData.success) {
+                        // Cache and use real admin data
+                        adminCache = { data: adminApiData.data, timestamp: Date.now() };
+                        processAdminData(adminApiData.data);
+                        console.log('✅ Admin API data loaded successfully');
+                        addAlert('info', '✅ Real-time data loaded');
+                    } else {
+                        throw new Error('Admin API returned unsuccessful response');
+                    }
+                } else {
+                    throw new Error(`Admin API responded with ${adminResponse.status}`);
+                }
                 
             } catch (error) {
-                console.error('❌ Failed to refresh admin data:', error);
-                addAlert('error', `❌ Refresh failed: ${error.message}`);
+                console.error('❌ Admin API failed:', error);
+                addAlert('warning', `⚠️ API offline: ${error.message}`);
                 
-                // Use fallback data on error
-                updateCostMetrics();
-                updateBrightDataMetrics();
-                updateSystemHealth({ lastUpdated: new Date().toISOString(), stats: { posts_processed: 0 } });
-                updatePlayerMetrics({ leaderboard: [], stats: { posts_processed: 0, verification_rate: 100 }, geography: {} });
-                updateAlerts();
+                // Use fallback simulated data
+                const fallbackData = {
+                    costs: null,
+                    system_metrics: { lastUpdated: new Date().toISOString(), stats: { posts_processed: 0 } },
+                    brightdata_usage: null,
+                    game_data: { active_players: 0, posts_today: 0, verification_rate: 100, geographic_spread: 0 }
+                };
+                processAdminData(fallbackData);
+                console.log('🔄 Using fallback simulated data');
+                
             } finally {
+                updateAlerts();
                 // Restore button state
                 refreshBtn.textContent = originalText;
                 refreshBtn.disabled = false;
             }
+        }
+        
+        function processAdminData(data) {
+            updateCostMetrics(data.costs);
+            updateBrightDataMetrics(data.brightdata_usage);
+            updateSystemHealth(data.system_metrics);
+            updatePlayerMetrics(data.game_data);
         }
 
         function updateCostMetrics(realData = null) {
@@ -450,9 +471,15 @@
             console.log('🧪 Test alert triggered - In production, this would send SMS/email');
         }
 
+        // Clear cache function
+        function clearAdminCache() {
+            adminCache = { data: null, timestamp: 0 };
+            console.log('🗑️ Admin cache cleared');
+        }
+        
         // Initialize dashboard
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🛡️ Admin Dashboard loaded');
+            console.log('🛡️ Admin Dashboard loaded - Enhanced with caching system');
             refreshAllData();
             
             // Auto-refresh every 5 minutes
