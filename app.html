@@ -164,7 +164,9 @@
       </div>
       <div style="display: flex; align-items: center; gap: 10px;">
         <div class="user-info" id="userInfo" style="color: #04aa6d; font-weight: bold;"></div>
-        <img src="assets/images/mascot/mayhem-excited.png" alt="Mayhem" style="width: 32px; height: 32px;">
+        <a href="bounty-hunter.html" style="display: inline-block;">
+          <img src="assets/images/badges/bounty-hunter-badge-color.png" alt="Bounty Hunter" style="width: 32px; height: 32px; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+        </a>
       </div>
     </div>
   </header>
@@ -175,9 +177,9 @@
     <!-- User Setup Section (shown if no user) -->
     <section id="userSetup" class="section-bg" style="display: none; padding-top: calc(100px + env(safe-area-inset-top));">
       <div class="container">
-        <div class="row justify-content-center">
-          <div class="col-lg-6" style="max-width: 95%; margin: 0 auto;">
-            <div class="mission-card" style="padding: 25px;">
+        <div class="row" style="margin: 0; width: 100%;">
+          <div class="col-12" style="padding: 0 20px; width: 100%;">
+            <div class="mission-card" style="padding: 30px; width: 100%; max-width: none; margin: 0; box-sizing: border-box;">
               <h2 class="text-center mb-4">Welcome to Mission Mischief!</h2>
               <form id="setupForm">
                 <div class="mb-3">
@@ -247,7 +249,7 @@
 
 
     <!-- Dashboard Section -->
-    <section id="dashboard" style="display: none; padding-top: calc(80px + env(safe-area-inset-top));">
+    <section id="dashboard" style="display: none; padding-top: calc(80px + env(safe-area-inset-top)); scroll-margin-top: 0; scroll-behavior: auto;">
       <div class="container">
         
         <!-- User Stats -->
@@ -267,7 +269,7 @@
         </div>
 
         <!-- Mission Filter -->
-        <div class="text-center mb-4">
+        <div class="text-center mb-4" style="scroll-margin-top: 0;">
           <button class="mission-btn" id="showAll">All Missions</button>
           <button class="mission-btn" id="showAvailable">Available</button>
           <button class="mission-btn" id="showCompleted">Completed</button>
@@ -354,13 +356,29 @@
   <script>
     // App initialization
     document.addEventListener('DOMContentLoaded', function() {
+      console.log('🚀 DOM loaded, initializing app...');
       initApp();
+    });
+    
+    // Also force scroll on page load
+    window.addEventListener('load', function() {
+      window.scrollTo(0, 0);
+      console.log('🔝 Page fully loaded, forced scroll to top');
     });
 
     function initApp() {
+      // Force scroll to top immediately
+      window.scrollTo(0, 0);
+      
       // Add small delay to ensure localStorage is fully loaded
       setTimeout(() => {
         const user = Storage.getUser();
+        
+        console.log('🔍 App init - User state:', {
+          fafoCompleted: Storage.isFAFOCompleted(),
+          hasUserName: !!user.userName,
+          scrollY: window.scrollY
+        });
         
         // Check if FAFO (Mission 1) is completed first
         if (!Storage.isFAFOCompleted()) {
@@ -378,6 +396,10 @@
 
     function showUserSetup() {
       document.getElementById('userSetup').style.display = 'block';
+      
+      // Force scroll to top for user setup
+      window.scrollTo(0, 0);
+      console.log('🔝 User setup shown, scrolled to top');
       
       document.getElementById('setupForm').addEventListener('submit', function(e) {
         e.preventDefault();
@@ -755,17 +777,31 @@
       document.getElementById('userSetup').style.display = 'none';
       document.getElementById('dashboard').style.display = 'block';
       
-      // Scroll to top of dashboard
+      // Force immediate scroll to top
+      window.scrollTo(0, 0);
+      
+      // Also scroll after content loads
       setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }, 100);
+        window.scrollTo(0, 0);
+        console.log('🔝 Dashboard loaded, scrolled to top');
+      }, 50);
       
       loadUserInfo();
       loadUserStats();
       loadBadges();
+      
+      // Force scroll before loading missions (they might cause scroll)
+      window.scrollTo(0, 0);
+      
       loadMissions();
       setupFilters();
       loadCheaterMissions();
+      
+      // Final scroll after everything loads
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        console.log('🔝 All dashboard content loaded, final scroll to top');
+      }, 200);
       
       // Initialize camera overlay
       if (window.Camera) {
@@ -829,10 +865,12 @@
 
     function loadMissions(filter = 'all') {
       const user = Storage.getUser();
+      const scrollBefore = window.scrollY;
       console.log('Loading missions for user:', user);
       console.log('FAFO completed:', user.fafoCompleted);
       console.log('Current buy-in:', user.currentBuyIn);
       console.log('Completed buy-ins:', user.completedBuyIns);
+      console.log('📄 Scroll position before missions:', scrollBefore);
       
       const available = Missions.getAvailableMissions(user);
       console.log('Available missions:', available.length, available.map(m => m.id));
@@ -852,6 +890,14 @@
         container.innerHTML = '<p style="color: #666; text-align: center; padding: 20px;">No missions available. Check console for debugging info.</p>';
       } else {
         container.innerHTML = missions.map(mission => createMissionCard(mission, user)).join('');
+      }
+      
+      const scrollAfter = window.scrollY;
+      console.log('📄 Scroll position after missions loaded:', scrollAfter);
+      
+      if (scrollAfter > 100) {
+        console.log('⚠️ Mission loading caused scroll jump, forcing back to top');
+        window.scrollTo(0, 0);
       }
     }
 

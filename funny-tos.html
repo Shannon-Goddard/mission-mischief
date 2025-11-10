@@ -170,13 +170,13 @@
 <body>
     <div class="container">
         <div class="mission-header">
-            <h1 style="white-space: nowrap;">🎭 MISSION 1: FAFO 🎭</h1>
+            <h1 id="fafoTitle" style="white-space: nowrap; text-align: center !important; width: 100%;">🎭 MISSION 1: FAFO 🎭</h1>
             <p><strong>F*** Around and Find Out</strong></p>
             <p>Welcome to the most legally binding comedy show on Earth!</p>
         </div>
         
         <div class="funny-tos">
-            <h2 style="color: #04aa6d; text-align: center; white-space: nowrap;">📋 Our Lawyer Made Us Do This 📋</h2>
+            <h2 id="lawyerTitle" style="color: #04aa6d; text-align: center !important; white-space: nowrap; width: 100%; font-size: 1.2rem;">📋 Our Lawyer Made Us Do This 📋</h2>
             
             <p><strong>Hey there, future chaos agent!</strong> 👋</p>
             
@@ -414,6 +414,30 @@
         
         // Update date/time every second
         setInterval(updateMugshotDateTime, 1000);
+        
+        // Debug text centering
+        document.addEventListener('DOMContentLoaded', function() {
+          const fafoTitle = document.getElementById('fafoTitle');
+          const lawyerTitle = document.getElementById('lawyerTitle');
+          
+          if (fafoTitle) {
+            console.log('🔍 FAFO Title Styles:', {
+              textAlign: getComputedStyle(fafoTitle).textAlign,
+              width: getComputedStyle(fafoTitle).width,
+              whiteSpace: getComputedStyle(fafoTitle).whiteSpace,
+              overflow: getComputedStyle(fafoTitle).overflow
+            });
+          }
+          
+          if (lawyerTitle) {
+            console.log('🔍 Lawyer Title Styles:', {
+              textAlign: getComputedStyle(lawyerTitle).textAlign,
+              width: getComputedStyle(lawyerTitle).width,
+              fontSize: getComputedStyle(lawyerTitle).fontSize,
+              whiteSpace: getComputedStyle(lawyerTitle).whiteSpace
+            });
+          }
+        });
     </script>
 </body>
 </html>

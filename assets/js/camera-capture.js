@@ -138,10 +138,10 @@ class MugshotCamera {
       <button class="mugshot-btn" onclick="retakeMugshot()">
         🔄 RETAKE MUGSHOT
       </button>
-      <button class="mugshot-btn" onclick="shareWithHashtags()">
-        📤 SHARE
+      <button class="mugshot-btn" onclick="downloadMugshot()">
+        💾 DOWNLOAD
       </button>
-      <button class="mugshot-btn" onclick="saveMugshotAndContinue()">
+      <button class="mugshot-btn" id="continueBtn" onclick="saveMugshotAndContinue()" disabled style="background: #666; cursor: not-allowed;">
         ✅ CONTINUE TO GAME
       </button>
     `;
@@ -238,9 +238,15 @@ window.retakeMugshot = function() {
 window.saveMugshotAndContinue = function() {
   // Complete FAFO first
   Storage.completeFAFO();
-  console.log('FAFO completed:', Storage.isFAFOCompleted());
+  console.log('✅ FAFO completed:', Storage.isFAFOCompleted());
   
-  // Save the photo if canvas exists
+  // Just navigate to app.html - no download
+  console.log('🔄 Redirecting to app.html...');
+  window.location.href = 'app.html';
+};
+
+window.downloadMugshot = function() {
+  // Download the mugshot image only
   if (mugshotCamera.canvas) {
     mugshotCamera.canvas.toBlob((blob) => {
       const url = URL.createObjectURL(blob);
@@ -252,15 +258,19 @@ window.saveMugshotAndContinue = function() {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
       
-      // Navigate after download
-      setTimeout(() => {
-        window.location.replace('app.html');
-      }, 500);
+      console.log('💾 Mugshot downloaded successfully');
+      
+      // Enable continue button after download
+      const continueBtn = document.getElementById('continueBtn');
+      if (continueBtn) {
+        continueBtn.disabled = false;
+        continueBtn.style.background = 'rgba(4, 170, 109, 0.9)';
+        continueBtn.style.cursor = 'pointer';
+        console.log('✅ Continue button enabled after download');
+      }
     }, 'image/jpeg', 0.9);
   } else {
-    // No photo taken, just continue
-    alert('📸 No mugshot taken, but FAFO completed!');
-    window.location.replace('app.html');
+    alert('📸 No mugshot to download! Take a photo first.');
   }
 };
 

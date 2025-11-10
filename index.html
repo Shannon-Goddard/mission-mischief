@@ -25,7 +25,7 @@
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <link href="assets/css/main.css" rel="stylesheet">
   <link href="assets/css/components.css" rel="stylesheet">
-  <link href="hero-fix.css" rel="stylesheet">
+
   
   <style>
     /* Mobile-First Hero Styles */
@@ -276,9 +276,9 @@
         </div>
         
         <!-- Hero Text -->
-        <div class="hero-text">
-          <h1 style="text-align: center;">YOU FOUND THE <span>EVIDENCE</span></h1>
-          <h2 style="text-align: center;">Welcome to Mission Mischief:<br>The World's Most Sociopathic Scavenger Hunt</h2>
+        <div class="hero-text" style="width: 100%; max-width: none; text-align: center;">
+          <h1 id="heroTitle" style="text-align: center !important; width: 100%; display: block; margin: 0 auto;">YOU FOUND THE <span>EVIDENCE</span></h1>
+          <h2 id="heroSubtitle" style="text-align: center !important; width: 100%; display: block; line-height: 1.3; margin: 0 auto;">Welcome to Mission Mischief:<br><span style="display: block;">The World's Most Sociopathic Scavenger Hunt</span></h2>
         </div>
         
         <!-- Feature Cards -->
@@ -369,6 +369,39 @@
       easing: "ease-in-out",
       once: true,
       mirror: false
+    });
+    
+    // Debug text centering
+    document.addEventListener('DOMContentLoaded', function() {
+      const heroTitle = document.getElementById('heroTitle');
+      const heroSubtitle = document.getElementById('heroSubtitle');
+      
+      if (!heroTitle || !heroSubtitle) {
+        console.log('❌ Hero elements not found');
+        return;
+      }
+      
+      const heroTextContainer = heroTitle.parentElement;
+      
+      console.log('🔍 Hero Container Styles:', {
+        width: getComputedStyle(heroTextContainer).width,
+        maxWidth: getComputedStyle(heroTextContainer).maxWidth,
+        textAlign: getComputedStyle(heroTextContainer).textAlign
+      });
+      
+      console.log('🔍 Hero Title Styles:', {
+        textAlign: getComputedStyle(heroTitle).textAlign,
+        width: getComputedStyle(heroTitle).width,
+        marginLeft: getComputedStyle(heroTitle).marginLeft,
+        marginRight: getComputedStyle(heroTitle).marginRight
+      });
+      
+      console.log('🔍 Hero Subtitle Styles:', {
+        textAlign: getComputedStyle(heroSubtitle).textAlign,
+        width: getComputedStyle(heroSubtitle).width,
+        marginLeft: getComputedStyle(heroSubtitle).marginLeft,
+        marginRight: getComputedStyle(heroSubtitle).marginRight
+      });
     });
   </script>
 
