@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------
-# Enhanced Mugshot Overlay System
+# Mugshot Overlay System
 --------------------------------------------------------------*/
 
 .mugshot-camera-overlay {
@@ -13,6 +13,7 @@
   display: none;
 }
 
+/* Jailhouse Background */
 .jailhouse-background {
   position: absolute;
   top: 0;
@@ -26,6 +27,7 @@
   opacity: 0.3;
 }
 
+/* Main Camera View */
 .mugshot-camera-view {
   position: relative;
   width: 100%;
@@ -37,6 +39,7 @@
   filter: grayscale(100%) contrast(1.2);
 }
 
+/* Mugshot Frame */
 .mugshot-frame-overlay {
   position: absolute;
   top: 50%;
@@ -54,6 +57,7 @@
   justify-content: center;
 }
 
+/* Booking Board */
 .booking-board {
   position: absolute;
   bottom: 20px;
@@ -110,6 +114,7 @@
   51%, 100% { opacity: 0.5; }
 }
 
+/* Height Lines (like police lineup) */
 .height-lines {
   position: absolute;
   right: 20px;
@@ -140,6 +145,7 @@
   font-weight: bold;
 }
 
+/* Camera Controls */
 .mugshot-controls {
   position: absolute;
   top: 20px;
@@ -159,8 +165,6 @@
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 12px;
-  white-space: nowrap;
 }
 
 .mugshot-btn:hover {
@@ -168,12 +172,16 @@
   transform: scale(1.05);
 }
 
-.mugshot-btn:disabled {
-  background: #666 !important;
-  cursor: not-allowed !important;
-  transform: none !important;
+.mugshot-btn.danger {
+  background: rgba(255, 107, 107, 0.9);
+  color: #fff;
 }
 
+.mugshot-btn.danger:hover {
+  background: #ff6b6b;
+}
+
+/* Instructions */
 .mugshot-instructions {
   position: absolute;
   top: 80px;
@@ -189,6 +197,7 @@
   border: 1px solid #04aa6d;
 }
 
+/* Responsive Design */
 @media (max-width: 480px) {
   .mugshot-frame-overlay {
     width: 90%;
@@ -217,17 +226,15 @@
   
   .mugshot-controls {
     gap: 8px;
-    flex-wrap: wrap;
-    justify-content: center;
   }
   
   .mugshot-btn {
     padding: 8px 12px;
-    font-size: 10px;
-    min-width: 80px;
+    font-size: 11px;
   }
 }
 
+/* Flash Effect for Photo */
 .camera-flash {
   position: absolute;
   top: 0;
