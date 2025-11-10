@@ -164,9 +164,7 @@
       </div>
       <div style="display: flex; align-items: center; gap: 10px;">
         <div class="user-info" id="userInfo" style="color: #04aa6d; font-weight: bold;"></div>
-        <a href="bounty-hunter.html" style="display: inline-block;">
-          <img src="assets/images/badges/bounty-hunter-badge-color.png" alt="Bounty Hunter" style="width: 32px; height: 32px; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-        </a>
+        <img src="assets/images/mascot/mayhem-excited.png" alt="Mayhem" style="width: 32px; height: 32px;">
       </div>
     </div>
   </header>
@@ -178,8 +176,8 @@
     <section id="userSetup" class="section-bg" style="display: none; padding-top: calc(100px + env(safe-area-inset-top));">
       <div class="container">
         <div class="row justify-content-center">
-          <div class="col-lg-6" style="max-width: 90%; margin: 0 auto;">
-            <div class="mission-card">
+          <div class="col-lg-6" style="max-width: 95%; margin: 0 auto;">
+            <div class="mission-card" style="padding: 25px;">
               <h2 class="text-center mb-4">Welcome to Mission Mischief!</h2>
               <form id="setupForm">
                 <div class="mb-3">
@@ -249,7 +247,7 @@
 
 
     <!-- Dashboard Section -->
-    <section id="dashboard" style="display: none; padding-top: 100px;">
+    <section id="dashboard" style="display: none; padding-top: calc(80px + env(safe-area-inset-top));">
       <div class="container">
         
         <!-- User Stats -->
@@ -334,6 +332,13 @@
 
   <!-- Back to top button -->
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center" id="backToTop" style="display: none;"><i class="bi bi-arrow-up-short"></i></a>
+  
+  <!-- Back to Dashboard Button -->
+  <div id="backToDashboard" style="position: fixed; top: calc(20px + env(safe-area-inset-top)); right: 20px; z-index: 1000; display: none;">
+    <button onclick="window.location.href='app.html'" style="background: #04aa6d; color: #000; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; box-shadow: 0 2px 10px rgba(0,0,0,0.3);">
+      ← Dashboard
+    </button>
+  </div>
 
   <!-- CSS Files -->
   <link href="assets/css/overlay.css" rel="stylesheet">
@@ -468,19 +473,31 @@
               img.onload();
             }
             
-            // Make image draggable for positioning
+            // Make image draggable for positioning (mobile + desktop)
             let isDragging = false;
             let startX, startY;
             
+            // Mouse events
             img.addEventListener('mousedown', function(e) {
+              e.preventDefault();
               isDragging = true;
               startX = e.clientX;
               startY = e.clientY;
               img.style.cursor = 'grabbing';
             });
             
+            // Touch events for mobile
+            img.addEventListener('touchstart', function(e) {
+              e.preventDefault();
+              isDragging = true;
+              const touch = e.touches[0];
+              startX = touch.clientX;
+              startY = touch.clientY;
+            });
+            
             document.addEventListener('mousemove', function(e) {
               if (!isDragging) return;
+              e.preventDefault();
               const deltaX = e.clientX - startX;
               const deltaY = e.clientY - startY;
               qrX += deltaX;
@@ -490,10 +507,29 @@
               updateQRTransform();
             });
             
+            document.addEventListener('touchmove', function(e) {
+              if (!isDragging) return;
+              e.preventDefault();
+              const touch = e.touches[0];
+              const deltaX = touch.clientX - startX;
+              const deltaY = touch.clientY - startY;
+              qrX += deltaX;
+              qrY += deltaY;
+              startX = touch.clientX;
+              startY = touch.clientY;
+              updateQRTransform();
+            });
+            
             document.addEventListener('mouseup', function() {
               if (isDragging) {
                 isDragging = false;
                 img.style.cursor = 'move';
+              }
+            });
+            
+            document.addEventListener('touchend', function() {
+              if (isDragging) {
+                isDragging = false;
               }
             });
           };
@@ -826,6 +862,39 @@
       const badgeState = mission.badgeId ? Missions.getBadgeState(mission.badgeId, user) : 'locked';
       const typeClass = mission.type === 'prank' ? 'prank-mission' : 'goodwill-mission';
       
+      // Special handling for Mission 4 (Choose Your Destiny)
+      let missionActions = '';
+      if (!isCompleted) {
+        if (mission.id === 4) {
+          // Mission 4: Show buy-in selection buttons
+          missionActions = `
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
+              <button class="mission-btn" onclick="selectBuyIn('recycling')" style="background: #28a745;">🌍 Green Warrior</button>
+              <button class="mission-btn" onclick="selectBuyIn('cleanup')" style="background: #6c757d;">🗑️ Oscar</button>
+              <button class="mission-btn" onclick="selectBuyIn('referral')" style="background: #007bff;">🎵 Bye Bye Bye</button>
+              <button class="mission-btn" onclick="selectBuyIn('nothing')" style="background: #dc3545;">🤡 Do Nothing</button>
+            </div>
+          `;
+        } else if (mission.type === 'setup') {
+          missionActions = `
+            <button class="mission-btn" onclick="printCard()">
+              Print Card
+            </button>
+          `;
+        } else {
+          missionActions = `
+            <button class="mission-btn" onclick="startMissionCapture(${mission.id})">
+              🎭 Add Overlays
+            </button>
+          `;
+        }
+        missionActions += `
+          <button class="mission-btn" onclick="completeMission(${mission.id})">
+            Mark Complete
+          </button>
+        `;
+      }
+      
       return `
         <div class="mission-card ${statusClass} ${typeClass}">
           <div class="mission-header" onclick="toggleMissionDetails(${mission.id})" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
@@ -857,20 +926,7 @@
               <span style="color: #666; font-size: 11px; margin-left: 10px;">Default: 0 (select points earned)</span>
             </div>
             <div class="mission-actions">
-              ${!isCompleted ? `
-                ${mission.type === 'setup' ? `
-                  <button class="mission-btn" onclick="printCard()">
-                    Print Card
-                  </button>
-                ` : `
-                  <button class="mission-btn" onclick="startMissionCapture(${mission.id})">
-                    🎭 Add Overlays
-                  </button>
-                `}
-                <button class="mission-btn" onclick="completeMission(${mission.id})">
-                  Mark Complete
-                </button>
-              ` : ''}
+              ${missionActions}
               <button class="mission-btn" onclick="shareWithHashtags(${mission.id})">
                 📋 Copy Hashtags
               </button>
@@ -1526,40 +1582,81 @@
         // Draw original image
         ctx.drawImage(img, 0, 0);
         
-        // Add clown nose (red circle)
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2.2;
-        const radius = Math.min(canvas.width, canvas.height) / 20;
-        
-        ctx.fillStyle = '#ff0000';
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-        ctx.fill();
-        
-        // Add "CLOWN" text
-        ctx.fillStyle = '#ff0000';
-        ctx.font = `bold ${canvas.width / 15}px Arial`;
-        ctx.textAlign = 'center';
-        ctx.fillText('CLOWN', centerX, canvas.height - 50);
-        
-        // Store processed image
-        canvas.toBlob(blob => {
-          processedClownImage = blob;
+        // Add Mayhem clown overlay (bottom right)
+        const mayhemClown = new Image();
+        mayhemClown.onload = function() {
+          const clownSize = Math.min(canvas.width, canvas.height) / 4;
+          ctx.drawImage(mayhemClown, canvas.width - clownSize - 20, canvas.height - clownSize - 20, clownSize, clownSize);
           
-          // Update button to show options
-          btn.innerHTML = '✅ CLOWN READY';
-          btn.disabled = false;
-          btn.onclick = downloadClownSelfie;
+          // Add draggable clown nose (red circle) - user can position
+          const centerX = canvas.width / 2;
+          const centerY = canvas.height / 2.2;
+          const radius = Math.min(canvas.width, canvas.height) / 25;
           
-          // Add share button
-          const shareBtn = document.createElement('button');
-          shareBtn.textContent = '📤 SHARE CLOWN';
-          shareBtn.style.cssText = 'background: #04aa6d; color: #000; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; margin-left: 10px;';
-          shareBtn.onclick = shareClownSelfie;
-          btn.parentNode.appendChild(shareBtn);
+          ctx.fillStyle = '#ff0000';
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+          ctx.fill();
           
-          showToast('Clown selfie ready! Download or share with #missionmischiefclown', 'success');
-        });
+          // Add "CLOWN" text
+          ctx.fillStyle = '#ff0000';
+          ctx.font = `bold ${canvas.width / 15}px Arial`;
+          ctx.textAlign = 'center';
+          ctx.fillText('CLOWN', centerX, canvas.height - 50);
+          
+          // Store processed image
+          canvas.toBlob(blob => {
+            processedClownImage = blob;
+            
+            // Update button to show options
+            btn.innerHTML = '✅ CLOWN READY';
+            btn.disabled = false;
+            btn.onclick = downloadClownSelfie;
+            
+            // Add share button
+            const shareBtn = document.createElement('button');
+            shareBtn.textContent = '📤 SHARE CLOWN';
+            shareBtn.style.cssText = 'background: #04aa6d; color: #000; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; margin-left: 10px;';
+            shareBtn.onclick = shareClownSelfie;
+            btn.parentNode.appendChild(shareBtn);
+            
+            showToast('Clown selfie ready! Download or share with #missionmischiefclown', 'success');
+          });
+        };
+        mayhemClown.src = 'assets/images/mascot/mayhem-clown.png';
+        
+        // Fallback if image fails to load
+        mayhemClown.onerror = function() {
+          // Just add nose and text without Mayhem
+          const centerX = canvas.width / 2;
+          const centerY = canvas.height / 2.2;
+          const radius = Math.min(canvas.width, canvas.height) / 25;
+          
+          ctx.fillStyle = '#ff0000';
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+          ctx.fill();
+          
+          ctx.fillStyle = '#ff0000';
+          ctx.font = `bold ${canvas.width / 15}px Arial`;
+          ctx.textAlign = 'center';
+          ctx.fillText('CLOWN', centerX, canvas.height - 50);
+          
+          canvas.toBlob(blob => {
+            processedClownImage = blob;
+            btn.innerHTML = '✅ CLOWN READY';
+            btn.disabled = false;
+            btn.onclick = downloadClownSelfie;
+            
+            const shareBtn = document.createElement('button');
+            shareBtn.textContent = '📤 SHARE CLOWN';
+            shareBtn.style.cssText = 'background: #04aa6d; color: #000; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; margin-left: 10px;';
+            shareBtn.onclick = shareClownSelfie;
+            btn.parentNode.appendChild(shareBtn);
+            
+            showToast('Clown selfie ready!', 'success');
+          });
+        };
       };
       
       img.src = URL.createObjectURL(file);
@@ -1695,6 +1792,26 @@
       }, 3000);
     }
     
+    // Buy-in selection for Mission 4
+    window.selectBuyIn = function(buyInId) {
+      const user = Storage.getUser();
+      user.currentBuyIn = buyInId;
+      
+      // Add to completed buy-ins if not already there
+      if (!user.completedBuyIns) user.completedBuyIns = [];
+      if (!user.completedBuyIns.includes(buyInId)) {
+        user.completedBuyIns.push(buyInId);
+      }
+      
+      Storage.saveUser(user);
+      showToast(`Selected: ${Missions.buyIns[buyInId].title}`, 'success');
+      
+      // Auto-complete Mission 4
+      setTimeout(() => {
+        completeMission(4);
+      }, 1000);
+    };
+    
     // Initialize app
     window.addEventListener('load', function() {
       document.body.classList.remove('page-transitioning');
@@ -1703,10 +1820,14 @@
     // Back to top functionality
     window.addEventListener('scroll', function() {
       const backToTop = document.getElementById('backToTop');
+      const backToDashboard = document.getElementById('backToDashboard');
+      
       if (window.scrollY > 300) {
         backToTop.style.display = 'flex';
+        if (backToDashboard) backToDashboard.style.display = 'block';
       } else {
         backToTop.style.display = 'none';
+        if (backToDashboard) backToDashboard.style.display = 'none';
       }
     });
     

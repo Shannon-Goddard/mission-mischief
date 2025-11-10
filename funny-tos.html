@@ -170,13 +170,13 @@
 <body>
     <div class="container">
         <div class="mission-header">
-            <h1>🎭 MISSION 1: FAFO 🎭</h1>
+            <h1 style="white-space: nowrap;">🎭 MISSION 1: FAFO 🎭</h1>
             <p><strong>F*** Around and Find Out</strong></p>
             <p>Welcome to the most legally binding comedy show on Earth!</p>
         </div>
         
         <div class="funny-tos">
-            <h2 style="color: #04aa6d; text-align: center;">📋 Our Lawyer Made Us Do This 📋</h2>
+            <h2 style="color: #04aa6d; text-align: center; white-space: nowrap;">📋 Our Lawyer Made Us Do This 📋</h2>
             
             <p><strong>Hey there, future chaos agent!</strong> 👋</p>
             
@@ -269,7 +269,7 @@
         
         <!-- Instructions -->
         <div class="mugshot-instructions">
-            <strong>🚨 🚨 BOOKING INSTRUCTIONS 🚨 🚨</strong><br>
+            <strong style="white-space: nowrap;">🚨🚨 Booking Instructions 🚨🚨</strong><br>
             Look directly at camera • Serious expression
         </div>
         
@@ -345,6 +345,9 @@
                 setTimeout(() => {
                     window.location.href = 'app.html';
                 }, 300);
+            } else {
+                // Fallback redirect without download
+                window.location.href = 'app.html';
             }
         }
         
@@ -393,33 +396,8 @@
             const hashtag = '#iwillnotsuemissionmischieforitsaffiliatedteambecausedoingsowouldbeadickmoveandisignaconsentformpromisingtonotbeadickandtakeaselfieandpostitwithmelookinglikeacriminalholdingasignwithtodaysdateandtimeinamugshotandifithinkimsmarterthanthembynottakingaselfiebutuploadingapictureofanythingotherthanmeornopictureatalltheniwilloweallplayersexposingmefivedollarsandnotlimitedtotheonlybeingexposedoncerulebecauseiobviouslyamadick';
             const shareText = `Just completed Mission 1: FAFO!\n\n${hashtag}\n\n#missionmischief #realworldgame`;
             
-            // Share mugshot image if available
-            if (mugshotCamera && mugshotCamera.canvas) {
-                mugshotCamera.canvas.toBlob((blob) => {
-                    const file = new File([blob], 'mission-mischief-mugshot.jpg', { type: 'image/jpeg' });
-                    
-                    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-                        navigator.share({
-                            title: 'Mission Mischief - FAFO Complete!',
-                            text: shareText,
-                            files: [file]
-                        }).catch(err => {
-                            shareTextOnly(shareText, hashtag);
-                        });
-                    } else {
-                        // Download image and copy text
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = 'mission-mischief-mugshot.jpg';
-                        a.click();
-                        URL.revokeObjectURL(url);
-                        shareTextOnly(shareText, hashtag);
-                    }
-                }, 'image/jpeg', 0.9);
-            } else {
-                shareTextOnly(shareText, hashtag);
-            }
+            // Just copy hashtags - user will add photo when they have profile data
+            shareTextOnly(shareText, hashtag);
         }
         
         function shareTextOnly(shareText, hashtag) {
