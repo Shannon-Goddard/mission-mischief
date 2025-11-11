@@ -176,8 +176,12 @@
       #hero {
         align-items: flex-start;
         padding-top: calc(60px + env(safe-area-inset-top));
-        padding-bottom: 80px;
-        min-height: 100vh;
+        padding-bottom: 40px;
+      }
+      
+      .feature-card {
+        opacity: 1 !important;
+        transform: none !important;
       }
       
       .hero-text h1 {
@@ -205,6 +209,19 @@
       .text-left p {
         line-height: 1.6;
       }
+      
+      .scroll-hint {
+        margin-top: 20px;
+        animation: bounce 2s infinite;
+        color: #04aa6d;
+        font-size: 1.5rem;
+      }
+    }
+    
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-10px); }
+      60% { transform: translateY(-5px); }
     }
     
     /* Tablet Styles */
@@ -339,6 +356,10 @@
         <!-- CTA Button -->
         <div class="hero-cta">
           <a href="app.html" class="get-started-btn">JOIN THE CHAOS</a>
+          <!-- Optional: Scroll hint for mobile -->
+          <div class="scroll-hint d-md-none">
+            <i class="bi bi-chevron-down"></i>
+          </div>
         </div>
       </div>
     </div>
@@ -397,15 +418,17 @@
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script src="assets/js/main.js"></script>
   <script>
-    // Initialize AOS
-    AOS.init({
-      duration: 1000,
-      easing: "ease-in-out",
-      once: true,
-      mirror: false
-    });
+    // Initialize AOS only on desktop
+    if (window.innerWidth > 767) {
+      AOS.init({
+        duration: 1000,
+        easing: "ease-in-out",
+        once: true,
+        mirror: false
+      });
+    }
     
-    console.log('🚀 INDEX.HTML - AOS Layout Fix v2 - Deployed!');
+    console.log('🚀 INDEX.HTML - AOS Mobile Fix v3 - Deployed!');
     
     // Debug text centering
     document.addEventListener('DOMContentLoaded', function() {
