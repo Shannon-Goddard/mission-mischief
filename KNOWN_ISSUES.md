@@ -62,3 +62,35 @@
 | **ALL Missions** should we change the "Add Overlays" button text to "Proof"? | [ ] | [ ] |
 | **ALL PAGES** should we have on scroll event trigger a back to top button or have it in the header like https://missionmischief.online/buy-me-a-coffee-help.html has "<- Back to Dashboard" but as "^ Back to Top"? | [ ] | [ ] |
 | ✅ **Checkout test-camera-capture.js and test-mugshot.css for possible solutions** - COMPLETED: Enhanced camera capture system integrated with proper mugshot overlay functionality. | [x] | [ ] |
+
+***
+
+## 🔧 TROUBLESHOOTING SOLUTIONS
+
+### Hero Section Fixes (index.html)
+| Problem | Solution | Code Pattern |
+| :--- | :--- | :--- |
+| **Text not centered on mobile** | Use asymmetric padding to compensate for Bootstrap container | `#hero { padding: top 60px bottom 0px; }` |
+| **Feature cards not showing on mobile** | Add mobile-specific flexbox styling | `@media (max-width: 767px) { .feature-cards { display: flex; flex-direction: column; gap: 15px; } }` |
+| **CTA button floating over next section** | Add bottom padding to hero section | `#hero { padding-bottom: 40px; }` |
+| **Content hitting screen edges** | Add right padding at section level, not individual elements | `#hero { padding-right: 60px; }` |
+
+### UX Enhancement Patterns
+| Enhancement | Implementation | Code Pattern |
+| :--- | :--- | :--- |
+| **Visual hierarchy for key words** | Color accent on important spans | `.hero-text h1 span { color: #04aa6d; }` |
+| **Attention-grabbing CTA buttons** | Subtle pulse animation | `@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(4, 170, 109, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(4, 170, 109, 0); } }` |
+| **Mobile-optimized buttons** | Larger touch targets on mobile | `@media (max-width: 767px) { .get-started-btn, .cta-btn { padding: 18px 35px; font-size: 1.2rem; } }` |
+| **Improved readability** | Increased line spacing on mobile | `@media (max-width: 767px) { .text-left p { line-height: 1.6; } }` |
+
+### CSS Media Query Best Practices
+- **Mobile-first approach**: Base styles for mobile, then `@media (min-width: 768px)` for larger screens
+- **Missing mobile styles**: Always check if tablet/desktop overrides need mobile equivalents
+- **Bootstrap conflicts**: Use section-level padding instead of individual element margins
+- **Asymmetric padding**: Use different left/right padding to compensate for Bootstrap's built-in spacing
+
+### Content Reference Fixes
+| Problem | Solution | Example |
+| :--- | :--- | :--- |
+| **Incorrect button references** | Update text to match actual button placement | "By tapping the button above" → "By tapping the button below" |
+| **Legal clarity improvements** | More honest, user-friendly language | "you agree that you have read" → "you will have the opportunity to read" |
