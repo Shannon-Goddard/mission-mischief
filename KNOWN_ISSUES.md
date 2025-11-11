@@ -5,6 +5,7 @@
 | Issue Description | Fixed | Not Fixed |
 | :--- | :---: | :---: |
 | On load text **"YOU FOUND THE EVIDENCE Welcome to Mission Mischief: The World's Most Sociopathic Scavenger Hunt"** is not centered. | [x] | [ ] |
+| text **"By tapping the button above"** there is no button above. | [ ] | [x] |
 
 ***
 
