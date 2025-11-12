@@ -166,3 +166,135 @@
   }
 }
 ```
+
+## 🚨 ACTIVE ISSUES - Day 2 (Landing Page Final Polish)
+
+### Issue: Hero Section Layout Problems
+**Status**: IN PROGRESS  
+**Priority**: HIGH  
+**Description**: 
+- Double scroll bar appearing on mobile
+- Feature cards getting cut off behind legal section
+- Hero positioning still not optimal on load
+
+**Root Cause Analysis**:
+- Hero section `min-height: 100vh` + padding creating overflow
+- Feature cards may need explicit z-index stacking
+- Legal section potentially overlapping hero content
+
+**Next Steps for Tomorrow**:
+1. **Fix Double Scroll**: Remove `min-height: 100vh` or adjust container heights
+2. **Z-Index Stacking**: Ensure proper layering between hero and legal sections
+3. **Content Flow**: Add proper margins/padding between sections to prevent overlap
+4. **Mobile Testing**: Verify actual mobile device behavior vs desktop mobile view
+
+**Potential Solutions to Try**:
+```css
+/* Option 1: Remove min-height constraint */
+#hero {
+  height: auto; /* instead of min-height: 100vh */
+}
+
+/* Option 2: Explicit section stacking */
+#hero { z-index: 10; }
+.cta { z-index: 5; }
+
+/* Option 3: Clear section separation */
+.cta {
+  margin-top: 60px; /* Force gap between sections */
+}
+```
+
+**Files Involved**: 
+- `index.html` (hero section CSS)
+- Mobile viewport testing required
+
+---
+
+## 🛠️ Best Practices Review - Final Polish Checklist
+
+### 1. CSS Structure and Specificity
+**Issue**: Inline styles scattered throughout HTML + excessive `!important` usage
+**Current Problems**:
+- Massive inline style on CTA button in legal section
+- Heavy reliance on `!important` in mobile media queries
+- Mixed styling approaches (CSS block + inline styles)
+
+**Best Practice Fixes**:
+```css
+/* Replace inline styles with classes */
+.cta-btn-fixed {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  padding: 12px 20px;
+  font-size: 0.9rem;
+  border-radius: 25px;
+  box-shadow: 0 4px 15px rgba(4, 170, 109, 0.3);
+}
+
+/* Use specific selectors instead of !important */
+#hero .hero-cta .get-started-btn { /* More specific than !important */ }
+```
+
+### 2. Accessibility and Semantic HTML
+**Issues**:
+- Two identical CTA buttons (confusing UX)
+- Unused AOS library loaded (performance impact)
+- Missing semantic structure
+
+**Fixes Needed**:
+- Remove duplicate CTA or make them serve different purposes
+- Remove AOS CSS/JS links if not using animations
+- Add proper ARIA labels and semantic structure
+
+### 3. CSS Duplication and Redundancy
+**Current Duplicates**:
+- `.cta-btn` and `.get-started-btn` (nearly identical)
+- Pulse animation applied to both classes
+- Redundant hover states
+
+**Consolidation Strategy**:
+```css
+/* Single reusable button class */
+.primary-btn {
+  /* Common button styles */
+}
+
+.primary-btn--fixed {
+  /* Fixed positioning specific styles */
+}
+```
+
+### 4. Performance Optimizations
+**Remove Before Production**:
+- Debug JavaScript console logging
+- Unused AOS library references
+- Redundant CSS rules
+- Large inline style attributes
+
+**Files to Clean**:
+- `index.html` - Remove debug JS, consolidate CSS, remove AOS
+- Inline styles → CSS classes
+- Duplicate button styles → Single reusable class
+
+### 5. Code Maintainability
+**Current Issues**:
+- Hard to modify button styles (scattered across inline + CSS)
+- Difficult to track which styles override others
+- Mixed specificity levels
+
+**Target State**:
+- All styles in CSS block or external files
+- Clear class naming convention
+- Minimal use of `!important`
+- Single source of truth for each component
+
+---
+
+**Priority Order for Tomorrow**:
+1. Fix layout issues (double scroll, content overlap)
+2. Consolidate CSS and remove inline styles
+3. Remove unused libraries and debug code
+4. Final mobile testing and polish
