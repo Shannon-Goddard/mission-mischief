@@ -30,8 +30,10 @@
   <style>
     /* Mobile-First Hero Styles */
     #hero {
-      padding: calc(40px + env(safe-area-inset-top)) 60px 40px 0px;
+      min-height: 100vh;
+      padding: calc(40px + env(safe-area-inset-top)) 20px 20px 20px;
       position: relative;
+      overflow: hidden;
       display: flex;
       align-items: flex-start;
     }
@@ -70,8 +72,8 @@
     /* Hero Text */
     .hero-text {
       order: 2;
-      text-align: center;
       margin-bottom: 20px;
+      text-align: center;
     }
     
     .hero-text h1 {
@@ -86,22 +88,15 @@
       line-height: 1.3;
     }
     
-    .hero-text h1 span {
-      color: #04aa6d;
-    }
-    
     /* Feature Cards */
     .feature-cards {
       order: 3;
       display: flex;
       flex-direction: column;
       gap: 15px;
-      text-align: center;
+      width: 100%;
+      max-width: 400px;
       margin-bottom: 20px;
-    }
-    
-    .feature-card {
-      margin-bottom: 15px;
     }
     
     .feature-card {
@@ -160,31 +155,14 @@
       box-shadow: 0 5px 15px rgba(4, 170, 109, 0.4);
     }
     
-    .get-started-btn, .cta-btn {
-      animation: pulse 2s infinite;
-    }
-    
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(4, 170, 109, 0.7); }
-      70% { box-shadow: 0 0 0 10px rgba(4, 170, 109, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(4, 170, 109, 0); }
-    }
-    
     /* Mobile specific adjustments */
     @media (max-width: 767px) {
       #hero {
         align-items: flex-start;
         padding-top: calc(60px + env(safe-area-inset-top));
-        padding-bottom: 120px;
+        padding-right: 60px;
+        padding-left: 0px;
       }
-      
-      .feature-card[data-aos] {
-        opacity: 1 !important;
-        transform: none !important;
-        transition: none !important;
-      }
-      
-
       
       .hero-text h1 {
         font-size: 1.6rem;
@@ -195,35 +173,6 @@
         font-size: 0.9rem;
         line-height: 1.4;
       }
-      
-      .feature-cards {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        margin-bottom: 40px;
-      }
-      
-      .get-started-btn, .cta-btn {
-        padding: 18px 35px;
-        font-size: 1.2rem;
-      }
-      
-      .text-left p {
-        line-height: 1.6;
-      }
-      
-      .scroll-hint {
-        margin-top: 20px;
-        animation: bounce 2s infinite;
-        color: #04aa6d;
-        font-size: 1.5rem;
-      }
-    }
-    
-    @keyframes bounce {
-      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-      40% { transform: translateY(-10px); }
-      60% { transform: translateY(-5px); }
     }
     
     /* Tablet Styles */
@@ -258,7 +207,7 @@
         order: 2;
         flex: 1;
         min-width: 300px;
-        text-align: center;
+        text-align: left;
         margin-bottom: 0;
       }
       
@@ -287,7 +236,6 @@
         flex: 1 1 100%;
         text-align: center;
         margin-top: 20px;
-        margin-bottom: 40px;
       }
     }
     
@@ -314,11 +262,6 @@
         font-size: 1.4rem;
       }
     }
-    
-    /* Legal section spacing */
-    .cta {
-      padding-top: 100px;
-    }
   </style>
 </head>
 
@@ -335,9 +278,9 @@
         </div>
         
         <!-- Hero Text -->
-        <div class="hero-text">
-          <h1 id="heroTitle">YOU FOUND THE <span>EVIDENCE</span></h1>
-          <h2 id="heroSubtitle">Welcome to Mission Mischief:<br>The World's Most Sociopathic Scavenger Hunt</h2>
+        <div class="hero-text" style="width: 100% !important; max-width: none !important; text-align: center !important; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+          <h1 id="heroTitle" style="text-align: center !important; width: 100% !important; display: block !important; margin: 0 auto !important; text-align: center !important;">YOU FOUND THE <span style="color: #04aa6d;">EVIDENCE</span></h1>
+          <h2 id="heroSubtitle" style="text-align: center !important; width: 100% !important; display: block !important; line-height: 1.3; margin: 0 auto !important; text-align: center !important;">Welcome to Mission Mischief:<br><span style="display: block; text-align: center;">The World's Most Sociopathic Scavenger Hunt</span></h2>
         </div>
         
         <!-- Feature Cards -->
@@ -364,14 +307,13 @@
         <!-- CTA Button -->
         <div class="hero-cta">
           <a href="app.html" class="get-started-btn">JOIN THE CHAOS</a>
-
         </div>
       </div>
     </div>
   </section>
 
   <!-- Legal Disclaimer -->
-  <section class="cta" id="legal-section">
+  <section class="cta">
     <div class="container">
       <div class="row">
         <div class="col-lg-12 text-center">
@@ -386,7 +328,7 @@
             <p>We encourage creative mischief, but the term "mischief" does not include "crimes." You are solely responsible for your actions. Do not trespass. Do not harm property. Do not invoke the wrath of the local authorities or wildlife. If you get arrested trying to "complete a mission," we will be laughing, but we will not be posting your bail.</p>
             
             <h4>3. Actual Legal Stuff (Please Read the Fine Print, Seriously):</h4>
-            <p>By tapping the button below, you will have the opportunity to read and accepted our full, legally-binding Terms of Service and Privacy Policy. That stuff is important. This funny section is not a replacement for that.</p>
+            <p>By tapping the button below, you will have the opportunity to read and accept our full, legally-binding Terms of Service and Privacy Policy. That stuff is important. This funny section is not a replacement for that.</p>
           </div>
           
           <div class="mt-4">
@@ -431,7 +373,7 @@
       mirror: false
     });
     
-    console.log('🚀 INDEX.HTML - Mobile AOS Override Fix v12 - Deployed!');
+    console.log('🚀 INDEX.HTML - Clean Start + Original Fixes v13 - Deployed!');
     
     // Debug text centering
     document.addEventListener('DOMContentLoaded', function() {

@@ -67,21 +67,22 @@
 
 ## 🔧 TROUBLESHOOTING SOLUTIONS
 
-### Hero Section Fixes (index.html)
+### 🎯 ORIGINAL USER REQUIREMENTS (Fixed)
 | Problem | Solution | Code Pattern |
 | :--- | :--- | :--- |
-| **Text not centered on mobile** | Use asymmetric padding to compensate for Bootstrap container | `#hero { padding: top 60px bottom 0px; }` |
-| **Feature cards not showing on mobile** | Add mobile-specific flexbox styling | `@media (max-width: 767px) { .feature-cards { display: flex; flex-direction: column; gap: 15px; } }` |
-| **CTA button floating over next section** | Add bottom padding to hero section | `#hero { padding-bottom: 40px; }` |
-| **Content hitting screen edges** | Add right padding at section level, not individual elements | `#hero { padding-right: 60px; }` |
+| **🔴 Text not centered on mobile** | Use asymmetric padding to compensate for Bootstrap container | `#hero { padding: calc(40px + env(safe-area-inset-top)) 60px 40px 0px; }` |
+| **🔴 Content hitting screen edges** | Add right padding at section level, not individual elements | `#hero { padding-right: 60px; }` |
+| **🔴 Incorrect button reference in legal text** | Update text to match actual button placement | `"By tapping the button above" → "By tapping the button below"` |
 
-### UX Enhancement Patterns
+### 🎨 UX ENHANCEMENTS (Added During Development)
 | Enhancement | Implementation | Code Pattern |
 | :--- | :--- | :--- |
-| **Visual hierarchy for key words** | Color accent on important spans | `.hero-text h1 span { color: #04aa6d; }` |
-| **Attention-grabbing CTA buttons** | Subtle pulse animation | `@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(4, 170, 109, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(4, 170, 109, 0); } }` |
-| **Mobile-optimized buttons** | Larger touch targets on mobile | `@media (max-width: 767px) { .get-started-btn, .cta-btn { padding: 18px 35px; font-size: 1.2rem; } }` |
-| **Improved readability** | Increased line spacing on mobile | `@media (max-width: 767px) { .text-left p { line-height: 1.6; } }` |
+| **🟢 Visual hierarchy for "EVIDENCE"** | Color accent on important spans | `.hero-text h1 span { color: #04aa6d; }` |
+| **🟢 Attention-grabbing CTA buttons** | Subtle pulse animation | `@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(4, 170, 109, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(4, 170, 109, 0); } }` |
+| **🟢 Mobile-optimized buttons** | Larger touch targets on mobile | `@media (max-width: 767px) { .get-started-btn, .cta-btn { padding: 18px 35px; font-size: 1.2rem; } }` |
+| **🟢 Improved readability** | Increased line spacing on mobile | `@media (max-width: 767px) { .text-left p { line-height: 1.6; } }` |
+| **🟢 Smooth scroll behavior** | CSS scroll-behavior property | `html { scroll-behavior: smooth; }` |
+| **🟢 Back to top button** | Appears on scroll with smooth return | `<a href="#" class="back-to-top">` |
 
 ### CSS Media Query Best Practices
 - **Mobile-first approach**: Base styles for mobile, then `@media (min-width: 768px)` for larger screens
@@ -89,8 +90,51 @@
 - **Bootstrap conflicts**: Use section-level padding instead of individual element margins
 - **Asymmetric padding**: Use different left/right padding to compensate for Bootstrap's built-in spacing
 
-### Content Reference Fixes
+### 📝 CONTENT IMPROVEMENTS
 | Problem | Solution | Example |
 | :--- | :--- | :--- |
-| **Incorrect button references** | Update text to match actual button placement | "By tapping the button above" → "By tapping the button below" |
-| **Legal clarity improvements** | More honest, user-friendly language | "you agree that you have read" → "you will have the opportunity to read" |
+| **🔴 Incorrect button references** | Update text to match actual button placement | "By tapping the button above" → "By tapping the button below" |
+| **🟢 Legal clarity improvements** | More honest, user-friendly language | "you agree that you have read" → "you will have the opportunity to read" |
+
+***
+
+## 🔄 MOBILE LAYOUT LOOP PATTERN (index.html)
+
+### The Problem
+**Mobile viewport differences** between desktop mobile view and actual mobile devices cause feature cards to overflow into legal section despite working perfectly in desktop mobile view.
+
+### Attempted Solutions & Results
+| Version | Approach | Result | Issue |
+| :--- | :--- | :--- | :--- |
+| **v1-v4** | AOS animation fixes, min-height removal, spacer sections | ❌ | Cards still overlapping |
+| **v5-v6** | Z-index layering, background colors | ❌ | CTA button cutoff, text wave effects |
+| **v7** | Overflow hidden, max-height constraints | ❌ | Scroll traps, broken page flow |
+| **v8-v9** | Simple padding approach (60px + 100px) | ✅ PC / ❌ Mobile | Works in desktop mobile view, fails on real devices |
+| **v10** | AOS initialization restored | ✅ No overlap / ❌ Missing cards | Fixed overlap but only 1 card shows |
+| **v11** | AOS delay removal, 120px padding | ✅ Button fixed / ❌ Missing card | 2 cards show, 3rd missing |
+| **v12** | AOS override with opacity/transform | ✅ All cards / ❌ Overlap returns | Back to original problem |
+
+### The Loop Pattern
+1. **Fix missing cards** → Cards overflow into legal section
+2. **Add padding to prevent overflow** → Cards disappear due to AOS delays
+3. **Fix AOS delays** → Cards reappear but overflow again
+4. **Repeat cycle** → Same issues resurface
+
+### Root Cause Analysis
+- **Desktop mobile view**: Uses desktop viewport calculations
+- **Real mobile devices**: Different viewport height calculations (address bars, safe areas, pixel density)
+- **AOS Library**: Animation delays cause cards to appear/disappear unpredictably on mobile
+- **Bootstrap Container**: Built-in padding affects section boundaries differently on mobile
+
+### Working Reference (old-index.html)
+**Key differences in yesterday's working version:**
+- No scroll hint element
+- No mobile-specific bottom padding
+- AOS initialized on all devices
+- Simpler CSS without mobile overrides
+
+### Next Steps to Break the Loop
+1. **Copy exact CSS from old-index.html** for mobile section
+2. **Remove all mobile-specific overrides** that were added during debugging
+3. **Test minimal changes** one at a time
+4. **Document exact viewport differences** between desktop mobile view and real devices
