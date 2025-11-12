@@ -175,7 +175,7 @@
       #hero {
         align-items: flex-start;
         padding-top: calc(60px + env(safe-area-inset-top));
-        padding-bottom: 60px;
+        padding-bottom: 80px;
       }
       
       .feature-card {
@@ -310,6 +310,11 @@
         font-size: 1.4rem;
       }
     }
+    
+    /* Legal section spacing */
+    .cta {
+      padding-top: 60px;
+    }
   </style>
 </head>
 
@@ -364,11 +369,8 @@
     </div>
   </section>
 
-  <!-- Spacer Section -->
-  <section class="spacer-section" style="height: 80px; background: transparent;"></section>
-
   <!-- Legal Disclaimer -->
-  <section class="cta">
+  <section class="cta" id="legal-section">
     <div class="container">
       <div class="row">
         <div class="col-lg-12 text-center">
@@ -430,7 +432,7 @@
       });
     }
     
-    console.log('🚀 INDEX.HTML - Remove Min-Height Fix v5 - Deployed!');
+    console.log('🚀 INDEX.HTML - Section Padding Fix v6 - Deployed!');
     
     // Debug text centering
     document.addEventListener('DOMContentLoaded', function() {
