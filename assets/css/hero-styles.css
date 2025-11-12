@@ -151,8 +151,7 @@ main {
 /* ------------------------------------------- */
 
 /* Apply pulse animation and standard transition/size only */
-.cta-btn,
-.get-started-btn {
+.cta-btn {
   /* These properties are now used to override the default styles from main.css */
   display: inline-block;
   padding: 15px 30px;
@@ -171,8 +170,7 @@ main {
 }
 
 /* The pulse animation is unique and remains here */
-.cta-btn,
-.get-started-btn {
+.cta-btn {
   animation: pulse 2s infinite !important;
 }
 
@@ -221,16 +219,14 @@ main {
   }
   
   /* Fixed Positioning for ALL CTA buttons on mobile */
-  .hero-cta,
   .cta-btn {
     position: fixed !important;
-    bottom: 20px !important;
+    bottom: 100px !important;
     right: 20px !important;
     z-index: 1000 !important;
   }
   
   /* Mobile-specific button size/shape */
-  .hero-cta .get-started-btn,
   .cta-btn {
     padding: 12px 20px !important;
     font-size: 0.9rem !important;
@@ -299,17 +295,16 @@ main {
   }
   
   /* Fixed Positioning for ALL CTA buttons on tablet+ */
-  .hero-cta,
   .cta-btn {
     position: fixed !important;
-    bottom: 20px !important;
+    bottom: 80px !important;
     right: 20px !important;
     z-index: 1000 !important;
     order: 4;
   }
   
   /* Tablet-specific button size/shape */
-  .hero-cta .get-started-btn,
+ 
   .cta-btn {
     padding: 12px 20px !important;
     font-size: 0.9rem !important;
@@ -343,6 +338,13 @@ main {
   }
 }
 
+/* UX ENHANCEMENT: Improve legal text readability */
+.cta .text-left p {
+    line-height: 1.7; /* Increased line height */
+    max-width: 800px; /* Constrain text width on wide screens */
+    margin-left: auto;
+    margin-right: auto;
+}
 /* ---------------------------------------------------- */
 /* DELETED REDUNDANT CODE FROM ORIGINAL FILE */
 /* ---------------------------------------------------- */
