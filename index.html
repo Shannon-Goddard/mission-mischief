@@ -30,11 +30,10 @@
   <style>
     /* Mobile-First Hero Styles */
     #hero {
-      padding: calc(40px + env(safe-area-inset-top)) 60px 60px 0px;
+      padding: calc(40px + env(safe-area-inset-top)) 60px 40px 0px;
       position: relative;
       display: flex;
       align-items: flex-start;
-      min-height: 100vh;
     }
     
     .hero-content {
@@ -365,6 +364,9 @@
     </div>
   </section>
 
+  <!-- Spacer Section -->
+  <section class="spacer-section" style="height: 80px; background: transparent;"></section>
+
   <!-- Legal Disclaimer -->
   <section class="cta">
     <div class="container">
@@ -428,7 +430,7 @@
       });
     }
     
-    console.log('🚀 INDEX.HTML - Mobile Spacing Fix v4 - Deployed!');
+    console.log('🚀 INDEX.HTML - Remove Min-Height Fix v5 - Deployed!');
     
     // Debug text centering
     document.addEventListener('DOMContentLoaded', function() {
