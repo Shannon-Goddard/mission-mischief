@@ -125,8 +125,8 @@ class MugshotCamera {
       <button class="mugshot-btn" onclick="downloadMugshot()">
         💾 DOWNLOAD
       </button>
-      <button class="mugshot-btn" id="continueBtn" onclick="completeFAFOAndContinue()">
-        ✅ CONTINUE TO GAME
+      <button class="mugshot-btn" id="continueBtn" onclick="completeFAFOAndContinue()" disabled style="opacity: 0.5; cursor: not-allowed;">
+        ✅ DOWNLOAD FIRST
       </button>
     `;
   }
@@ -207,7 +207,16 @@ window.retakeMugshot = function() {
 
 window.downloadMugshot = function() {
   if (mugshotCamera.canvas) {
-    mugshotCamera.canvas.toBlob(async (blob) => {
+    // Create final canvas with B&W overlay and sign
+    const finalCanvas = document.createElement('canvas');
+    finalCanvas.width = mugshotCamera.canvas.width;
+    finalCanvas.height = mugshotCamera.canvas.height;
+    const ctx = finalCanvas.getContext('2d');
+    
+    // Draw the original mugshot (already B&W with booking overlay)
+    ctx.drawImage(mugshotCamera.canvas, 0, 0);
+    
+    finalCanvas.toBlob(async (blob) => {
       const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       
       try {
@@ -238,15 +247,31 @@ window.downloadMugshot = function() {
         } else {
           downloadFallback(blob);
         }
+        
+        // Enable continue button after successful download
+        enableContinueButton();
+        
       } catch (error) {
         console.log('⚠️ Save failed, using download fallback:', error);
         downloadFallback(blob);
+        enableContinueButton();
       }
     }, 'image/jpeg', 0.9);
   } else {
     alert('📸 No mugshot to save! Take a photo first.');
   }
 };
+
+function enableContinueButton() {
+  const continueBtn = document.getElementById('continueBtn');
+  if (continueBtn) {
+    continueBtn.disabled = false;
+    continueBtn.style.opacity = '1';
+    continueBtn.style.cursor = 'pointer';
+    continueBtn.textContent = '✅ CONTINUE TO GAME';
+    continueBtn.style.background = '#04aa6d';
+  }
+}
 
 function downloadFallback(blob) {
   const url = URL.createObjectURL(blob);
@@ -258,6 +283,7 @@ function downloadFallback(blob) {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
   console.log('💾 Mugshot downloaded (fallback)');
+  enableContinueButton();
 }
 
 window.closeMugshotCamera = function() {
