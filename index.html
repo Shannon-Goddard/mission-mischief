@@ -175,7 +175,11 @@
       #hero {
         align-items: flex-start;
         padding-top: calc(60px + env(safe-area-inset-top));
-        padding-bottom: 60px;
+        padding-bottom: 120px;
+      }
+      
+      .feature-card {
+        animation-delay: 0s !important;
       }
       
 
@@ -358,10 +362,7 @@
         <!-- CTA Button -->
         <div class="hero-cta">
           <a href="app.html" class="get-started-btn">JOIN THE CHAOS</a>
-          <!-- Optional: Scroll hint for mobile -->
-          <div class="scroll-hint d-md-none">
-            <i class="bi bi-chevron-down"></i>
-          </div>
+
         </div>
       </div>
     </div>
@@ -428,7 +429,7 @@
       mirror: false
     });
     
-    console.log('🚀 INDEX.HTML - AOS Restore Fix v10 - Deployed!');
+    console.log('🚀 INDEX.HTML - Mobile AOS Delay Fix v11 - Deployed!');
     
     // Debug text centering
     document.addEventListener('DOMContentLoaded', function() {
