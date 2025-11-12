@@ -138,3 +138,27 @@
 2. **Remove all mobile-specific overrides** that were added during debugging
 3. **Test minimal changes** one at a time
 4. **Document exact viewport differences** between desktop mobile view and real devices
+
+### 🔄 CURRENT DEBUGGING SESSION STATUS
+**Conversation Status:** ⚠️ **Approaching token limits** - May need to use `/compact` or start new session
+
+**Current Test Progress (v13-v15):**
+| Version | Test | Result | Status |
+| :--- | :--- | :--- | :--- |
+| **v13** | Clean start + original 3 fixes | ❌ Mobile cards/CTA missing | Baseline established |
+| **v14** | Remove asymmetric padding | ❌ Still missing | Padding NOT the culprit |
+| **v15** | Remove inline styles | 🔄 **TESTING NOW** | Awaiting mobile test results |
+
+**Remaining Suspects:**
+- Heavy inline styles with `!important` declarations (currently testing)
+- Green color span on "EVIDENCE"
+- Button text change ("above" → "below")
+- Unknown mobile viewport calculation differences
+
+**Key Finding:** Issue is **NOT** the asymmetric padding - can keep beautiful centered hero section
+
+**Next Actions if v15 fails:**
+1. Test removing green color span
+2. Test reverting button text change
+3. Consider starting fresh conversation with summary
+4. Document final working solution in troubleshooting guide
