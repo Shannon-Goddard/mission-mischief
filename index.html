@@ -178,8 +178,10 @@
         padding-bottom: 120px;
       }
       
-      .feature-card {
-        animation-delay: 0s !important;
+      .feature-card[data-aos] {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
       }
       
 
@@ -429,7 +431,7 @@
       mirror: false
     });
     
-    console.log('🚀 INDEX.HTML - Mobile AOS Delay Fix v11 - Deployed!');
+    console.log('🚀 INDEX.HTML - Mobile AOS Override Fix v12 - Deployed!');
     
     // Debug text centering
     document.addEventListener('DOMContentLoaded', function() {
