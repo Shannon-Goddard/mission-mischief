@@ -4,10 +4,31 @@
 --------------------------------------------------------------*/
 
 /* The primary Hero Section layout that overrides the generic #hero in main.css */
-/* FIX for Double Scroll Issue (Overriding main.css) */
+/* --- Aggressive Fix for Mobile Double Scroll Bar --- */
+
+html {
+  /* Also check for horizontal scrollbars, which can cause issues */
+  overflow-x: hidden !important; 
+}
+
 body {
-  min-height: auto !important; 
-  overflow-y: scroll !important;
+  /* Override main.css settings to allow the body content to dictate height */
+  min-height: auto !important;
+  height: auto !important;
+  
+  /* Ensure the body itself is the only element allowed to scroll */
+  overflow-y: scroll !important; 
+  overflow-x: hidden !important; 
+  
+  /* Reset the position to be safe */
+  position: static !important;
+}
+
+/* Ensure the main container holding all content is unconstrained */
+main {
+    min-height: auto !important;
+    height: auto !important;
+    padding-bottom: 20px !important; /* Retain padding from main.css, but with !important */
 }
 
 /* FIX for Feature Card Clipping */
