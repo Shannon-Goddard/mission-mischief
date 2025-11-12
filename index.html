@@ -156,7 +156,8 @@
     }
     
     /* CTA Button Pulse Animation */
-    .cta-btn {
+    .cta-btn,
+    .get-started-btn {
       animation: pulse 2s infinite;
     }
     
@@ -179,7 +180,7 @@
         padding-top: calc(60px + env(safe-area-inset-top));
         padding-right: 60px;
         padding-left: 0px;
-        min-height: 60vh;
+        min-height: 100vh;
       }
       
       .hero-text h1 {
@@ -190,6 +191,13 @@
       .hero-text h2 {
         font-size: 0.9rem;
         line-height: 1.4;
+      }
+      
+      .feature-cards {
+        flex-direction: column;
+        gap: 15px;
+        max-width: 400px;
+        margin: 0 auto;
       }
     }
     
@@ -284,7 +292,6 @@
     /* Fix scroll issues */
     html {
       scroll-behavior: smooth;
-      overflow-x: hidden;
     }
     
     body {
@@ -293,13 +300,7 @@
     
     /* Footer padding fix */
     #footer {
-      padding: 40px 0 60px 0;
-    }
-    
-    @media (max-width: 767px) {
-      #footer {
-        padding: 30px 0 80px 0;
-      }
+      padding: 40px 0 40px 0;
     }
   </style>
 </head>
@@ -414,7 +415,7 @@
       mirror: false
     });
     
-    console.log('🚀 INDEX.HTML - v26 - Fixed Footer Padding + Scroll Issues - Deployed!');
+    console.log('🚀 INDEX.HTML - v27 - Fixed Dual Scrollbars + Hero Height + Feature Cards - Deployed!');
     
     // Debug text centering
     document.addEventListener('DOMContentLoaded', function() {
