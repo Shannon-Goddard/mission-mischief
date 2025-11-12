@@ -31,11 +31,11 @@
     /* Mobile-First Hero Styles */
     #hero {
       min-height: 100vh;
-      padding: calc(40px + env(safe-area-inset-top)) 20px 20px 20px;
+      padding: calc(40px + env(safe-area-inset-top)) 20px 40px 20px;
       position: relative;
       overflow: hidden;
       display: flex;
-      align-items: flex-start;
+      align-items: center;
     }
     
     .hero-content {
@@ -202,7 +202,8 @@
     @media (max-width: 767px) {
       #hero {
         align-items: flex-start;
-        padding-top: calc(25vh + env(safe-area-inset-top));
+        padding-top: calc(40px + env(safe-area-inset-top));
+        padding-bottom: 40px;
         padding-right: 60px;
         padding-left: 0px;
         min-height: 100vh;
@@ -245,7 +246,8 @@
     @media (min-width: 768px) {
       #hero {
         align-items: center;
-        padding-top: 30vh;
+        padding-top: 60px;
+        padding-bottom: 60px;
       }
       
       .hero-content {
