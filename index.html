@@ -155,6 +155,23 @@
       box-shadow: 0 5px 15px rgba(4, 170, 109, 0.4);
     }
     
+    /* CTA Button Pulse Animation */
+    .cta-btn {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(4, 170, 109, 0.7);
+      }
+      70% {
+        box-shadow: 0 0 0 10px rgba(4, 170, 109, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(4, 170, 109, 0);
+      }
+    }
+    
     /* Mobile specific adjustments */
     @media (max-width: 767px) {
       #hero {
@@ -162,6 +179,7 @@
         padding-top: calc(60px + env(safe-area-inset-top));
         padding-right: 60px;
         padding-left: 0px;
+        min-height: 60vh;
       }
       
       .hero-text h1 {
@@ -172,12 +190,6 @@
       .hero-text h2 {
         font-size: 0.9rem;
         line-height: 1.4;
-      }
-      
-      /* Hide problematic elements on mobile */
-      .feature-cards,
-      .hero-cta {
-        display: none;
       }
     }
     
@@ -268,6 +280,27 @@
         font-size: 1.4rem;
       }
     }
+    
+    /* Fix scroll issues */
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+    
+    body {
+      overflow-x: hidden;
+    }
+    
+    /* Footer padding fix */
+    #footer {
+      padding: 40px 0 60px 0;
+    }
+    
+    @media (max-width: 767px) {
+      #footer {
+        padding: 30px 0 80px 0;
+      }
+    }
   </style>
 </head>
 
@@ -276,7 +309,6 @@
   <!-- Hero Section -->
   <section id="hero" class="d-flex align-items-center">
     <div class="container">
-      <!-- Mobile-First Hero Layout -->
       <div class="hero-content">
         <!-- Mayhem Mascot -->
         <div class="mayhem-hero">
@@ -288,32 +320,35 @@
           <h1 id="heroTitle">YOU FOUND THE <span style="color: #04aa6d;">EVIDENCE</span></h1>
           <h2 id="heroSubtitle">Welcome to Mission Mischief:<br><span style="display: block; text-align: center;">The World's Most Sociopathic Scavenger Hunt</span></h2>
         </div>
-        
-        <!-- Feature Cards -->
-        <div class="feature-cards">
-          <div class="feature-card" data-aos="zoom-in" data-aos-delay="100">
-            <i class="bi bi-card-checklist"></i>
-            <h3>MISSIONS</h3>
-            <p>Outrageous public challenges. Complete them for honor and glory.</p>
-          </div>
+      </div>
+    </div>
+  </section>
 
-          <div class="feature-card" data-aos="zoom-in" data-aos-delay="200">
-            <i class="bi bi-eye"></i>
-            <h3>THE EXPOSURE</h3>
-            <p>Get caught? Your exposure timer starts. The community will know.</p>
-          </div>
-
-          <div class="feature-card" data-aos="zoom-in" data-aos-delay="300">
-            <i class="bi bi-cash-coin"></i>
-            <h3>HONOR PAYMENT</h3>
-            <p>$5 voluntary payment to clear your name. It's about honor, not enforcement.</p>
-          </div>
+  <!-- Feature Cards Section -->
+  <section class="features-section" style="padding: 40px 0;">
+    <div class="container">
+      <div class="feature-cards">
+        <div class="feature-card" data-aos="zoom-in" data-aos-delay="100">
+          <i class="bi bi-card-checklist"></i>
+          <h3>MISSIONS</h3>
+          <p>Outrageous public challenges. Complete them for honor and glory.</p>
         </div>
 
-        <!-- CTA Button -->
-        <div class="hero-cta">
-          <a href="app.html" class="get-started-btn">JOIN THE CHAOS</a>
+        <div class="feature-card" data-aos="zoom-in" data-aos-delay="200">
+          <i class="bi bi-eye"></i>
+          <h3>THE EXPOSURE</h3>
+          <p>Get caught? Your exposure timer starts. The community will know.</p>
         </div>
+
+        <div class="feature-card" data-aos="zoom-in" data-aos-delay="300">
+          <i class="bi bi-cash-coin"></i>
+          <h3>HONOR PAYMENT</h3>
+          <p>$5 voluntary payment to clear your name. It's about honor, not enforcement.</p>
+        </div>
+      </div>
+      
+      <div class="hero-cta" style="text-align: center; margin-top: 30px;">
+        <a href="app.html" class="get-started-btn">JOIN THE CHAOS</a>
       </div>
     </div>
   </section>
@@ -379,7 +414,7 @@
       mirror: false
     });
     
-    console.log('🚀 INDEX.HTML - v24 - Simplified + Hidden Mobile Cards/CTA - Deployed!');
+    console.log('🚀 INDEX.HTML - v26 - Fixed Footer Padding + Scroll Issues - Deployed!');
     
     // Debug text centering
     document.addEventListener('DOMContentLoaded', function() {
