@@ -4,14 +4,24 @@
 --------------------------------------------------------------*/
 
 /* The primary Hero Section layout that overrides the generic #hero in main.css */
+/* FIX for Double Scroll Issue (Overriding main.css) */
+body {
+  min-height: auto !important; 
+  overflow-y: scroll !important;
+}
+
+/* FIX for Feature Card Clipping */
 #hero {
-  /* Retain mobile-first layout and padding */
-  min-height: 100vh;
+  /* Change the height calculation for content visibility */
+  min-height: auto; 
+  height: auto; 
+  align-items: flex-start; /* Ensures content starts high */
+
+  /* Keep the rest of your hero styles */
   padding: calc(40px + env(safe-area-inset-top)) 20px 40px 20px;
   position: relative;
   overflow: hidden;
   display: flex;
-  align-items: center;
 }
 
 .hero-content {
