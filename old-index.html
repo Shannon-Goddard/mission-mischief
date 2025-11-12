@@ -106,14 +106,11 @@
       padding: 20px;
       text-align: center;
       transition: all 0.3s ease;
-      position: relative;
-      z-index: 10;
     }
     
     .feature-card:hover {
       background: rgba(4, 170, 109, 0.2);
       transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(4, 170, 109, 0.15);
     }
     
     .feature-card i {
@@ -134,29 +131,9 @@
       line-height: 1.4;
     }
     
-    /* CTA Button Styles */
-    .cta-btn {
-      display: inline-block;
-      padding: 15px 30px;
-      background: #04aa6d;
-      color: #000;
-      text-decoration: none;
-      border-radius: 8px;
-      font-weight: bold;
-      font-size: 1.1rem;
-      transition: all 0.3s ease;
-      text-transform: uppercase;
-      animation: pulse 2s infinite;
-    }
-    
-    .cta-btn:hover {
-      background: #02885a;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(4, 170, 109, 0.4);
-    }
-    
-    .cta-btn:active {
-      transform: scale(0.95);
+    /* CTA Button */
+    .hero-cta {
+      order: 4;
     }
     
     .get-started-btn {
@@ -170,8 +147,6 @@
       font-size: 1.1rem;
       transition: all 0.3s ease;
       text-transform: uppercase;
-      position: relative;
-      z-index: 10;
     }
     
     .get-started-btn:hover {
@@ -180,32 +155,11 @@
       box-shadow: 0 5px 15px rgba(4, 170, 109, 0.4);
     }
     
-    /* CTA Button Pulse Animation */
-    .cta-btn,
-    .get-started-btn {
-      animation: pulse 2s infinite !important;
-    }
-    
-    @keyframes pulse {
-      0% {
-        box-shadow: 0 0 0 0 rgba(4, 170, 109, 0.7);
-      }
-      70% {
-        box-shadow: 0 0 0 10px rgba(4, 170, 109, 0);
-      }
-      100% {
-        box-shadow: 0 0 0 0 rgba(4, 170, 109, 0);
-      }
-    }
-    
     /* Mobile specific adjustments */
     @media (max-width: 767px) {
       #hero {
         align-items: flex-start;
-        padding-top: calc(25vh + env(safe-area-inset-top));
-        padding-right: 60px;
-        padding-left: 0px;
-        min-height: 100vh;
+        padding-top: calc(60px + env(safe-area-inset-top));
       }
       
       .hero-text h1 {
@@ -217,35 +171,12 @@
         font-size: 0.9rem;
         line-height: 1.4;
       }
-      
-      .feature-cards {
-        flex-direction: column;
-        gap: 15px;
-        max-width: 400px;
-        margin: 0 auto;
-      }
-      
-      .hero-cta {
-        position: fixed !important;
-        bottom: 20px !important;
-        right: 20px !important;
-        z-index: 1000 !important;
-      }
-      
-      .hero-cta .get-started-btn {
-        padding: 12px 20px !important;
-        font-size: 0.9rem !important;
-        border-radius: 25px !important;
-        box-shadow: 0 4px 15px rgba(4, 170, 109, 0.3) !important;
-        animation: pulse 2s infinite !important;
-      }
     }
     
     /* Tablet Styles */
     @media (min-width: 768px) {
       #hero {
         align-items: center;
-        padding-top: 30vh;
       }
       
       .hero-content {
@@ -274,7 +205,7 @@
         order: 2;
         flex: 1;
         min-width: 300px;
-        text-align: center;
+        text-align: left;
         margin-bottom: 0;
       }
       
@@ -299,19 +230,10 @@
       }
       
       .hero-cta {
-        position: fixed !important;
-        bottom: 20px !important;
-        right: 20px !important;
-        z-index: 1000 !important;
         order: 4;
-      }
-      
-      .hero-cta .get-started-btn {
-        padding: 12px 20px !important;
-        font-size: 0.9rem !important;
-        border-radius: 25px !important;
-        box-shadow: 0 4px 15px rgba(4, 170, 109, 0.3) !important;
-        animation: pulse 2s infinite !important;
+        flex: 1 1 100%;
+        text-align: center;
+        margin-top: 20px;
       }
     }
     
@@ -338,20 +260,6 @@
         font-size: 1.4rem;
       }
     }
-    
-    /* Fix scroll issues */
-    html {
-      scroll-behavior: smooth;
-    }
-    
-    body {
-      overflow-x: hidden;
-    }
-    
-    /* Footer padding fix */
-    #footer {
-      padding: 40px 0 100px 0;
-    }
   </style>
 </head>
 
@@ -360,6 +268,7 @@
   <!-- Hero Section -->
   <section id="hero" class="d-flex align-items-center">
     <div class="container">
+      <!-- Mobile-First Hero Layout -->
       <div class="hero-content">
         <!-- Mayhem Mascot -->
         <div class="mayhem-hero">
@@ -367,26 +276,26 @@
         </div>
         
         <!-- Hero Text -->
-        <div class="hero-text">
-          <h1 id="heroTitle">YOU FOUND THE <span style="color: #04aa6d;">EVIDENCE</span></h1>
-          <h2 id="heroSubtitle">Welcome to Mission Mischief:<br><span style="display: block; text-align: center;">The World's Most Sociopathic Scavenger Hunt</span></h2>
+        <div class="hero-text" style="width: 100% !important; max-width: none !important; text-align: center !important; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+          <h1 id="heroTitle" style="text-align: center !important; width: 100% !important; display: block !important; margin: 0 auto !important; text-align: center !important;">YOU FOUND THE <span>EVIDENCE</span></h1>
+          <h2 id="heroSubtitle" style="text-align: center !important; width: 100% !important; display: block !important; line-height: 1.3; margin: 0 auto !important; text-align: center !important;">Welcome to Mission Mischief:<br><span style="display: block; text-align: center;">The World's Most Sociopathic Scavenger Hunt</span></h2>
         </div>
         
         <!-- Feature Cards -->
         <div class="feature-cards">
-          <div class="feature-card">
+          <div class="feature-card" data-aos="zoom-in" data-aos-delay="100">
             <i class="bi bi-card-checklist"></i>
             <h3>MISSIONS</h3>
             <p>Outrageous public challenges. Complete them for honor and glory.</p>
           </div>
 
-          <div class="feature-card">
+          <div class="feature-card" data-aos="zoom-in" data-aos-delay="200">
             <i class="bi bi-eye"></i>
             <h3>THE EXPOSURE</h3>
             <p>Get caught? Your exposure timer starts. The community will know.</p>
           </div>
 
-          <div class="feature-card">
+          <div class="feature-card" data-aos="zoom-in" data-aos-delay="300">
             <i class="bi bi-cash-coin"></i>
             <h3>HONOR PAYMENT</h3>
             <p>$5 voluntary payment to clear your name. It's about honor, not enforcement.</p>
@@ -394,7 +303,9 @@
         </div>
 
         <!-- CTA Button -->
-
+        <div class="hero-cta">
+          <a href="app.html" class="get-started-btn">JOIN THE CHAOS</a>
+        </div>
       </div>
     </div>
   </section>
@@ -415,11 +326,11 @@
             <p>We encourage creative mischief, but the term "mischief" does not include "crimes." You are solely responsible for your actions. Do not trespass. Do not harm property. Do not invoke the wrath of the local authorities or wildlife. If you get arrested trying to "complete a mission," we will be laughing, but we will not be posting your bail.</p>
             
             <h4>3. Actual Legal Stuff (Please Read the Fine Print, Seriously):</h4>
-            <p>By tapping the button below, you will have the opportunity to read and accepted our full, legally-binding Terms of Service and Privacy Policy. That stuff is important. This funny section is not a replacement for that.</p>
+            <p>By tapping the button above, you agree that you have read and accepted our full, legally-binding Terms of Service and Privacy Policy. That stuff is important. This funny section is not a replacement for that.</p>
           </div>
           
           <div class="mt-4">
-            <a href="app.html" class="cta-btn" style="position: fixed !important; bottom: 20px !important; right: 20px !important; z-index: 1000 !important; padding: 12px 20px !important; font-size: 0.9rem !important; border-radius: 25px !important; box-shadow: 0 4px 15px rgba(4, 170, 109, 0.3) !important;" aria-label="Start playing Mission Mischief">JOIN THE CHAOS</a>
+            <a href="app.html" class="cta-btn">READY TO PROVE YOUR HONOR?</a>
           </div>
         </div>
       </div>
@@ -452,9 +363,13 @@
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script src="assets/js/main.js"></script>
   <script>
-    // AOS removed - feature cards always visible
-    
-    console.log('🚀 INDEX.HTML - v46 - Fixed Pulse Animation + Better Vertical Centering - Deployed!');
+    // Initialize AOS
+    AOS.init({
+      duration: 1000,
+      easing: "ease-in-out",
+      once: true,
+      mirror: false
+    });
     
     // Debug text centering
     document.addEventListener('DOMContentLoaded', function() {
