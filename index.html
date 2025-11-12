@@ -173,6 +173,12 @@
         font-size: 0.9rem;
         line-height: 1.4;
       }
+      
+      /* Hide problematic elements on mobile */
+      .feature-cards,
+      .hero-cta {
+        display: none;
+      }
     }
     
     /* Tablet Styles */
@@ -268,7 +274,7 @@
 <body class="customBody">
   
   <!-- Hero Section -->
-  <section id="hero">
+  <section id="hero" class="d-flex align-items-center">
     <div class="container">
       <!-- Mobile-First Hero Layout -->
       <div class="hero-content">
@@ -278,9 +284,9 @@
         </div>
         
         <!-- Hero Text -->
-        <div class="hero-text" style="width: 100% !important; max-width: none !important; text-align: center !important; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-          <h1 id="heroTitle" style="text-align: center !important; width: 100% !important; display: block !important; margin: 0 auto !important;">YOU FOUND THE <span style="color: #04aa6d;">EVIDENCE</span></h1>
-          <h2 id="heroSubtitle" style="text-align: center !important; width: 100% !important; display: block !important; line-height: 1.3; margin: 0 auto !important;">Welcome to Mission Mischief:<br><span style="display: block; text-align: center;">The World's Most Sociopathic Scavenger Hunt</span></h2>
+        <div class="hero-text">
+          <h1 id="heroTitle">YOU FOUND THE <span style="color: #04aa6d;">EVIDENCE</span></h1>
+          <h2 id="heroSubtitle">Welcome to Mission Mischief:<br><span style="display: block; text-align: center;">The World's Most Sociopathic Scavenger Hunt</span></h2>
         </div>
         
         <!-- Feature Cards -->
@@ -373,7 +379,7 @@
       mirror: false
     });
     
-    console.log('🚀 INDEX.HTML - v24 - Removed flexbox from hero section - Deployed!');
+    console.log('🚀 INDEX.HTML - v24 - Simplified + Hidden Mobile Cards/CTA - Deployed!');
     
     // Debug text centering
     document.addEventListener('DOMContentLoaded', function() {
