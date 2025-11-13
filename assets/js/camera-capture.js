@@ -76,16 +76,32 @@ class MugshotCamera {
       this.canvas = document.createElement('canvas');
     }
 
-    this.canvas.width = this.video.videoWidth || 1280;
-    this.canvas.height = this.video.videoHeight || 720;
+    // Set canvas size to match video
+    const videoWidth = this.video.videoWidth || 1280;
+    const videoHeight = this.video.videoHeight || 720;
+    this.canvas.width = videoWidth;
+    this.canvas.height = videoHeight;
 
     const ctx = this.canvas.getContext('2d');
     
-    // Draw video frame with grayscale filter
-    ctx.filter = 'grayscale(100%) contrast(120%)';
-    ctx.drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
+    // Clear canvas first
+    ctx.clearRect(0, 0, videoWidth, videoHeight);
     
-    ctx.filter = 'none';
+    // Draw video frame
+    ctx.drawImage(this.video, 0, 0, videoWidth, videoHeight);
+    
+    // Apply grayscale filter to entire canvas
+    const imageData = ctx.getImageData(0, 0, videoWidth, videoHeight);
+    const data = imageData.data;
+    
+    for (let i = 0; i < data.length; i += 4) {
+      const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+      data[i] = gray;     // Red
+      data[i + 1] = gray; // Green
+      data[i + 2] = gray; // Blue
+    }
+    
+    ctx.putImageData(imageData, 0, 0);
     
     // Add booking board overlay
     this.addBookingOverlay(ctx);
@@ -133,32 +149,69 @@ class MugshotCamera {
 
   addBookingOverlay(ctx) {
     const canvas = this.canvas;
-    const boardHeight = 120;
+    const boardHeight = Math.max(120, canvas.height * 0.15);
     const boardY = canvas.height - boardHeight - 20;
+    const boardX = 20;
+    const boardWidth = canvas.width - 40;
     
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
-    ctx.fillRect(20, boardY, canvas.width - 40, boardHeight);
+    // Black background with high opacity
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.95)';
+    ctx.fillRect(boardX, boardY, boardWidth, boardHeight);
     
+    // Green border
     ctx.strokeStyle = '#04aa6d';
-    ctx.lineWidth = 3;
-    ctx.strokeRect(20, boardY, canvas.width - 40, boardHeight);
+    ctx.lineWidth = 4;
+    ctx.strokeRect(boardX, boardY, boardWidth, boardHeight);
     
+    // Calculate responsive font sizes
+    const baseFontSize = Math.max(12, canvas.width * 0.02);
+    const headerFontSize = Math.max(14, canvas.width * 0.025);
+    const titleFontSize = Math.max(16, canvas.width * 0.03);
+    
+    // Header text
     ctx.fillStyle = '#04aa6d';
-    ctx.font = 'bold 16px Courier New';
+    ctx.font = `bold ${titleFontSize}px Arial, sans-serif`;
     ctx.textAlign = 'center';
+    ctx.fillText('MISSION MISCHIEF BOOKING', canvas.width / 2, boardY + titleFontSize + 10);
     
-    ctx.fillText('MISSION MISCHIEF BOOKING', canvas.width / 2, boardY + 25);
-    
+    // Date and time
     const now = new Date();
     const dateStr = now.toLocaleDateString();
     const timeStr = now.toLocaleTimeString();
     
-    ctx.font = 'bold 14px Courier New';
-    ctx.fillText(`${dateStr} - ${timeStr}`, canvas.width / 2, boardY + 50);
+    ctx.font = `bold ${headerFontSize}px Arial, sans-serif`;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(`${dateStr} - ${timeStr}`, canvas.width / 2, boardY + titleFontSize + headerFontSize + 20);
     
-    ctx.font = '12px Courier New';
-    ctx.fillText('CRIME: Agreeing to Terms of Service', canvas.width / 2, boardY + 75);
-    ctx.fillText('SENTENCE: Complete 50 Missions of Mischief', canvas.width / 2, boardY + 95);
+    // Crime details
+    ctx.font = `${baseFontSize}px Arial, sans-serif`;
+    ctx.fillStyle = '#04aa6d';
+    ctx.fillText('CRIME: Agreeing to Terms of Service', canvas.width / 2, boardY + titleFontSize + headerFontSize + baseFontSize + 35);
+    ctx.fillText('SENTENCE: Complete 50 Missions of Mischief', canvas.width / 2, boardY + titleFontSize + headerFontSize + baseFontSize + 55);
+    
+    // Add height measurement lines on the right
+    const lineX = canvas.width - 60;
+    const lineHeight = canvas.height * 0.6;
+    const lineY = (canvas.height - lineHeight) / 2;
+    
+    ctx.strokeStyle = '#04aa6d';
+    ctx.lineWidth = 2;
+    
+    // Draw measurement lines
+    for (let i = 0; i <= 4; i++) {
+      const y = lineY + (lineHeight / 4) * i;
+      ctx.beginPath();
+      ctx.moveTo(lineX, y);
+      ctx.lineTo(lineX + 30, y);
+      ctx.stroke();
+      
+      // Height labels
+      ctx.fillStyle = '#04aa6d';
+      ctx.font = `${baseFontSize}px Arial, sans-serif`;
+      ctx.textAlign = 'right';
+      const heights = ['6\'0"', '5\'6"', '5\'0"', '4\'6"', '4\'0"'];
+      ctx.fillText(heights[i], lineX - 5, y + 4);
+    }
   }
 
   stopCamera() {
