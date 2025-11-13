@@ -3,18 +3,18 @@
 ## 🧠 Core System Knowledge
 
 ### Project Identity
-- **Name**: Mission Mischief - The Hashtag Blockchain Revolution
-- **Type**: Social verification dApp with bulletproof premium infrastructure
+- **Name**: Mission Mischief - Real-World Chaos with Beer-Powered Justice
+- **Type**: Social verification game with community-driven justice system
 - **Status**: Live production system at https://missionmischief.com
-- **Architecture**: Single premium scraper with AWS serverless backend
+- **Architecture**: Hybrid direct submission + weekly research validation
 
-### Key Files & Responsibilities
-- **bounty-hunter.html**: Main dashboard, uses premium-api-client.js
-- **app.html**: Mission interface with badge overlay integration
-- **admin.html**: Secure admin dashboard with cost monitoring
-- **premium-api-client.js**: Frontend API client for scraper.missionmischief.online
-- **bright-data-scraper-lambda.py**: Premium Lambda scraper (Instagram/Facebook/X)
-- **infrastructure.yaml**: CloudFormation template for AWS resources
+### Key Files & Responsibilities (Updated Structure)
+- **core-game-files/bounty-hunter.html**: Justice system interface with beer trials
+- **core-game-files/app.html**: Mission interface with direct submission system
+- **core-game-files/admin.html**: Cost monitoring dashboard
+- **assets/js/premium-api-client.js**: Legacy API client (being replaced)
+- **bright-data-scraper-lambda.py**: Weekly research scraper (Sundays)
+- **premium-blockchain-engine/infrastructure.yaml**: CloudFormation template
 
 ### Data Flow
 1. Real-world action → Hashtag post → Social media
@@ -31,11 +31,11 @@
 #missionmischiefcountry[country] #missionmischiefstate[state] #missionmischiefcity[city]
 ```
 
-### Current Migration Status
-- **Phase**: Step 3 (Monitoring and Observability) of PREMIUM_MIGRATION_GUIDE.md
-- **Infrastructure**: Complete and deployed
-- **Frontend**: Integrated with premium API
-- **Monitoring**: CloudWatch dashboard and admin panel active
+### Current Implementation Status
+- **Phase**: Ready for URL Submission System implementation
+- **Infrastructure**: Reorganized with clean file structure
+- **Academic Research**: Published at https://github.com/Shannon-Goddard/hashtag-blockchain-proof-of-concept
+- **Next Phase**: Direct submissions + beer justice trials (85% cost reduction)
 
 ### User Preferences
 - **Real Data Priority**: User strongly prefers actual scraped data over mock data
@@ -57,8 +57,8 @@
 - **EventBridge**: Daily 3:00 AM PST schedule
 - **API Gateway**: Public scrape endpoint
 
-### Cost Structure
-- **Target**: $50-70/month (down from $167)
-- **Bright Data**: $30-50/month
-- **AWS Services**: $10-20/month combined
-- **Monitoring**: CloudWatch + admin dashboard alerts
+### Cost Evolution
+- **Current**: $40-70/month (daily premium scraping)
+- **Target**: $4-15/month (weekly research scraping + direct submissions)
+- **Savings**: 85% cost reduction while improving user experience
+- **Research Layer**: Additional $10-20/month for academic validation

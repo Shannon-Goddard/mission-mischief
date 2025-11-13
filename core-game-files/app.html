@@ -177,6 +177,18 @@
       transform: translate(-50%, -50%);
       font-size: 24px;
     }
+    
+    /* Submission States */
+    .mission-card.submitted {
+      border-left: 4px solid #04aa6d;
+      background: rgba(4, 170, 109, 0.05);
+    }
+    
+    .mission-status.submitted {
+      background: #04aa6d;
+      color: #000;
+      font-weight: bold;
+    }
   </style>
 </head>
 
@@ -284,11 +296,21 @@
         <div class="user-stats" id="userStats">
           <!-- Stats will be loaded here -->
         </div>
+        
+        <!-- Quick Actions -->
+        <div style="text-align: center; margin: 20px 0;">
+          <button onclick="DirectSubmission.showSubmissionHistory()" class="mission-btn" style="background: #04aa6d; margin-right: 10px;">
+            📋 Submission History
+          </button>
+          <button onclick="window.location.href='bounty-hunter.html'" class="mission-btn" style="background: #666;">
+            🎯 Bounty Hunter
+          </button>
+        </div>
 
-        <!-- Hashtag Instructions -->
+        <!-- Direct Submission Instructions -->
         <div class="hashtag-instructions" style="background: rgba(4, 170, 109, 0.1); border: 1px solid #04aa6d; border-radius: 8px; padding: 15px; margin: 20px 0; text-align: center;">
-          <h3 style="color: #04aa6d; margin: 0 0 10px 0; font-size: 16px;">📱 POSTING RULE</h3>
-          <p style="color: #fff; margin: 0; font-size: 14px; line-height: 1.4;">When sharing your mission photos/videos, <strong>ALWAYS include ALL hashtags</strong> from the "📤 Share with Hashtags" button. This includes your mission hashtag, handle, points earned, and location tags. All hashtags are required for leaderboard tracking! Don't know what the hell we're talking about? Here's <a href="how-to-play.html" style="color: #04aa6d;">how to play</a>.</p>
+          <h3 style="color: #04aa6d; margin: 0 0 10px 0; font-size: 16px;">⚡ INSTANT MISSIONS</h3>
+          <p style="color: #fff; margin: 0; font-size: 14px; line-height: 1.4;">Complete missions and get <strong>INSTANT POINTS</strong> with the "⚡ Submit Mission" button! Add a social media URL for dispute protection (optional). No more waiting 24 hours - play continuously! Don't know what the hell we're talking about? Here's <a href="how-to-play.html" style="color: #04aa6d;">how to play</a>.</p>
         </div>
 
         <!-- Badges -->
@@ -379,6 +401,8 @@
   <script src="../assets/js/social.js"></script>
   <script src="../assets/js/camera.js"></script>
   <script src="../assets/js/print.js"></script>
+  <script src="../assets/js/direct-submission.js"></script>
+  <script src="../assets/js/aws-submission-sync.js"></script>
   <script src="../assets/js/main.js"></script>
   
   <script>
@@ -845,6 +869,7 @@
 
     function loadUserStats() {
       const user = Storage.getUser();
+      const stats = Storage.getUserStats();
       const available = Missions.getAvailableMissions(user);
       const badgeStates = Missions.getAllBadgeStates(user);
       const completedBadges = Object.values(badgeStates).filter(state => state !== 'locked').length;
@@ -856,23 +881,23 @@
       
       document.getElementById('userStats').innerHTML = `
         <div class="stat-card">
-          <span class="stat-number">${user.completedMissions.length}</span>
+          <span class="stat-number">${stats.completedMissions}</span>
           <span class="stat-label">Completed</span>
         </div>
         <div class="stat-card">
-          <span class="stat-number">${availableCount}</span>
-          <span class="stat-label">Available</span>
+          <span class="stat-number">${stats.totalSubmissions}</span>
+          <span class="stat-label">Submitted</span>
         </div>
         <div class="stat-card">
           <span class="stat-number">${completedBadges}</span>
           <span class="stat-label">Badges</span>
         </div>
         <div class="stat-card">
-          <span class="stat-number">${user.honorScore}</span>
+          <span class="stat-number">${stats.honorScore}</span>
           <span class="stat-label">Honor Score</span>
         </div>
         <div class="stat-card">
-          <span class="stat-number">${user.totalPoints || 0}</span>
+          <span class="stat-number">${stats.totalPoints}</span>
           <span class="stat-label">Total Points</span>
         </div>
       `;
@@ -960,6 +985,9 @@
           `;
         } else {
           missionActions = `
+            <button class="mission-btn" onclick="DirectSubmission.showSubmissionForm(${mission.id})" style="background: #04aa6d; color: #000;">
+              ⚡ Submit Mission
+            </button>
             <button class="mission-btn" onclick="startMissionCapture(${mission.id})">
               🎭 Add Overlays
             </button>
@@ -972,13 +1000,19 @@
         `;
       }
       
+      // Check if mission has been submitted via direct system
+      const submission = Storage.getSubmission(mission.id);
+      const submissionStatus = submission ? 'submitted' : statusText;
+      const submissionClass = submission ? 'submitted' : statusClass;
+      
       return `
-        <div class="mission-card ${statusClass} ${typeClass}">
+        <div class="mission-card ${submissionClass} ${typeClass}" data-mission-id="${mission.id}">
           <div class="mission-header" onclick="toggleMissionDetails(${mission.id})" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
             <div style="display: flex; gap: 10px; align-items: center;">
               <div class="mission-number">${mission.id}</div>
               <div class="mission-type ${mission.type}">${mission.type.toUpperCase()}</div>
-              <div class="mission-status ${statusClass}">${statusText}</div>
+              <div class="mission-status ${submissionClass}">${submissionStatus}</div>
+              ${submission ? `<div style="color: #04aa6d; font-size: 11px;">+${submission.points}pts</div>` : ''}
             </div>
             <div class="expand-icon" id="expand-${mission.id}" style="color: #04aa6d; font-size: 12px; transition: transform 0.2s;">▼</div>
           </div>
@@ -987,6 +1021,13 @@
           <div class="mission-description">${mission.description}</div>
           
           <div class="mission-details" id="details-${mission.id}" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid #333;">
+            ${submission ? `
+              <div style="background: rgba(4, 170, 109, 0.1); padding: 10px; border-radius: 4px; margin-bottom: 15px;">
+                <div style="color: #04aa6d; font-weight: bold; margin-bottom: 5px;">✅ SUBMITTED</div>
+                <div style="font-size: 12px; color: #ccc;">Points: ${submission.points} | ${new Date(submission.timestamp).toLocaleString()}</div>
+                ${submission.proofUrl ? `<div style="font-size: 11px; margin-top: 5px;"><a href="${submission.proofUrl}" target="_blank" style="color: #04aa6d;">View Proof</a></div>` : ''}
+              </div>
+            ` : ''}
             ${mission.badgeId && Missions.badges[mission.badgeId] ? `
               <div class="mission-badge-info" style="margin-bottom: 10px;">
                 <span class="badge-name">${Missions.badges[mission.badgeId].name} Badge</span>
@@ -1573,6 +1614,10 @@
       
       showToast(`Mission ${missionId} points set to ${points}`, 'success');
     };
+    
+    // Make functions available globally for DirectSubmission
+    window.loadUserStats = loadUserStats;
+    window.loadMissions = loadMissions;
     
     // Cheater redemption functions
     function loadCheaterMissions() {

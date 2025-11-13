@@ -287,8 +287,34 @@ def check_cost_threshold():
         logger.error(f"Failed to check cost threshold: {e}")
         return False
 
+def handle_direct_submission(event_body):
+    """Handle direct mission submission"""
+    try:
+        table = dynamodb.Table('mission-mischief-posts')
+        
+        # Create submission record
+        submission = {
+            'post_id': f"direct_{event_body['user']}_{event_body['missionId']}_{int(datetime.now().timestamp())}",
+            'username': event_body['user'],
+            'mission_id': event_body['missionId'],
+            'points': event_body['points'],
+            'proof_url': event_body.get('proofUrl'),
+            'timestamp': event_body['timestamp'],
+            'source': 'direct_submission',
+            'ttl': int((datetime.now() + timedelta(days=90)).timestamp())
+        }
+        
+        table.put_item(Item=submission)
+        logger.info(f"Direct submission saved: {submission['post_id']}")
+        
+        return {'success': True, 'submission_id': submission['post_id']}
+        
+    except Exception as e:
+        logger.error(f"Failed to handle direct submission: {e}")
+        return {'success': False, 'error': str(e)}
+
 def lambda_handler(event, context):
-    """Main Lambda handler for admin dashboard"""
+    """Main Lambda handler for admin dashboard and submissions"""
     
     # Handle CORS
     if event.get('httpMethod') == 'OPTIONS':
@@ -302,6 +328,44 @@ def lambda_handler(event, context):
             'body': ''
         }
     
+    # Handle POST requests (direct submissions)
+    if event.get('httpMethod') == 'POST':
+        try:
+            body = json.loads(event.get('body', '{}'))
+            
+            if body.get('action') == 'direct_submit':
+                result = handle_direct_submission(body)
+                
+                return {
+                    'statusCode': 200 if result['success'] else 400,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    'body': json.dumps(result)
+                }
+            else:
+                return {
+                    'statusCode': 400,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    'body': json.dumps({'success': False, 'error': 'Unknown action'})
+                }
+                
+        except Exception as e:
+            logger.error(f"POST request failed: {e}")
+            return {
+                'statusCode': 500,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({'success': False, 'error': str(e)})
+            }
+    
+    # Handle GET requests (admin dashboard)
     try:
         logger.info("Starting admin dashboard data collection")
         

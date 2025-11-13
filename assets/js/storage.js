@@ -17,7 +17,11 @@ const Storage = {
     honorScore: 100,
     exposedBy: [],
     currentBuyIn: null,
-    joinDate: null
+    joinDate: null,
+    // Direct submission system
+    submissions: {}, // Track all mission submissions with timestamps
+    totalPoints: 0, // Real-time point tracking
+    missionPoints: {} // Points earned per mission
   },
 
   // Get user data
@@ -51,6 +55,49 @@ const Storage = {
       this.saveUser(user);
     }
     return user;
+  },
+
+  // Submit mission directly (instant system)
+  submitMission(missionId, points = 0, proofUrl = null) {
+    const user = this.getUser();
+    const timestamp = new Date().toISOString();
+    
+    // Initialize submission tracking
+    if (!user.submissions) user.submissions = {};
+    if (!user.missionPoints) user.missionPoints = {};
+    
+    // Record submission
+    user.submissions[missionId] = {
+      timestamp,
+      points,
+      proofUrl,
+      status: 'submitted',
+      source: 'direct'
+    };
+    
+    // Update points
+    user.missionPoints[missionId] = points;
+    user.totalPoints = Object.values(user.missionPoints).reduce((sum, p) => sum + p, 0);
+    
+    // Mark as completed
+    if (!user.completedMissions.includes(missionId)) {
+      user.completedMissions.push(missionId);
+    }
+    
+    this.saveUser(user);
+    return user;
+  },
+
+  // Get submission for mission
+  getSubmission(missionId) {
+    const user = this.getUser();
+    return user.submissions?.[missionId] || null;
+  },
+
+  // Check if mission is submitted
+  isMissionSubmitted(missionId) {
+    const submission = this.getSubmission(missionId);
+    return submission && submission.status === 'submitted';
   },
 
   // Complete FAFO (Mission 1) - unlocks all other missions
@@ -107,6 +154,21 @@ const Storage = {
   // Clear all data
   clearData() {
     localStorage.removeItem('missionMischiefUser');
+  },
+
+  // Get user stats for dashboard
+  getUserStats() {
+    const user = this.getUser();
+    const totalSubmissions = Object.keys(user.submissions || {}).length;
+    const totalPoints = user.totalPoints || 0;
+    const completedMissions = user.completedMissions.length;
+    
+    return {
+      totalSubmissions,
+      totalPoints,
+      completedMissions,
+      honorScore: user.honorScore
+    };
   }
 };
 
