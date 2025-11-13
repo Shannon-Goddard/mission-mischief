@@ -14,8 +14,8 @@
   <meta content="Track players, hunt cheaters, and explore the hashtag blockchain" name="description">
   
   <!-- Favicons -->
-  <link href="assets/images/ui/favicon.png" rel="icon">
-  <link href="assets/images/ui/apple-touch-icon.png" rel="apple-touch-icon">
+  <link href="../assets/images/ui/favicon.png" rel="icon">
+  <link href="../assets/images/ui/apple-touch-icon.png" rel="apple-touch-icon">
   
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
@@ -24,8 +24,8 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
   
   <!-- CSS Files -->
-  <link href="assets/css/main.css" rel="stylesheet">
-  <link href="assets/css/components.css" rel="stylesheet">
+  <link href="../assets/css/main.css" rel="stylesheet">
+  <link href="../assets/css/components.css" rel="stylesheet">
   
   <style>
     /* Bounty Hunter Specific Styles */
@@ -593,9 +593,9 @@
     <section class="bounty-header">
       <div class="container">
         <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px;">
-          <img src="assets/images/badges/bounty-hunter-badge-color.png" alt="Bounty Hunter Badge" style="height: 80px;">
+          <img src="../assets/images/badges/bounty-hunter-badge-color.png" alt="Bounty Hunter Badge" style="height: 80px;">
           <h1 class="bounty-title" style="margin: 0;">WAR BOARD</h1>
-          <img src="assets/images/badges/bounty-hunter-badge-color.png" alt="Bounty Hunter Badge" style="height: 80px;">
+          <img src="../assets/images/badges/bounty-hunter-badge-color.png" alt="Bounty Hunter Badge" style="height: 80px;">
         </div>
         <p class="bounty-subtitle">Track players, expose cheaters, explore the hashtag blockchain</p>
         <div class="last-updated" id="lastUpdated">
@@ -616,7 +616,7 @@
       <div class="container">
         <div style="text-align: center;">
           <h2 class="leaderboard-title" style="position: relative; display: inline-block;">
-            <img src="assets/images/mascot/c-o-c.png" alt="Crown of Chaos" style="position: absolute; top: -60px; left: 50%; transform: translateX(-50%); height: 105px; z-index: 1;">
+            <img src="../assets/images/mascot/c-o-c.png" alt="Crown of Chaos" style="position: absolute; top: -60px; left: 50%; transform: translateX(-50%); height: 105px; z-index: 1;">
             <span style="position: relative; z-index: 0;">MAXIMUM CHAOS</span>
           </h2>
         </div>
@@ -693,9 +693,9 @@
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center" id="backToTop" style="display: none;"><i class="bi bi-arrow-up-short"></i></a>
 
   <!-- JS Files -->
-  <script src="assets/js/storage.js"></script>
-  <script src="assets/js/missions.js"></script>
-  <script src="assets/js/main.js"></script>
+  <script src="../assets/js/storage.js"></script>
+  <script src="../assets/js/missions.js"></script>
+  <script src="../assets/js/main.js"></script>
   <script src="premium-api-client.js"></script>
   
   <script>
@@ -870,7 +870,7 @@
         
         return `
           <a href="${platform.baseUrl}${hashtag}" target="_blank" class="platform-link" data-hover-color="${platform.color}">
-            <img src="assets/images/social-icons/${platform.icon}" alt="${platform.name}" class="platform-icon">
+            <img src="../assets/images/social-icons/${platform.icon}" alt="${platform.name}" class="platform-icon">
             <span class="platform-count">${count}</span>
           </a>
         `;
@@ -1028,7 +1028,7 @@
           </div>
           <div class="case-content">
             <div class="evidence-side">
-              <div class="evidence-title"><img src="assets/images/badges/bounty-hunter-badge-color.png" alt="Bounty Hunter" style="height: 30px; vertical-align: middle; margin-right: 5px;">Bounty Hunter Evidence</div>
+              <div class="evidence-title"><img src="../assets/images/badges/bounty-hunter-badge-color.png" alt="Bounty Hunter" style="height: 30px; vertical-align: middle; margin-right: 5px;">Bounty Hunter Evidence</div>
               <div class="evidence-image">📸 Evidence Photo</div>
               <div class="evidence-info">
                 <strong>Reported by:</strong> ${caseItem.accuser}<br>
@@ -1036,7 +1036,7 @@
               </div>
             </div>
             <div class="evidence-side">
-              <div class="evidence-title"><img src="assets/images/badges/clown.png" alt="Clown" style="height: 30px; vertical-align: middle; margin-right: 5px;">Accused Player</div>
+              <div class="evidence-title"><img src="../assets/images/badges/clown.png" alt="Clown" style="height: 30px; vertical-align: middle; margin-right: 5px;">Accused Player</div>
               <div class="evidence-image">👤 Mugshot</div>
               <div class="evidence-info">
                 <strong>Player:</strong> ${caseItem.accused}<br>
