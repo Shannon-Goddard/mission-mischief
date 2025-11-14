@@ -648,7 +648,7 @@
       let locationData = {};
       
       // Load US states and cities from JSON file
-      fetch('assets/js/usa-states-cities.json')
+      fetch('../assets/js/usa-states-cities.json')
         .then(response => {
           if (!response.ok) throw new Error('Network response was not ok');
           return response.json();
@@ -1234,10 +1234,10 @@
       
       // Create overlay elements
       overlayPreview.innerHTML = `
-        <div style="position: absolute; top: 10px; right: 10px; width: 60px; height: 60px; background: url('assets/images/mascot/mayhem-excited.png') center/contain no-repeat;"></div>
+        <div style="position: absolute; top: 10px; right: 10px; width: 60px; height: 60px; background: url('../assets/images/mascot/mayhem-excited.png') center/contain no-repeat;"></div>
         <div style="position: absolute; bottom: 10px; left: 10px; display: flex; gap: 5px;">
-          <div style="width: 30px; height: 30px; background: url('assets/images/badges/book-for-dummies-color.png') center/contain no-repeat; opacity: 0.9;"></div>
-          <div style="width: 30px; height: 30px; background: url('assets/images/badges/coffee-color.png') center/contain no-repeat; opacity: 0.9;"></div>
+          <div style="width: 30px; height: 30px; background: url('../assets/images/badges/book-for-dummies-color.png') center/contain no-repeat; opacity: 0.9;"></div>
+          <div style="width: 30px; height: 30px; background: url('../assets/images/badges/coffee-color.png') center/contain no-repeat; opacity: 0.9;"></div>
         </div>
         <div style="position: absolute; top: 10px; left: 10px; background: rgba(4, 170, 109, 0.9); color: #000; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">MISSION MISCHIEF</div>
       `;
@@ -1454,9 +1454,11 @@
     };
     
     function completeMission(missionId) {
-      const btn = event.target;
-      btn.classList.add('loading');
-      btn.disabled = true;
+      const btn = event?.target || document.querySelector(`[onclick="completeMission(${missionId})"]`);
+      if (btn) {
+        btn.classList.add('loading');
+        btn.disabled = true;
+      }
       
       setTimeout(() => {
         const user = Storage.completeMission(missionId);
@@ -1467,8 +1469,10 @@
         loadUserStats();
         loadMissions();
         updateCheaterCheckbox(missionId, false); // Uncheck in cheater section
-        btn.classList.remove('loading');
-        btn.disabled = false;
+        if (btn) {
+          btn.classList.remove('loading');
+          btn.disabled = false;
+        }
       }, 500);
     }
 
@@ -1760,7 +1764,7 @@
             showToast('Clown selfie ready! Download or share with #missionmischiefclown', 'success');
           });
         };
-        mayhemClown.src = 'assets/images/mascot/mayhem-clown.png';
+        mayhemClown.src = '../assets/images/mascot/mayhem-clown.png';
         
         // Fallback if image fails to load
         mayhemClown.onerror = function() {

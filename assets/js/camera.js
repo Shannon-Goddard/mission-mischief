@@ -63,7 +63,7 @@ const Camera = {
     if (buyInState === 'crown-of-chaos') {
       return `
         <div class="buyin-badge crown-of-chaos">
-          <img src="assets/images/mascot/c-o-c.png" alt="Crown of Chaos" />
+          <img src="../assets/images/mascot/c-o-c.png" alt="Crown of Chaos" />
           <div class="crown-glow"></div>
         </div>
       `;
@@ -73,7 +73,7 @@ const Camera = {
       const remainingBuyIn = this.getRemainingBuyIn(user);
       return `
         <div class="buyin-badge gold-prompt">
-          <img src="assets/images/badges/${Missions.buyIns[remainingBuyIn].badge}" alt="${remainingBuyIn}" />
+          <img src="../assets/images/badges/${Missions.buyIns[remainingBuyIn].badge}" alt="${remainingBuyIn}" />
           <div class="gold-glow"></div>
         </div>
       `;
@@ -84,7 +84,7 @@ const Camera = {
     if (buyIn && buyIn.badge) {
       return `
         <div class="buyin-badge">
-          <img src="assets/images/badges/${buyIn.badge}" alt="${buyIn.title}" />
+          <img src="../assets/images/badges/${buyIn.badge}" alt="${buyIn.title}" />
         </div>
       `;
     }

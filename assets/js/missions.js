@@ -282,14 +282,14 @@ const Missions = {
     
     // Special case for bounty badge (only has color version)
     if (badgeId === 'bounty') {
-      return `assets/images/badges/${badge.icon}`;
+      return `../assets/images/badges/${badge.icon}`;
     }
     
     switch(state) {
-      case 'gold': return `assets/images/badges/${baseName}-gold.png`;
-      case 'vibrant': return `assets/images/badges/${baseName}-color.png`;
-      case 'silhouette': return `assets/images/badges/${baseName}-black.png`;
-      default: return `assets/images/badges/${baseName}-black.png`; // locked state
+      case 'gold': return `../assets/images/badges/${baseName}-gold.png`;
+      case 'vibrant': return `../assets/images/badges/${baseName}-color.png`;
+      case 'silhouette': return `../assets/images/badges/${baseName}-black.png`;
+      default: return `../assets/images/badges/${baseName}-black.png`; // locked state
     }
   },
 
@@ -339,13 +339,13 @@ const Missions = {
     const prefix = hasCrown ? 'crown-of-chaos' : 'mayhem';
     // Remove any existing prefix from expression
     const cleanExpression = expression.replace(/^(mayhem-|crown-of-chaos-)/, '');
-    return `assets/images/mascot/${prefix}-${cleanExpression}.png`;
+    return `../assets/images/mascot/${prefix}-${cleanExpression}.png`;
   },
 
   // Get buy-in badge image path
   getBuyInBadgeImagePath(buyInId) {
     const buyIn = this.buyIns[buyInId];
-    return buyIn && buyIn.badge ? `assets/images/badges/${buyIn.badge}` : null;
+    return buyIn && buyIn.badge ? `../assets/images/badges/${buyIn.badge}` : null;
   },
 
   // Get available buy-ins (hide 'nothing' after second buy-in)

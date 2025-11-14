@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Path Test</title>
+</head>
+<body>
+    <h1>Testing File Paths</h1>
+    <div id="results"></div>
+    
+    <script>
+        const results = document.getElementById('results');
+        
+        // Test JS file loading
+        const testPaths = [
+            '../assets/js/storage.js',
+            '../assets/js/missions.js', 
+            '../assets/js/direct-submission.js',
+            '../assets/js/aws-submission-sync.js',
+            '../assets/js/usa-states-cities.json'
+        ];
+        
+        testPaths.forEach(path => {
+            fetch(path)
+                .then(response => {
+                    results.innerHTML += `<p>✅ ${path} - ${response.status}</p>`;
+                })
+                .catch(error => {
+                    results.innerHTML += `<p>❌ ${path} - ${error.message}</p>`;
+                });
+        });
+        
+        // Test if DirectSubmission is available
+        setTimeout(() => {
+            if (window.DirectSubmission) {
+                results.innerHTML += '<p>✅ DirectSubmission loaded</p>';
+            } else {
+                results.innerHTML += '<p>❌ DirectSubmission not loaded</p>';
+            }
+            
+            if (window.Storage) {
+                results.innerHTML += '<p>✅ Storage loaded</p>';
+            } else {
+                results.innerHTML += '<p>❌ Storage not loaded</p>';
+            }
+        }, 1000);
+    </script>
+    
+    <!-- Test loading the actual JS files -->
+    <script src="../assets/js/storage.js"></script>
+    <script src="../assets/js/missions.js"></script>
+    <script src="../assets/js/direct-submission.js"></script>
+    <script src="../assets/js/aws-submission-sync.js"></script>
+</body>
+</html>
