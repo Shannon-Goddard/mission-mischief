@@ -66,12 +66,12 @@ const DirectSubmission = {
         
         <div style="margin-bottom: 20px;">
           <label style="display: block; color: #04aa6d; margin-bottom: 5px; font-weight: bold;">
-            Proof URL (Optional - for dispute protection):
+            Social Media Post URL (Required):
           </label>
-          <input type="url" id="submissionUrl" placeholder="https://instagram.com/p/..." 
-                 style="width: 100%; padding: 8px; background: #333; color: #fff; border: 1px solid #666; border-radius: 4px; box-sizing: border-box;">
+          <input type="url" id="submissionUrl" placeholder="https://instagram.com/p/..." required
+                 style="width: 100%; padding: 8px; background: #333; color: #fff; border: 1px solid #04aa6d; border-radius: 4px; box-sizing: border-box;">
           <small style="color: #999; font-size: 12px; margin-top: 5px; display: block;">
-            Add your social media post URL for dispute protection (recommended but not required)
+            Paste the URL of your social media post with overlays and hashtags (mandatory for community validation)
           </small>
         </div>
         
@@ -87,8 +87,7 @@ const DirectSubmission = {
         </div>
         
         <div style="margin-top: 15px; padding: 10px; background: rgba(4, 170, 109, 0.1); border-radius: 4px; font-size: 13px;">
-          <strong>🚀 Instant Submission:</strong> Get immediate points and feedback! 
-          Add a URL for dispute protection if challenged by other players.
+          <strong>🚀 Direct Submission:</strong> Post your overlaid photo/video with hashtags to social media first, then paste the URL here for instant points!
         </div>
       </div>
     `;
@@ -102,15 +101,20 @@ const DirectSubmission = {
     const urlInput = document.getElementById('submissionUrl');
     
     const points = parseInt(pointsSelect.value) || 0;
-    const proofUrl = urlInput.value.trim() || null;
+    const proofUrl = urlInput.value.trim();
     
-    // Validate URL if provided
-    if (proofUrl && !this.isValidUrl(proofUrl)) {
-      this.showToast('Please enter a valid URL or leave blank', 'error');
+    // Validate URL is provided and valid
+    if (!proofUrl) {
+      this.showToast('Social media post URL is required', 'error');
       return;
     }
     
-    // Submit mission
+    if (!this.isValidUrl(proofUrl)) {
+      this.showToast('Please enter a valid social media URL', 'error');
+      return;
+    }
+    
+    // Submit mission with required URL
     const result = this.submitMission(missionId, points, proofUrl);
     
     if (result.success) {

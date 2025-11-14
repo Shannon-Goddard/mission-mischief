@@ -226,10 +226,7 @@
                   <label for="userName" class="form-label">Your Name:</label>
                   <input type="text" id="userName" class="form-control" required>
                 </div>
-                <div class="mb-3">
-                  <label for="userHandle" class="form-label">Social Media Handle:</label>
-                  <input type="text" id="userHandle" class="form-control" placeholder="@username" required>
-                </div>
+
                 <div class="mb-3">
                   <label for="userCountry" class="form-label">Country:</label>
                   <select id="userCountry" class="form-control" required onchange="loadStates(); toggleCountryOther();">
@@ -456,7 +453,7 @@
       document.getElementById('setupForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const userName = document.getElementById('userName').value.trim();
-        const userHandle = document.getElementById('userHandle').value.trim();
+
         const userCountry = document.getElementById('userCountry').value === 'OTHER' ? 
           document.getElementById('userCountryOther').value.trim() : document.getElementById('userCountry').value;
         const userState = document.getElementById('userState').value === 'OTHER' ? 
@@ -465,14 +462,14 @@
           document.getElementById('userCityOther').value.trim() : document.getElementById('userCity').value;
         const qrCodeFile = document.getElementById('qrCode').files[0];
         
-        if (userName && userHandle && userCountry && userState && userCity && qrCodeFile) {
+        if (userName && userCountry && userState && userCity && qrCodeFile) {
           // Use the positioned QR code data if available
           const qrImage = document.getElementById('qrImage');
           const qrData = qrImage ? qrImage.src : null;
           
           if (qrData) {
             const existingUser = Storage.getUser();
-            const user = Storage.initUser(userName, userHandle);
+            const user = Storage.initUser(userName, null);
             // Preserve FAFO completion status
             user.fafoCompleted = existingUser.fafoCompleted || false;
             user.fafoCompletedDate = existingUser.fafoCompletedDate || null;
@@ -487,7 +484,7 @@
             const reader = new FileReader();
             reader.onload = function(e) {
               const existingUser = Storage.getUser();
-              const user = Storage.initUser(userName, userHandle);
+              const user = Storage.initUser(userName, null);
               // Preserve FAFO completion status
               user.fafoCompleted = existingUser.fafoCompleted || false;
               user.fafoCompletedDate = existingUser.fafoCompletedDate || null;
@@ -567,7 +564,7 @@
               const touch = e.touches[0];
               startX = touch.clientX;
               startY = touch.clientY;
-            });
+            }, { passive: false });
             
             document.addEventListener('mousemove', function(e) {
               if (!isDragging) return;
@@ -592,7 +589,7 @@
               startX = touch.clientX;
               startY = touch.clientY;
               updateQRTransform();
-            });
+            }, { passive: false });
             
             document.addEventListener('mouseup', function() {
               if (isDragging) {
@@ -864,7 +861,7 @@
 
     function loadUserInfo() {
       const user = Storage.getUser();
-      document.getElementById('userInfo').textContent = `${user.userName} (${user.userHandle})`;
+      document.getElementById('userInfo').textContent = user.userName;
     }
 
     function loadUserStats() {
@@ -985,19 +982,17 @@
           `;
         } else {
           missionActions = `
-            <button class="mission-btn" onclick="DirectSubmission.showSubmissionForm(${mission.id})" style="background: #04aa6d; color: #000;">
-              ⚡ Submit Mission
-            </button>
             <button class="mission-btn" onclick="startMissionCapture(${mission.id})">
               🎭 Add Overlays
             </button>
+            <button class="mission-btn" onclick="shareWithHashtags(${mission.id})">
+              📋 Copy Hashtags
+            </button>
+            <button class="mission-btn" onclick="DirectSubmission.showSubmissionForm(${mission.id})" style="background: #04aa6d; color: #000;">
+              ⚡ Submit Mission
+            </button>
           `;
         }
-        missionActions += `
-          <button class="mission-btn" onclick="completeMission(${mission.id})">
-            Mark Complete
-          </button>
-        `;
       }
       
       // Check if mission has been submitted via direct system
@@ -1045,9 +1040,6 @@
             </div>
             <div class="mission-actions">
               ${missionActions}
-              <button class="mission-btn" onclick="shareWithHashtags(${mission.id})">
-                📋 Copy Hashtags
-              </button>
             </div>
           </div>
         </div>
