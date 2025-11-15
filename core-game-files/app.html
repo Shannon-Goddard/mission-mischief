@@ -421,6 +421,9 @@
       
       // Add small delay to ensure localStorage is fully loaded
       setTimeout(() => {
+        // Migrate existing user data to remove userHandle
+        migrateUserData();
+        
         const user = Storage.getUser();
         
         console.log('🔍 App init - User state:', {
@@ -1963,6 +1966,17 @@
         completeMission(4);
       }, 1000);
     };
+    
+    // Migrate user data to remove userHandle
+    function migrateUserData() {
+      const user = Storage.getUser();
+      if (user && user.userHandle) {
+        console.log('🔄 Migrating user data: removing userHandle');
+        delete user.userHandle;
+        Storage.saveUser(user);
+        console.log('✅ User data migrated successfully');
+      }
+    }
     
     // Initialize app
     window.addEventListener('load', function() {

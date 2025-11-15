@@ -696,7 +696,20 @@
   <script src="../assets/js/storage.js"></script>
   <script src="../assets/js/missions.js"></script>
   <script src="../assets/js/main.js"></script>
-  <script src="premium-api-client.js"></script>
+  
+  <!-- Try to load premium API client -->
+  <script>
+    // Try to load premium API client if available
+    const script = document.createElement('script');
+    script.src = '../assets/js/premium-api-client.js';
+    script.onerror = function() {
+      console.log('📝 Premium API client not available, using direct submissions only');
+    };
+    script.onload = function() {
+      console.log('✅ Premium API client loaded');
+    };
+    document.head.appendChild(script);
+  </script>
   
   <script>
     // Real data from scraper
@@ -730,12 +743,23 @@
     }
 
     async function loadBountyHunterData() {
-      console.log('🚀 Loading data via Premium API Client...');
-      updateScrapeStatus('active', 'Fetching from premium endpoint...');
+      console.log('🚀 Loading bounty hunter data...');
+      updateScrapeStatus('active', 'Loading submissions...');
       
       try {
-        // Use premium API client
-        const data = await premiumApi.getData();
+        // Try to load direct submissions first
+        const directSubmissions = loadDirectSubmissions();
+        
+        if (directSubmissions.length > 0) {
+          console.log('✅ Direct submissions loaded:', directSubmissions.length);
+          processDirectSubmissions(directSubmissions);
+          updateScrapeStatus('active', 'Direct submissions loaded');
+          return;
+        }
+        
+        // Fallback to premium API if available
+        if (typeof premiumApi !== 'undefined') {
+          const data = await premiumApi.getData();
         
         if (data && data.leaderboard) {
           console.log('✅ Premium API data loaded successfully');
@@ -753,16 +777,14 @@
         } else {
           throw new Error('No data received from premium API');
         }
+        } else {
+          throw new Error('Premium API not available');
+        }
         
       } catch (error) {
-        console.error('❌ Premium API failed:', error);
-        console.error('Error details:', {
-          message: error.message,
-          stack: error.stack,
-          endpoint: premiumApi.primaryEndpoint
-        });
-        updateScrapeStatus('warning', 'Premium API offline - check console');
-        realData.lastUpdated = 'Premium API Offline - ' + error.message;
+        console.error('❌ API failed:', error.message);
+        updateScrapeStatus('warning', 'Using fallback data');
+        realData.lastUpdated = 'Direct Submissions Only - ' + new Date().toLocaleString();
         
         // Use fallback empty data
         realData.topPlayers = [];
@@ -1151,32 +1173,134 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
     
+    // Load direct submissions from localStorage
+    function loadDirectSubmissions() {
+      const submissions = [];
+      
+      // Check if we have any users with submissions
+      const userData = localStorage.getItem('missionMischiefUser');
+      if (userData) {
+        try {
+          const user = JSON.parse(userData);
+          if (user.submissions) {
+            Object.entries(user.submissions).forEach(([missionId, submission]) => {
+              const mission = Missions.getMission(parseInt(missionId));
+              submissions.push({
+                missionId: parseInt(missionId),
+                missionTitle: mission ? mission.title : `Mission ${missionId}`,
+                userName: user.userName,
+                city: user.city,
+                state: user.state,
+                country: user.country,
+                points: submission.points,
+                proofUrl: submission.proofUrl,
+                timestamp: submission.timestamp
+              });
+            });
+          }
+        } catch (e) {
+          console.error('Error parsing user data:', e);
+        }
+      }
+      
+      return submissions;
+    }
+    
+    // Process direct submissions into bounty hunter format
+    function processDirectSubmissions(submissions) {
+      // Create leaderboard from submissions
+      const playerStats = {};
+      const geoData = {};
+      
+      submissions.forEach(sub => {
+        // Build player stats
+        const playerKey = `${sub.userName}-${sub.city}`;
+        if (!playerStats[playerKey]) {
+          playerStats[playerKey] = {
+            handle: sub.userName,
+            points: 0,
+            city: sub.city,
+            state: sub.state,
+            country: sub.country
+          };
+        }
+        playerStats[playerKey].points += sub.points;
+        
+        // Build geography data
+        if (!geoData[sub.state]) {
+          geoData[sub.state] = {};
+        }
+        if (!geoData[sub.state][sub.city]) {
+          geoData[sub.state][sub.city] = {
+            count: 0,
+            players: []
+          };
+        }
+        geoData[sub.state][sub.city].count++;
+        
+        // Add player if not already there
+        const existingPlayer = geoData[sub.state][sub.city].players.find(p => p.handle === sub.userName);
+        if (!existingPlayer) {
+          geoData[sub.state][sub.city].players.push({
+            handle: sub.userName,
+            social_url: sub.proofUrl
+          });
+        }
+      });
+      
+      // Convert to arrays and sort
+      realData.topPlayers = Object.values(playerStats)
+        .sort((a, b) => b.points - a.points)
+        .slice(0, 10);
+      
+      realData.geography = geoData;
+      realData.missionActivity = {}; // Empty for now
+      realData.justiceCases = []; // Empty for now
+      
+      console.log('🏆 Processed submissions:', {
+        players: realData.topPlayers.length,
+        states: Object.keys(geoData).length,
+        totalSubmissions: submissions.length
+      });
+    }
+    
     // Test functions for troubleshooting
     window.testApiEndpoint = async function() {
-      console.log('🧪 Testing API endpoint...');
-      updateScrapeStatus('active', 'Testing API endpoint...');
+      console.log('🧪 Testing data sources...');
+      updateScrapeStatus('active', 'Testing...');
       
-      try {
-        const result = await premiumApi.testScraper();
-        console.log('🔬 Test result:', result);
-        
-        if (result.success) {
-          updateScrapeStatus('active', 'API test successful!');
-          alert('✅ API test successful! Check console for details.');
-        } else {
-          updateScrapeStatus('warning', 'API test failed');
-          alert('❌ API test failed: ' + result.error);
+      const directSubmissions = loadDirectSubmissions();
+      
+      if (directSubmissions.length > 0) {
+        alert(`✅ Direct submissions found: ${directSubmissions.length} submissions`);
+        updateScrapeStatus('active', `${directSubmissions.length} direct submissions`);
+      } else if (typeof premiumApi !== 'undefined') {
+        try {
+          const result = await premiumApi.testScraper();
+          console.log('🔬 Test result:', result);
+          
+          if (result.success) {
+            updateScrapeStatus('active', 'Premium API working');
+            alert('✅ Premium API test successful!');
+          } else {
+            updateScrapeStatus('warning', 'Premium API failed');
+            alert('❌ Premium API test failed: ' + result.error);
+          }
+        } catch (error) {
+          updateScrapeStatus('warning', 'Premium API failed');
+          alert('❌ Premium API test failed: ' + error.message);
         }
-      } catch (error) {
-        console.error('❌ Test failed:', error);
-        updateScrapeStatus('warning', 'API test failed');
-        alert('❌ API test failed: ' + error.message);
+      } else {
+        alert('❌ No data sources available');
+        updateScrapeStatus('warning', 'No data sources');
       }
     };
     
     window.manualRefresh = async function() {
       console.log('🔄 Manual refresh triggered...');
-      premiumApi.clearCache();
+      if (typeof premiumApi !== 'undefined') {
+        premiumApi.clearCache();
+      }
       await loadBountyHunterData();
       alert('🔄 Data refreshed! Check console for details.');
     };
