@@ -965,19 +965,38 @@
       let missionActions = '';
       if (!isCompleted) {
         if (mission.id === 4) {
-          // Mission 4: Show buy-in selection buttons
+          // Mission 4: Buy-in selection + standard 3 buttons
           missionActions = `
-            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;">
               <button class="mission-btn" onclick="selectBuyIn('recycling')" style="background: #28a745;">🌍 Green Warrior</button>
               <button class="mission-btn" onclick="selectBuyIn('cleanup')" style="background: #6c757d;">🗑️ Oscar</button>
               <button class="mission-btn" onclick="selectBuyIn('referral')" style="background: #007bff;">🎵 Bye Bye Bye</button>
               <button class="mission-btn" onclick="selectBuyIn('nothing')" style="background: #dc3545;">🤡 Do Nothing</button>
             </div>
+            <button class="mission-btn" onclick="startMissionCapture(${mission.id})">
+              🎭 Add Overlays
+            </button>
+            <button class="mission-btn" onclick="shareWithHashtags(${mission.id})">
+              📋 Copy Hashtags
+            </button>
+            <button class="mission-btn" onclick="DirectSubmission.showSubmissionForm(${mission.id})" style="background: #04aa6d; color: #000;">
+              ⚡ Submit Mission
+            </button>
           `;
         } else if (mission.type === 'setup') {
+          // Setup missions: Print Card + standard 3 buttons
           missionActions = `
-            <button class="mission-btn" onclick="printCard()">
-              Print Card
+            <button class="mission-btn" onclick="printCard()" style="background: #666;">
+              🖨️ Print Card
+            </button>
+            <button class="mission-btn" onclick="startMissionCapture(${mission.id})">
+              🎭 Add Overlays
+            </button>
+            <button class="mission-btn" onclick="shareWithHashtags(${mission.id})">
+              📋 Copy Hashtags
+            </button>
+            <button class="mission-btn" onclick="DirectSubmission.showSubmissionForm(${mission.id})" style="background: #04aa6d; color: #000;">
+              ⚡ Submit Mission
             </button>
           `;
         } else {
