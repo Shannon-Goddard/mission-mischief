@@ -793,7 +793,7 @@
         realData.justiceCases = [];
       }
       
-      // Load last updated timestamp
+      // Update UI with processed data
       document.getElementById('lastUpdated').textContent = `Last Updated: ${realData.lastUpdated}`;
       
       // Load all sections
@@ -1262,6 +1262,9 @@
         states: Object.keys(geoData).length,
         totalSubmissions: submissions.length
       });
+      
+      // Update last updated timestamp
+      realData.lastUpdated = new Date().toLocaleString();
     }
     
     // Test functions for troubleshooting
