@@ -41,7 +41,7 @@ if (window.DirectSubmission) {
         points,
         proofUrl,
         timestamp: new Date().toISOString(),
-        user: Storage.getUser().userName
+        username: Storage.getUser().userName
       });
     }
     
