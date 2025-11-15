@@ -755,12 +755,11 @@
           console.log('✅ Direct submissions loaded:', directSubmissions.length);
           processDirectSubmissions(directSubmissions);
           updateScrapeStatus('active', 'Direct submissions loaded');
-          return;
-        }
+        } else {
         
-        // Fallback to premium API if available
-        if (typeof premiumApi !== 'undefined') {
-          const data = await premiumApi.getData();
+          // Fallback to premium API if available
+          if (typeof premiumApi !== 'undefined') {
+            const data = await premiumApi.getData();
         
         if (data && data.leaderboard) {
           console.log('✅ Premium API data loaded successfully');
@@ -778,8 +777,9 @@
         } else {
           throw new Error('No data received from premium API');
         }
-        } else {
-          throw new Error('Premium API not available');
+          } else {
+            throw new Error('Premium API not available');
+          }
         }
         
       } catch (error) {
