@@ -723,6 +723,7 @@
 
     // Initialize page
     document.addEventListener('DOMContentLoaded', function() {
+      console.log('🧪 TEST 5: Bounty hunter loading with UI fix');
       loadBountyHunterData();
       setupPlatformHovers();
       
@@ -794,12 +795,17 @@
       }
       
       // Update UI with processed data
+      console.log('🔧 TEST 5: Updating UI sections with processed data');
       document.getElementById('lastUpdated').textContent = `Last Updated: ${realData.lastUpdated}`;
       
       // Load all sections
+      console.log('🔧 TEST 5: Calling loadTopPlayers()');
       loadTopPlayers();
+      console.log('🔧 TEST 5: Calling loadMissions()');
       loadMissions();
+      console.log('🔧 TEST 5: Calling loadGeography()');
       loadGeography();
+      console.log('🔧 TEST 5: Calling loadJusticeCases()');
       loadJusticeCases();
     }
     

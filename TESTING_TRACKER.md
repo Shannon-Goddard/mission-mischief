@@ -92,10 +92,12 @@
 
 #### **From Latest Testing (2025-11-15):**
 
+**Test Session #4 (10:40am):**
+
 **app.html Console:**
 ```
 ✅ User setup working
-✅ Direct submissions working (2 submissions recorded)
+✅ Direct submissions working (3 submissions recorded)
 ✅ userHandle: null (migration successful)
 ⚠️ CORS errors on AWS admin endpoint (expected, using localStorage fallback)
 ```
@@ -105,8 +107,16 @@
 ✅ Premium API client loaded successfully
 ✅ Direct submissions loaded: 3
 ✅ Processed submissions: {players: 1, states: 1, totalSubmissions: 3}
-❌ UI sections still show "Loading..." (data processed but not displayed)
+✅ Test API button working (shows "3 submissions found")
+✅ Force Refresh button working
+❌ UI sections STILL show "Loading..." (fix not deployed yet)
 ```
+
+**UI Status:**
+- Last Updated: "Loading..."
+- Geographic Activity: "Loading..."
+- The Accused: "Loading..."
+- Maximum Chaos: Empty (no leaderboard display)
 
 ---
 
