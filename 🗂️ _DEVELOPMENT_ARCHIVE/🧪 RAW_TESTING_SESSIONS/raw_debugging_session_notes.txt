@@ -1,0 +1,1354 @@
+---
+NEW TEST SESSION: [date/time] 1st test
+---
+
+I'm testing on https://missionmischief.online Here is the console logs for https://missionmischief.online/core-game-files/app.html after submitting a few missions: 
+﻿
+app.html:10 X-Frame-Options may only be set via an HTTP header sent along with a document. It may not be set inside <meta>.
+app.html:408 🚀 DOM loaded, initializing app...
+app.html:415 🔝 Page fully loaded, forced scroll to top
+feature_collector.js:23 using deprecated parameters for the initialization function; pass a single object instead
+app.html:426 🔍 App init - User state: 
+{fafoCompleted: true, hasUserName: true, scrollY: 0}
+app.html:920 Loading missions for user: 
+{userName: 'Shannon Goddard', userHandle: '@instagram', qrCodeData: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA8AA…RD3yURrXhU5mo52vz+RdvF4xZE9oJbgAAAABJRU5ErkJggg==', completedMissions: Array(4), badges: Array(1), …}
+badgeStates
+: 
+{}
+badges
+: 
+['beer']
+city
+: 
+"Riverside"
+completedBuyIns
+: 
+['recycling']
+completedMissions
+: 
+(4) [4, 1, 2, 3]
+country
+: 
+"US"
+currentBuyIn
+: 
+"recycling"
+exposedBy
+: 
+[]
+fafoCompleted
+: 
+true
+fafoCompletedDate
+: 
+"2025-11-15T17:15:41.723Z"
+honorScore
+: 
+100
+joinDate
+: 
+"2025-11-14T00:25:52.812Z"
+missionPoints
+: 
+{1: 0, 2: 1, 3: 0, 4: 3}
+qrCodeData
+: 
+"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA8A
+state
+: 
+"California"
+submissions
+: 
+{1: {…}, 2: {…}, 3: {…}}
+totalPoints
+: 
+4
+userHandle
+: 
+"@instagram"
+userName
+: 
+"Shannon Goddard"
+[[Prototype]]
+: 
+Object
+app.html:921 FAFO completed: true
+app.html:922 Current buy-in: recycling
+app.html:923 Completed buy-ins: 
+['recycling']
+app.html:924 📄 Scroll position before missions: 0
+app.html:927 Available missions: 50 
+(50) [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 51]
+app.html:937 Final missions to display: 50
+app.html:852 🔝 Dashboard fully loaded, forced to top
+
+Here is the console logs for https://missionmischief.online/core-game-files/bounty-hunter.html:
+
+﻿
+bounty-hunter.html:699 
+ GET https://missionmischief.online/core-game-files/premium-api-client.js net::ERR_ABORTED 404 (Not Found)
+bounty-hunter.html:733 🚀 Loading data via Premium API Client...
+bounty-hunter.html:758 ❌ Premium API failed: ReferenceError: premiumApi is not defined
+    at loadBountyHunterData (bounty-hunter.html:738:22)
+    at HTMLDocument.<anonymous> (bounty-hunter.html:713:7)
+loadBountyHunterData	@	bounty-hunter.html:758
+(anonymous)	@	bounty-hunter.html:713
+
+bounty-hunter.html:717 🕰️ BULLETPROOF: Automated 3:00 AM PST collection with three-layer failover
+bounty-hunter.html:718 📅 Schedule updated: cron(0 11 * * ? *) = 3:00 AM PST
+bounty-hunter.html:762 Uncaught (in promise) ReferenceError: premiumApi is not defined
+    at loadBountyHunterData (bounty-hunter.html:762:21)
+    at HTMLDocument.<anonymous> (bounty-hunter.html:713:7)
+loadBountyHunterData	@	bounty-hunter.html:762
+(anonymous)	@	bounty-hunter.html:713
+Let me know if there is a better way to comminicate this with you. Dropping it in our chat would fill it up too fast.
+---
+NEW TEST SESSION: [date/time] 2nd test
+---
+
+Remember there are no users, right now. Just me testing. I cleared my browser history and went through the process again. Here is 
+the console logs for: https://missionmischief.online/core-game-files/app.html
+
+﻿
+app.html:10 X-Frame-Options may only be set via an HTTP header sent along with a document. It may not be set inside <meta>.
+app.html:408 🚀 DOM loaded, initializing app...
+app.html:415 🔝 Page fully loaded, forced scroll to top
+feature_collector.js:23 using deprecated parameters for the initialization function; pass a single object instead
+app.html:426 🔍 App init - User state: 
+Object
+app.html:451 🔝 User setup shown, scrolled to top
+app.html:654 Location data loaded successfully
+app.html:660 States available: 51
+app.html:920 Loading missions for user: 
+Object
+app.html:921 FAFO completed: true
+app.html:922 Current buy-in: null
+app.html:923 Completed buy-ins: 
+Array(0)
+app.html:924 📄 Scroll position before missions: 0
+app.html:927 Available missions: 4 
+Array(4)
+app.html:937 Final missions to display: 4
+app.html:852 🔝 Dashboard fully loaded, forced to top
+app.html:920 Loading missions for user: 
+Object
+app.html:921 FAFO completed: true
+app.html:922 Current buy-in: null
+app.html:923 Completed buy-ins: 
+Array(0)
+app.html:924 📄 Scroll position before missions: 0
+app.html:927 Available missions: 4 
+Array(4)
+app.html:937 Final missions to display: 4
+app.html:1 Access to fetch at 'https://4q1ybupwm0.execute-api.us-east-1.amazonaws.com/prod/admin' from origin 'https://missionmischief.online' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+4q1ybupwm0.execute-a…ws.com/prod/admin:1 
+ Failed to load resource: net::ERR_FAILED
+aws-submission-sync.js:25 ⚠️ AWS sync failed, using localStorage only: Failed to fetch
+app.html:920 Loading missions for user: 
+Object
+badgeStates
+: 
+{}
+badges
+: 
+[]
+city
+: 
+"Riverside"
+completedBuyIns
+: 
+[]
+completedMissions
+: 
+Array(2)
+0
+: 
+1
+1
+: 
+2
+length
+: 
+2
+[[Prototype]]
+: 
+Array(0)
+country
+: 
+"US"
+currentBuyIn
+: 
+null
+exposedBy
+: 
+[]
+fafoCompleted
+: 
+true
+fafoCompletedDate
+: 
+"2025-11-15T17:42:16.836Z"
+honorScore
+: 
+100
+joinDate
+: 
+"2025-11-15T17:42:45.166Z"
+missionPoints
+: 
+1
+: 
+0
+2
+: 
+1
+[[Prototype]]
+: 
+Object
+qrCodeData
+: 
+"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA8A
+state
+: 
+"California"
+submissions
+: 
+1
+: 
+points
+: 
+0
+proofUrl
+: 
+"https://x.com/Missio_Mischief/status/1989747100138275115"
+source
+: 
+"direct"
+status
+: 
+"submitted"
+timestamp
+: 
+"2025-11-15T17:43:56.085Z"
+[[Prototype]]
+: 
+Object
+2
+: 
+{timestamp: '2025-11-15T17:44:29.347Z', points: 1, proofUrl: 'https://x.com/Missio_Mischief/status/1989747748116251111', status: 'submitted', source: 'direct'}
+[[Prototype]]
+: 
+Object
+totalPoints
+: 
+1
+userHandle
+: 
+null
+userName
+: 
+"Shannon Goddard"
+[[Prototype]]
+: 
+Object
+app.html:921 FAFO completed: true
+app.html:922 Current buy-in: null
+app.html:923 Completed buy-ins: 
+Array(0)
+app.html:924 📄 Scroll position before missions: 0
+app.html:927 Available missions: 4 
+Array(4)
+app.html:937 Final missions to display: 4
+app.html:1 Access to fetch at 'https://4q1ybupwm0.execute-api.us-east-1.amazonaws.com/prod/admin' from origin 'https://missionmischief.online' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+4q1ybupwm0.execute-a…ws.com/prod/admin:1 
+ Failed to load resource: net::ERR_FAILED
+aws-submission-sync.js:25 ⚠️ AWS sync failed, using localStorage only: Failed to fetch
+app.html:920 Loading missions for user: 
+Object
+app.html:921 FAFO completed: true
+app.html:922 Current buy-in: null
+app.html:923 Completed buy-ins: 
+Array(0)
+app.html:924 📄 Scroll position before missions: 0
+app.html:927 Available missions: 4 
+Array(4)
+app.html:937 Final missions to display: 4
+app.html:1 Access to fetch at 'https://4q1ybupwm0.execute-api.us-east-1.amazonaws.com/prod/admin' from origin 'https://missionmischief.online' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+4q1ybupwm0.execute-a…ws.com/prod/admin:1 
+ Failed to load resource: net::ERR_FAILED
+aws-submission-sync.js:25 ⚠️ AWS sync failed, using localStorage only: Failed to fetch
+
+then here are the console logs for: https://missionmischief.online/core-game-files/bounty-hunter.html
+
+﻿
+bounty-hunter.html:699 
+ GET https://missionmischief.online/core-game-files/premium-api-client.js net::ERR_ABORTED 404 (Not Found)
+bounty-hunter.html:733 🚀 Loading data via Premium API Client...
+bounty-hunter.html:758 ❌ Premium API failed: ReferenceError: premiumApi is not defined
+    at loadBountyHunterData (bounty-hunter.html:738:22)
+    at HTMLDocument.<anonymous> (bounty-hunter.html:713:7)
+loadBountyHunterData	@	bounty-hunter.html:758
+(anonymous)	@	bounty-hunter.html:713
+bounty-hunter.html:717 🕰️ BULLETPROOF: Automated 3:00 AM PST collection with three-layer failover
+bounty-hunter.html:718 📅 Schedule updated: cron(0 11 * * ? *) = 3:00 AM PST
+bounty-hunter.html:762 Uncaught (in promise) ReferenceError: premiumApi is not defined
+    at loadBountyHunterData (bounty-hunter.html:762:21)
+    at HTMLDocument.<anonymous> (bounty-hunter.html:713:7)
+loadBountyHunterData	@	bounty-hunter.html:762
+(anonymous)	@	bounty-hunter.html:713
+---
+NEW TEST SESSION: [date/time] 3rd test
+---
+
+
+Console logs for: https://missionmischief.online/core-game-files/app.html
+﻿
+app.html:10 X-Frame-Options may only be set via an HTTP header sent along with a document. It may not be set inside <meta>.
+app.html:408 🚀 DOM loaded, initializing app...
+app.html:415 🔝 Page fully loaded, forced scroll to top
+feature_collector.js:23 using deprecated parameters for the initialization function; pass a single object instead
+app.html:429 🔍 App init - User state: 
+{fafoCompleted: true, hasUserName: true, scrollY: 0}
+app.html:923 Loading missions for user: 
+{userName: 'Shannon Goddard', userHandle: null, qrCodeData: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA8AA…RD3yURrXhU5mo52vz+RdvF4xZE9oJbgAAAABJRU5ErkJggg==', completedMissions: Array(3), badges: Array(1), …}
+badgeStates
+: 
+{}
+badges
+: 
+['beer']
+city
+: 
+"Riverside"
+completedBuyIns
+: 
+[]
+completedMissions
+: 
+Array(3)
+0
+: 
+1
+1
+: 
+2
+2
+: 
+3
+length
+: 
+3
+[[Prototype]]
+: 
+Array(0)
+country
+: 
+"US"
+currentBuyIn
+: 
+null
+exposedBy
+: 
+[]
+fafoCompleted
+: 
+true
+fafoCompletedDate
+: 
+"2025-11-15T17:42:16.836Z"
+honorScore
+: 
+100
+joinDate
+: 
+"2025-11-15T17:42:45.166Z"
+missionPoints
+: 
+{1: 0, 2: 1, 3: 0}
+qrCodeData
+: 
+"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA8A
+state
+: 
+"California"
+submissions
+: 
+{1: {…}, 2: {…}, 3: {…}}
+totalPoints
+: 
+1
+userHandle
+: 
+null
+userName
+: 
+"Shannon Goddard"
+[[Prototype]]
+: 
+Object
+app.html:924 FAFO completed: true
+app.html:925 Current buy-in: null
+app.html:926 Completed buy-ins: 
+[]
+app.html:927 📄 Scroll position before missions: 0
+app.html:930 Available missions: 4 
+(4) [1, 2, 3, 4]
+app.html:940 Final missions to display: 4
+app.html:855 🔝 Dashboard fully loaded, forced to top
+
+Console logs for: https://missionmischief.online/core-game-files/bounty-hunter.html
+Onload, after I clicked test api, and clicked force refresh.
+
+﻿
+bounty-hunter.html:746 🚀 Loading bounty hunter data...
+bounty-hunter.html:754 ✅ Direct submissions loaded: 3
+bounty-hunter.html:1260 🏆 Processed submissions: 
+Object
+players
+: 
+1
+states
+: 
+1
+totalSubmissions
+: 
+3
+[[Prototype]]
+: 
+Object
+bounty-hunter.html:730 🕰️ BULLETPROOF: Automated 3:00 AM PST collection with three-layer failover
+bounty-hunter.html:731 📅 Schedule updated: cron(0 11 * * ? *) = 3:00 AM PST
+bounty-hunter.html:709 ✅ Premium API client loaded
+bounty-hunter.html:1269 🧪 Testing data sources...
+bounty-hunter.html:1300 🔄 Manual refresh triggered...
+premium-api-client.js:218 🗑️ Premium API: Cache cleared
+bounty-hunter.html:746 🚀 Loading bounty hunter data...
+bounty-hunter.html:754 ✅ Direct submissions loaded: 3
+bounty-hunter.html:1260 🏆 Processed submissions: 
+{players: 1, states: 1, totalSubmissions: 3}
+players
+: 
+1
+states
+: 
+1
+totalSubmissions
+: 
+3
+[[Prototype]]
+: 
+Object
+
+The screen reads: Mission Mischief
+Dashboard
+Bounty Hunter
+Bounty Hunter Badge
+WAR BOARD
+Bounty Hunter Badge
+Track players, expose cheaters, explore the hashtag blockchain
+
+Last Updated: Loading... 🟢 Active - Next update at Direct submissions loaded
+🧪 Test API 🔄 Force Refresh
+Crown of ChaosMAXIMUM CHAOS
+🎯 Mission Browser
+51
+▼
+🌍 Geographic Activity
+Loading...
+▼
+⚖️ The Accused
+Loading...
+▼
+© Copyright Mission Mischief. All Rights Reserved
+---
+NEW TEST SESSION: [11-15-2025/10:40am] 4th test
+---
+https://missionmischief.online/core-game-files/app.html
+app.html:10 X-Frame-Options may only be set via an HTTP header sent along with a document. It may not be set inside <meta>.
+app.html:408 🚀 DOM loaded, initializing app...
+app.html:415 🔝 Page fully loaded, forced scroll to top
+feature_collector.js:23 using deprecated parameters for the initialization function; pass a single object instead
+U @ feature_collector.js:23
+app.html:429 🔍 App init - User state: ObjectfafoCompleted: truehasUserName: truescrollY: 0[[Prototype]]: Object
+app.html:923 Loading missions for user: ObjectbadgeStates: {}badges: ['beer']city: "Riverside"completedBuyIns: []completedMissions: (3) [1, 2, 3]country: "US"currentBuyIn: nullexposedBy: []fafoCompleted: truefafoCompletedDate: "2025-11-15T17:42:16.836Z"honorScore: 100joinDate: "2025-11-15T17:42:45.166Z"missionPoints: {1: 0, 2: 1, 3: 0}qrCodeData: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA8Astate: "California"submissions: {1: {…}, 2: {…}, 3: {…}}totalPoints: 1userHandle: nulluserName: "Shannon Goddard"[[Prototype]]: Object
+app.html:924 FAFO completed: true
+app.html:925 Current buy-in: null
+app.html:926 Completed buy-ins: Array(0)
+app.html:927 📄 Scroll position before missions: 0
+app.html:930 Available missions: 4 Array(4)0: 11: 22: 33: 4length: 4[[Prototype]]: Array(0)
+app.html:940 Final missions to display: 4
+app.html:855 🔝 Dashboard fully loaded, forced to top
+https://missionmischief.online/core-game-files/bounty-hunter.html Onload
+bounty-hunter.html:746 🚀 Loading bounty hunter data...
+bounty-hunter.html:754 ✅ Direct submissions loaded: 3
+bounty-hunter.html:1260 🏆 Processed submissions: {players: 1, states: 1, totalSubmissions: 3}
+bounty-hunter.html:730 🕰️ BULLETPROOF: Automated 3:00 AM PST collection with three-layer failover
+bounty-hunter.html:731 📅 Schedule updated: cron(0 11 * * ? *) = 3:00 AM PST
+bounty-hunter.html:709 ✅ Premium API client loaded
+Mission Mischief
+Dashboard
+Bounty Hunter
+Bounty Hunter Badge
+WAR BOARD
+Bounty Hunter Badge
+Track players, expose cheaters, explore the hashtag blockchain
+
+Last Updated: Loading... 🟢 Active - Next update at Direct submissions loaded
+🧪 Test API 🔄 Force Refresh
+Crown of ChaosMAXIMUM CHAOS
+🎯 Mission Browser
+51
+▼
+🌍 Geographic Activity
+Loading...
+▼
+⚖️ The Accused
+Loading...
+▼
+© Copyright Mission Mischief. All Rights Reserved
+click "Test Api" button
+toast: ✅ Direct submissions found: 3 submissions
+bounty-hunter.html:746 🚀 Loading bounty hunter data...
+bounty-hunter.html:754 ✅ Direct submissions loaded: 3
+bounty-hunter.html:1260 🏆 Processed submissions: Object
+bounty-hunter.html:730 🕰️ BULLETPROOF: Automated 3:00 AM PST collection with three-layer failover
+bounty-hunter.html:731 📅 Schedule updated: cron(0 11 * * ? *) = 3:00 AM PST
+bounty-hunter.html:709 ✅ Premium API client loaded
+bounty-hunter.html:1272 🧪 Testing data sources...
+click "Force Refresh" button
+toast: 🔄 Data refreshed! Check console for details.
+bounty-hunter.html:746 🚀 Loading bounty hunter data...
+bounty-hunter.html:754 ✅ Direct submissions loaded: 3
+bounty-hunter.html:1260 🏆 Processed submissions: Object
+bounty-hunter.html:730 🕰️ BULLETPROOF: Automated 3:00 AM PST collection with three-layer failover
+bounty-hunter.html:731 📅 Schedule updated: cron(0 11 * * ? *) = 3:00 AM PST
+bounty-hunter.html:709 ✅ Premium API client loaded
+bounty-hunter.html:1272 🧪 Testing data sources...
+bounty-hunter.html:1303 🔄 Manual refresh triggered...
+premium-api-client.js:218 🗑️ Premium API: Cache cleared
+bounty-hunter.html:746 🚀 Loading bounty hunter data...
+bounty-hunter.html:754 ✅ Direct submissions loaded: 3
+bounty-hunter.html:1260 🏆 Processed submissions: {players: 1, states: 1, totalSubmissions: 3}
+Mission Mischief
+Dashboard
+Bounty Hunter
+Bounty Hunter Badge
+WAR BOARD
+Bounty Hunter Badge
+Track players, expose cheaters, explore the hashtag blockchain
+
+Last Updated: Loading... 🟢 Active - Next update at Direct submissions loaded
+🧪 Test API 🔄 Force Refresh
+Crown of ChaosMAXIMUM CHAOS
+🎯 Mission Browser
+51
+▼
+🌍 Geographic Activity
+Loading...
+▼
+⚖️ The Accused
+Loading...
+▼
+© Copyright Mission Mischief. All Rights Reserved
+---
+NEW TEST SESSION: [11-15-2025/10:53] test 5
+---
+https://missionmischief.online/core-game-files/app.html
+app.html:10 X-Frame-Options may only be set via an HTTP header sent along with a document. It may not be set inside <meta>.
+app.html:408 🚀 DOM loaded, initializing app...
+app.html:415 🔝 Page fully loaded, forced scroll to top
+app.html:429 🔍 App init - User state: {fafoCompleted: true, hasUserName: true, scrollY: 0}
+app.html:923 Loading missions for user: {userName: 'Shannon Goddard', userHandle: null, qrCodeData: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA8AA…RD3yURrXhU5mo52vz+RdvF4xZE9oJbgAAAABJRU5ErkJggg==', completedMissions: Array(3), badges: Array(1), …}
+app.html:924 FAFO completed: true
+app.html:925 Current buy-in: null
+app.html:926 Completed buy-ins: []
+app.html:927 📄 Scroll position before missions: 0
+app.html:930 Available missions: 4 (4) [1, 2, 3, 4]
+app.html:940 Final missions to display: 4
+feature_collector.js:23 using deprecated parameters for the initialization function; pass a single object instead
+U @ feature_collector.js:23
+main @ feature_collector.js:23
+mainFunction @ feature_collector.js:23
+(anonymous) @ feature_collector.js:23
+app.html:855 🔝 Dashboard fully loaded, forced to top
+https://missionmischief.online/core-game-files/bounty-hunter.html
+bounty-hunter.html:726 🧪 TEST 5: Bounty hunter loading with UI fix
+bounty-hunter.html:747 🚀 Loading bounty hunter data...
+bounty-hunter.html:755 ✅ Direct submissions loaded: 3
+bounty-hunter.html:1266 🏆 Processed submissions: {players: 1, states: 1, totalSubmissions: 3}
+bounty-hunter.html:731 🕰️ BULLETPROOF: Automated 3:00 AM PST collection with three-layer failover
+bounty-hunter.html:732 📅 Schedule updated: cron(0 11 * * ? *) = 3:00 AM PST
+bounty-hunter.html:709 ✅ Premium API client loaded
+after test and refresh buttons
+bounty-hunter.html:726 🧪 TEST 5: Bounty hunter loading with UI fix
+bounty-hunter.html:747 🚀 Loading bounty hunter data...
+bounty-hunter.html:755 ✅ Direct submissions loaded: 3
+bounty-hunter.html:1266 🏆 Processed submissions: {players: 1, states: 1, totalSubmissions: 3}
+bounty-hunter.html:731 🕰️ BULLETPROOF: Automated 3:00 AM PST collection with three-layer failover
+bounty-hunter.html:732 📅 Schedule updated: cron(0 11 * * ? *) = 3:00 AM PST
+bounty-hunter.html:709 ✅ Premium API client loaded
+bounty-hunter.html:1278 🧪 Testing data sources...
+bounty-hunter.html:1309 🔄 Manual refresh triggered...
+premium-api-client.js:218 🗑️ Premium API: Cache cleared
+bounty-hunter.html:747 🚀 Loading bounty hunter data...
+bounty-hunter.html:755 ✅ Direct submissions loaded: 3
+bounty-hunter.html:1266 🏆 Processed submissions: {players: 1, states: 1, totalSubmissions: 3}
+Mission Mischief
+Dashboard
+Bounty Hunter
+Bounty Hunter Badge
+WAR BOARD
+Bounty Hunter Badge
+Track players, expose cheaters, explore the hashtag blockchain
+
+Last Updated: Loading... 🟢 Active - Next update at Direct submissions loaded
+🧪 Test API 🔄 Force Refresh
+Crown of ChaosMAXIMUM CHAOS
+🎯 Mission Browser
+51
+▼
+🌍 Geographic Activity
+Loading...
+▼
+⚖️ The Accused
+Loading...
+▼
+© Copyright Mission Mischief. All Rights Reserved
+---
+NEW TEST SESSION: [11-15-2025/10:58am] test 6
+---
+https://missionmischief.online/core-game-files/bounty-hunter.html
+bounty-hunter.html:726 🧪 TEST 5: Bounty hunter loading with UI fix
+bounty-hunter.html:747 🚀 Loading bounty hunter data...
+bounty-hunter.html:755 ✅ Direct submissions loaded: 3
+bounty-hunter.html:1266 🏆 Processed submissions: {players: 1, states: 1, totalSubmissions: 3}
+bounty-hunter.html:798 🔧 TEST 5: Updating UI sections with processed data
+bounty-hunter.html:802 🔧 TEST 5: Calling loadTopPlayers()
+bounty-hunter.html:804 🔧 TEST 5: Calling loadMissions()
+bounty-hunter.html:806 🔧 TEST 5: Calling loadGeography()
+bounty-hunter.html:808 🔧 TEST 5: Calling loadJusticeCases()
+bounty-hunter.html:731 🕰️ BULLETPROOF: Automated 3:00 AM PST collection with three-layer failover
+bounty-hunter.html:732 📅 Schedule updated: cron(0 11 * * ? *) = 3:00 AM PST
+bounty-hunter.html:709 ✅ Premium API client loaded
+Mission Mischief
+Dashboard
+Bounty Hunter
+Bounty Hunter Badge
+WAR BOARD
+Bounty Hunter Badge
+Track players, expose cheaters, explore the hashtag blockchain
+
+Last Updated: 11/15/2025, 10:58:11 AM 🟢 Active - Next update at Direct submissions loaded
+🧪 Test API 🔄 Force Refresh
+Crown of ChaosMAXIMUM CHAOS
+1
+Shannon Goddard
+1 pts
+Riverside, California
+🎯 Mission Browser
+51
+▼
+Missions 1-10
+10
+▼
+M1
+FAFO (F*** Around and Find Out)
+Read funny ToS, check agreement box, take mugshot selfie with date/time sign...
+▼
+Instagram
+0
+Facebook
+0
+X
+0
+M2
+License To Ill
+Setup business cards, print...
+▼
+Instagram
+0
+Facebook
+0
+X
+0
+M3
+Buy Me A Beer 🍺
+Setup Buy Me A Coffee account, change to beer. Message: "I bought a stupid game ...
+▼
+Instagram
+0
+Facebook
+0
+X
+0
+M4
+Choose Your Destiny
+Choose your path to unlock missions: 🌍 GREEN WARRIOR: Recycle 2x50gal bags of ...
+▼
+M5
+The Real Slim Shady
+Find "Art of Not Giving A F*ck", pose with book (title needs to be shown) in one...
+▼
+M6
+Your Momma
+Tell a "Your momma" joke...
+▼
+M7
+YOLO
+Order coffee as "Bueller". Sit down and while you wait for your your order and g...
+▼
+M8
+Coffee Stranger
+Give coffee to stranger with your card...
+▼
+M9
+Saving Fantasia
+Get library card, take a selfie in front a bookshelf, and leave your card on a t...
+▼
+M10
+Take A Poo
+Rent "Everybody Poops", leave your card in the cover of a different copy, have y...
+▼
+Missions 11-20
+10
+▼
+Missions 21-30
+10
+▼
+Missions 31-40
+10
+▼
+Missions 41-51
+11
+▼
+🌍 Geographic Activity
+1
+▼
+California
+3
+▼
+Riverside
+3
+▼
+Shannon Goddard
+📱
+⚖️ The Accused
+0
+▼
+© Copyright Mission Mischief. All Rights Reserved
+So, currently the geographic activity is being stored in local storage. It's a start. Need to have the post show on mission under to the respective 
+mission number and next to the respective social media. Then, have it updated from the AWS setup so all players can see the information, not just local storage.
+
+---
+NEW TEST SESSION: [11-15-2025/11:15am] test 7
+---
+https://missionmischief.online/core-game-files/bounty-hunter.html
+bounty-hunter.html:726 🧪 TEST 5: Bounty hunter loading with UI fix
+bounty-hunter.html:747 🚀 Loading bounty hunter data...
+bounty-hunter.html:755 ✅ Direct submissions loaded: 3
+bounty-hunter.html:1286 🏆 Processed submissions: {players: 1, states: 1, totalSubmissions: 3}
+bounty-hunter.html:798 🔧 TEST 5: Updating UI sections with processed data
+bounty-hunter.html:802 🔧 TEST 5: Calling loadTopPlayers()
+bounty-hunter.html:804 🔧 TEST 5: Calling loadMissions()
+bounty-hunter.html:806 🔧 TEST 5: Calling loadGeography()
+bounty-hunter.html:808 🔧 TEST 5: Calling loadJusticeCases()
+bounty-hunter.html:731 🕰️ BULLETPROOF: Automated 3:00 AM PST collection with three-layer failover
+bounty-hunter.html:732 📅 Schedule updated: cron(0 11 * * ? *) = 3:00 AM PST
+bounty-hunter.html:709 ✅ Premium API client loaded
+Mission Mischief
+Dashboard
+Bounty Hunter
+Bounty Hunter Badge
+WAR BOARD
+Bounty Hunter Badge
+Track players, expose cheaters, explore the hashtag blockchain
+
+Last Updated: 11/15/2025, 11:15:08 AM 🟢 Active - Next update at Direct submissions loaded
+🧪 Test API 🔄 Force Refresh
+Crown of ChaosMAXIMUM CHAOS
+1
+Shannon Goddard
+1 pts
+Riverside, California
+🎯 Mission Browser
+51
+▼
+Missions 1-10
+10
+▼
+M1
+FAFO (F*** Around and Find Out)
+Read funny ToS, check agreement box, take mugshot selfie with date/time sign...
+▼
+Instagram
+0
+Facebook
+0
+X
+1
+M2
+License To Ill
+Setup business cards, print...
+▼
+Instagram
+0
+Facebook
+0
+X
+1
+M3
+Buy Me A Beer 🍺
+Setup Buy Me A Coffee account, change to beer. Message: "I bought a stupid game ...
+▼
+Instagram
+0
+Facebook
+0
+X
+1
+M4
+Choose Your Destiny
+Choose your path to unlock missions: 🌍 GREEN WARRIOR: Recycle 2x50gal bags of ...
+▼
+Instagram
+0
+Facebook
+0
+X
+0
+M5
+The Real Slim Shady
+Find "Art of Not Giving A F*ck", pose with book (title needs to be shown) in one...
+▼
+Instagram
+0
+Facebook
+0
+X
+0
+M6
+Your Momma
+Tell a "Your momma" joke...
+▼
+M7
+YOLO
+Order coffee as "Bueller". Sit down and while you wait for your your order and g...
+▼
+M8
+Coffee Stranger
+Give coffee to stranger with your card...
+▼
+M9
+Saving Fantasia
+Get library card, take a selfie in front a bookshelf, and leave your card on a t...
+▼
+M10
+Take A Poo
+Rent "Everybody Poops", leave your card in the cover of a different copy, have y...
+▼
+Missions 11-20
+10
+▼
+Missions 21-30
+10
+▼
+Missions 31-40
+10
+▼
+Missions 41-51
+11
+▼
+🌍 Geographic Activity
+1
+▼
+California
+3
+▼
+Riverside
+3
+▼
+Shannon Goddard
+📱
+⚖️ The Accused
+0
+▼
+© Copyright Mission Mischief. All Rights Reserved
+---
+NEW TEST SESSION: [11-15-2025/1:08pm] test 8
+---
+https://missionmischief.online/core-game-files/bounty-hunter.html
+bounty-hunter.html:726 🚀 Phase 2: AWS sync enabled - Global multiplayer data
+bounty-hunter.html:747 🚀 Loading bounty hunter data...
+bounty-hunter.html:731 🕰️ PHASE 2: Weekly Sunday research scraping for proof-of-concept validation
+bounty-hunter.html:732 📅 Schedule: Sundays 3:00 AM PST for academic comparison
+bounty-hunter.html:709 ✅ Premium API client loaded
+bounty-hunter.html:1 Access to fetch at 'https://4q1ybupwm0.execute-api.us-east-1.amazonaws.com/prod/submissions' from origin 'https://missionmischief.online' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+4q1ybupwm0.execute-api.us-east-1.amazonaws.com/prod/submissions:1  Failed to load resource: net::ERR_FAILED
+bounty-hunter.html:776 ⚠️ AWS failed, trying localStorage fallback: Failed to fetch
+bounty-hunter.html:783 ✅ Direct submissions loaded from localStorage: 3
+bounty-hunter.html:1314 🏆 Processed submissions: Object
+bounty-hunter.html:826 🔧 TEST 5: Updating UI sections with processed data
+bounty-hunter.html:830 🔧 TEST 5: Calling loadTopPlayers()
+bounty-hunter.html:832 🔧 TEST 5: Calling loadMissions()
+bounty-hunter.html:834 🔧 TEST 5: Calling loadGeography()
+bounty-hunter.html:836 🔧 TEST 5: Calling loadJusticeCases()
+Mission Mischief
+Dashboard
+Bounty Hunter
+Bounty Hunter Badge
+WAR BOARD
+Bounty Hunter Badge
+Track players, expose cheaters, explore the hashtag blockchain
+
+Last Updated: 11/15/2025, 1:07:18 PM 🟡 Limited - Next update at localStorage only (AWS offline)
+🧪 Test API 🔄 Force Refresh
+Crown of ChaosMAXIMUM CHAOS
+1
+Shannon Goddard
+1 pts
+Riverside, California
+🎯 Mission Browser
+51
+▼
+Missions 1-10
+10
+▼
+Missions 11-20
+10
+▼
+Missions 21-30
+10
+▼
+Missions 31-40
+10
+▼
+Missions 41-51
+11
+▼
+🌍 Geographic Activity
+1
+▼
+⚖️ The Accused
+0
+▼
+© Copyright Mission Mischief. All Rights Reserved
+---
+NEW TEST SESSION: [11-15-2025/1:22pm] test 9
+---
+https://missionmischief.online/core-game-files/bounty-hunter.html
+bounty-hunter.html:726 🚀 Phase 2: AWS sync enabled - Global multiplayer data
+bounty-hunter.html:747 🚀 Loading bounty hunter data...
+bounty-hunter.html:731 🕰️ PHASE 2: Weekly Sunday research scraping for proof-of-concept validation
+bounty-hunter.html:732 📅 Schedule: Sundays 3:00 AM PST for academic comparison
+bounty-hunter.html:709 ✅ Premium API client loaded
+bounty-hunter.html:757 ✅ AWS submissions loaded from DynamoDB
+bounty-hunter.html:767 🌐 Global multiplayer data loaded: aws_dynamodb
+bounty-hunter.html:826 🔧 TEST 5: Updating UI sections with processed data
+bounty-hunter.html:830 🔧 TEST 5: Calling loadTopPlayers()
+bounty-hunter.html:832 🔧 TEST 5: Calling loadMissions()
+bounty-hunter.html:834 🔧 TEST 5: Calling loadGeography()
+bounty-hunter.html:836 🔧 TEST 5: Calling loadJusticeCases()
+Mission Mischief
+Dashboard
+Bounty Hunter
+Bounty Hunter Badge
+WAR BOARD
+Bounty Hunter Badge
+Track players, expose cheaters, explore the hashtag blockchain
+
+Last Updated: 2025-11-15T21:22:27.236209 🟢 Active - Next update at AWS DynamoDB data loaded
+🧪 Test API 🔄 Force Refresh
+Crown of ChaosMAXIMUM CHAOS
+No players found yet
+🎯 Mission Browser
+51
+▼
+Missions 1-10
+10
+▼
+M1
+FAFO (F*** Around and Find Out)
+Read funny ToS, check agreement box, take mugshot selfie with date/time sign...
+▼
+Instagram
+0
+Facebook
+0
+X
+0
+M2
+License To Ill
+Setup business cards, print...
+▼
+Instagram
+0
+Facebook
+0
+X
+0
+M3
+Buy Me A Beer 🍺
+Setup Buy Me A Coffee account, change to beer. Message: "I bought a stupid game ...
+▼
+Instagram
+0
+Facebook
+0
+X
+0
+M4
+Choose Your Destiny
+Choose your path to unlock missions: 🌍 GREEN WARRIOR: Recycle 2x50gal bags of ...
+▼
+M5
+The Real Slim Shady
+Find "Art of Not Giving A F*ck", pose with book (title needs to be shown) in one...
+▼
+M6
+Your Momma
+Tell a "Your momma" joke...
+▼
+M7
+YOLO
+Order coffee as "Bueller". Sit down and while you wait for your your order and g...
+▼
+M8
+Coffee Stranger
+Give coffee to stranger with your card...
+▼
+M9
+Saving Fantasia
+Get library card, take a selfie in front a bookshelf, and leave your card on a t...
+▼
+M10
+Take A Poo
+Rent "Everybody Poops", leave your card in the cover of a different copy, have y...
+▼
+Missions 11-20
+10
+▼
+Missions 21-30
+10
+▼
+Missions 31-40
+10
+▼
+Missions 41-51
+11
+▼
+🌍 Geographic Activity
+0
+▼
+⚖️ The Accused
+0
+▼
+© Copyright Mission Mischief. All Rights Reserved
+
+---
+PHASE 2 AWS SYNC: FIXED! ✅
+---
+
+🎉 **SUCCESS**: AWS endpoints working perfectly!
+
+**✅ WORKING ENDPOINTS:**
+- GET /prod/submissions: Returns real DynamoDB data
+- POST /prod/admin: Accepts direct submissions
+- Mission activity tracking: M1 shows "X: 1"
+- Geographic data: Players with social URLs
+- Top players leaderboard: Real points tracking
+
+**🔧 FIXES APPLIED:**
+1. Fixed field name mismatch: 'user' → 'username'
+2. Added requests library to Lambda deployment package
+3. Added POST method to admin API Gateway resource
+4. Added CORS support for POST method
+5. Added Lambda permissions for POST method
+
+**📊 TEST RESULTS:**
+- Manual POST submission: ✅ Success
+- Submissions endpoint: ✅ Returns real data
+- Mission activity: ✅ M1 shows "X: 1" 
+- Geographic tracking: ✅ Players with social URLs
+- Leaderboard: ✅ Shannon Goddard (0 pts)
+
+**⚠️ REMAINING ISSUE:**
+Frontend AWS sync from app.html not working - submissions stay in localStorage only.
+Need to debug why DirectSubmission.submitMission() isn't calling AWS sync.
+
+**🌍 GLOBAL MULTIPLAYER STATUS:**
+Backend infrastructure: ✅ COMPLETE
+Frontend integration: ⚠️ Needs debugging
+
+Ready for frontend AWS sync debugging! 🚀
+---
+NEW TEST SESSION: [11-15-2025/2:00pm] test 10
+---
+https://missionmischief.online/core-game-files/bounty-hunter.html
+bounty-hunter.html:726 🚀 Phase 2: AWS sync enabled - Global multiplayer data
+bounty-hunter.html:747 🚀 Loading bounty hunter data...
+bounty-hunter.html:731 🕰️ PHASE 2: Weekly Sunday research scraping for proof-of-concept validation
+bounty-hunter.html:732 📅 Schedule: Sundays 3:00 AM PST for academic comparison
+bounty-hunter.html:709 ✅ Premium API client loaded
+bounty-hunter.html:757 ✅ AWS submissions loaded from DynamoDB
+bounty-hunter.html:767 🌐 Global multiplayer data loaded: aws_dynamodb
+bounty-hunter.html:826 🔧 TEST 5: Updating UI sections with processed data
+bounty-hunter.html:830 🔧 TEST 5: Calling loadTopPlayers()
+bounty-hunter.html:832 🔧 TEST 5: Calling loadMissions()
+bounty-hunter.html:834 🔧 TEST 5: Calling loadGeography()
+bounty-hunter.html:836 🔧 TEST 5: Calling loadJusticeCases()
+Mission Mischief
+Dashboard
+Bounty Hunter
+Bounty Hunter Badge
+WAR BOARD
+Bounty Hunter Badge
+Track players, expose cheaters, explore the hashtag blockchain
+
+Last Updated: 2025-11-15T21:57:51.104407 🟢 Active - Next update at AWS DynamoDB data loaded
+🧪 Test API 🔄 Force Refresh
+Crown of ChaosMAXIMUM CHAOS
+1
+Shannon Goddard
+0 pts
+Unknown, Unknown
+🎯 Mission Browser
+51
+▼
+Missions 1-10
+10
+▼
+M1
+FAFO (F*** Around and Find Out)
+Read funny ToS, check agreement box, take mugshot selfie with date/time sign...
+▼
+Instagram
+0
+Facebook
+0
+X
+1
+M2
+License To Ill
+Setup business cards, print...
+▼
+Instagram
+0
+Facebook
+0
+X
+0
+M3
+Buy Me A Beer 🍺
+Setup Buy Me A Coffee account, change to beer. Message: "I bought a stupid game ...
+▼
+Instagram
+0
+Facebook
+0
+X
+0
+M4
+Choose Your Destiny
+Choose your path to unlock missions: 🌍 GREEN WARRIOR: Recycle 2x50gal bags of ...
+▼
+M5
+The Real Slim Shady
+Find "Art of Not Giving A F*ck", pose with book (title needs to be shown) in one...
+▼
+M6
+Your Momma
+Tell a "Your momma" joke...
+▼
+M7
+YOLO
+Order coffee as "Bueller". Sit down and while you wait for your your order and g...
+▼
+M8
+Coffee Stranger
+Give coffee to stranger with your card...
+▼
+M9
+Saving Fantasia
+Get library card, take a selfie in front a bookshelf, and leave your card on a t...
+▼
+M10
+Take A Poo
+Rent "Everybody Poops", leave your card in the cover of a different copy, have y...
+▼
+Missions 11-20
+10
+▼
+Missions 21-30
+10
+▼
+Missions 31-40
+10
+▼
+Missions 41-51
+11
+▼
+🌍 Geographic Activity
+1
+▼
+Unknown
+1
+▼
+Unknown
+1
+▼
+Shannon Goddard
+📱
+⚖️ The Accused
+0
+▼
+© Copyright Mission Mischief. All Rights Reserved
+---
+NEW TEST SESSION: [11-15-2025/2:09pm] test 11
+---
+https://missionmischief.online/core-game-files/app.html
+
+﻿
+app.html:10 X-Frame-Options may only be set via an HTTP header sent along with a document. It may not be set inside <meta>.
+app.html:408 🚀 DOM loaded, initializing app...
+app.html:415 🔝 Page fully loaded, forced scroll to top
+feature_collector.js:23 using deprecated parameters for the initialization function; pass a single object instead
+app.html:429 🔍 App init - User state: 
+Object
+app.html:923 Loading missions for user: 
+Object
+app.html:924 FAFO completed: true
+app.html:925 Current buy-in: null
+app.html:926 Completed buy-ins: 
+Array(0)
+app.html:927 📄 Scroll position before missions: 0
+app.html:930 Available missions: 4 
+Array(4)
+app.html:940 Final missions to display: 4
+app.html:855 🔝 Dashboard fully loaded, forced to top
+app.html:1523 Uncaught TypeError: Cannot read properties of null (reading 'replace')
+    at generateMissionHashtags (app.html:1523:66)
+    at shareWithHashtags (app.html:1496:24)
+    at HTMLButtonElement.onclick (app.html:1:1)
+app.html:923 Loading missions for user: 
+Object
+app.html:924 FAFO completed: true
+app.html:925 Current buy-in: recycling
+app.html:926 Completed buy-ins: 
+Array(1)
+app.html:927 📄 Scroll position before missions: 0
+app.html:930 Available missions: 50 
+Array(50)
+app.html:940 Final missions to display: 50
+8
+app.html:1523 Uncaught TypeError: Cannot read properties of null (reading 'replace')
+    at generateMissionHashtags (app.html:1523:66)
+    at shareWithHashtags (app.html:1496:24)
+    at HTMLButtonElement.onclick (app.html:1:1)
+app.html:923 Loading missions for user: 
+Object
+app.html:924 FAFO completed: true
+app.html:925 Current buy-in: recycling
+app.html:926 Completed buy-ins: 
+Array(1)
+app.html:927 📄 Scroll position before missions: 0
+app.html:930 Available missions: 50 
+Array(50)
+app.html:940 Final missions to display: 50
+aws-submission-sync.js:20 ✅ AWS sync successful: direct_Shannon Goddard_5_1763244552
+
+https://missionmischief.online/core-game-files/bounty-hunter.html
+
+﻿
+bounty-hunter.html:726 🚀 Phase 2: AWS sync enabled - Global multiplayer data
+bounty-hunter.html:747 🚀 Loading bounty hunter data...
+bounty-hunter.html:731 🕰️ PHASE 2: Weekly Sunday research scraping for proof-of-concept validation
+bounty-hunter.html:732 📅 Schedule: Sundays 3:00 AM PST for academic comparison
+bounty-hunter.html:709 ✅ Premium API client loaded
+bounty-hunter.html:757 ✅ AWS submissions loaded from DynamoDB
+bounty-hunter.html:767 🌐 Global multiplayer data loaded: aws_dynamodb
+bounty-hunter.html:826 🔧 TEST 5: Updating UI sections with processed data
+bounty-hunter.html:830 🔧 TEST 5: Calling loadTopPlayers()
+bounty-hunter.html:832 🔧 TEST 5: Calling loadMissions()
+bounty-hunter.html:834 🔧 TEST 5: Calling loadGeography()
+bounty-hunter.html:836 🔧 TEST 5: Calling loadJusticeCases()
+/////////////////////////////////
+app.html expanded console
+
+﻿
+app.html:10 X-Frame-Options may only be set via an HTTP header sent along with a document. It may not be set inside <meta>.
+app.html:408 🚀 DOM loaded, initializing app...
+app.html:415 🔝 Page fully loaded, forced scroll to top
+feature_collector.js:23 using deprecated parameters for the initialization function; pass a single object instead
+app.html:429 🔍 App init - User state: 
+{fafoCompleted: true, hasUserName: true, scrollY: 0}
+app.html:923 Loading missions for user: 
+{userName: 'Shannon Goddard', userHandle: null, qrCodeData: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA8AA…RD3yURrXhU5mo52vz+RdvF4xZE9oJbgAAAABJRU5ErkJggg==', completedMissions: Array(5), badges: Array(2), …}
+badgeStates
+: 
+{}
+badges
+: 
+(2) ['beer', 'slimshady']
+city
+: 
+"Riverside"
+completedBuyIns
+: 
+['recycling']
+completedMissions
+: 
+(5) [1, 2, 3, 4, 5]
+country
+: 
+"US"
+currentBuyIn
+: 
+"recycling"
+exposedBy
+: 
+[]
+fafoCompleted
+: 
+true
+fafoCompletedDate
+: 
+"2025-11-15T17:42:16.836Z"
+honorScore
+: 
+100
+joinDate
+: 
+"2025-11-15T17:42:45.166Z"
+missionPoints
+: 
+{1: 0, 2: 1, 3: 0, 4: 3, 5: 3}
+qrCodeData
+: 
+"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA8A
+state
+: 
+"California"
+submissions
+: 
+{1: {…}, 2: {…}, 3: {…}, 5: {…}}
+totalPoints
+: 
+7
+userHandle
+: 
+null
+userName
+: 
+"Shannon Goddard"
+[[Prototype]]
+: 
+Object
+app.html:924 FAFO completed: true
+app.html:925 Current buy-in: recycling
+app.html:926 Completed buy-ins: 
+['recycling']
+app.html:927 📄 Scroll position before missions: 0
+app.html:930 Available missions: 50 
+(50) [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 51]
+app.html:940 Final missions to display: 50
+app.html:855 🔝 Dashboard fully loaded, forced to top

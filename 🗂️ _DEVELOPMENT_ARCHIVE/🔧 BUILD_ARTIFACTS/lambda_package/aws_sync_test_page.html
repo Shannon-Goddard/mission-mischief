@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test AWS Sync</title>
+</head>
+<body>
+    <h1>Test AWS Sync</h1>
+    <button onclick="testSync()">Test AWS Sync</button>
+    <div id="result"></div>
+
+    <script src="assets/js/storage.js"></script>
+    <script src="assets/js/direct-submission.js"></script>
+    <script src="assets/js/aws-submission-sync.js"></script>
+
+    <script>
+        // Initialize a test user
+        Storage.initUser('TestUser', null);
+
+        async function testSync() {
+            console.log('🧪 Testing AWS sync...');
+            
+            // Test direct submission
+            const result = DirectSubmission.submitMission(1, 5, 'https://x.com/test');
+            console.log('📝 Direct submission result:', result);
+            
+            // Wait a moment for AWS sync
+            setTimeout(() => {
+                console.log('✅ Test complete - check console for AWS sync logs');
+                document.getElementById('result').innerHTML = 'Test complete - check console for results';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

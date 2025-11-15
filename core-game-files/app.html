@@ -1520,7 +1520,8 @@
     
     function generateMissionHashtags(mission, user) {
       const baseHashtags = mission.hashtag;
-      const userHashtag = `#missionmischiefuser${user.userHandle.replace('@', '')}`;
+      const userName = user.userName || 'Unknown';
+      const userHashtag = `#missionmischiefuser${userName.replace(/[^a-z0-9]/gi, '')}`;
       
       // Get mission-specific points from dropdown
       const pointsDropdown = document.getElementById(`points-${mission.id}`);
