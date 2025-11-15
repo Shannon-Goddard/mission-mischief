@@ -171,6 +171,111 @@ def get_game_data():
             'total_posts': 0
         }
 
+def get_all_submissions():
+    """Get all direct submissions for bounty hunter display"""
+    try:
+        table = dynamodb.Table('mission-mischief-posts')
+        
+        # Scan for all direct submissions
+        response = table.scan(
+            FilterExpression='#source = :source',
+            ExpressionAttributeNames={'#source': 'source'},
+            ExpressionAttributeValues={':source': 'direct_submission'}
+        )
+        
+        submissions = response.get('Items', [])
+        
+        # Process submissions into bounty hunter format
+        processed_data = {
+            'topPlayers': [],
+            'geography': {},
+            'missionActivity': {},
+            'justiceCases': [],
+            'lastUpdated': datetime.now().isoformat()
+        }
+        
+        player_stats = {}
+        geo_data = {}
+        mission_activity = {}
+        
+        for sub in submissions:
+            username = sub.get('username', 'Unknown')
+            mission_id = int(sub.get('mission_id', 0))
+            points = int(sub.get('points', 0))
+            proof_url = sub.get('proof_url', '')
+            
+            # Build player stats (assuming location from proof URL or default)
+            player_key = f"{username}"
+            if player_key not in player_stats:
+                player_stats[player_key] = {
+                    'handle': username,
+                    'points': 0,
+                    'city': 'Unknown',
+                    'state': 'Unknown',
+                    'country': 'USA'
+                }
+            player_stats[player_key]['points'] += points
+            
+            # Build geography data
+            state = player_stats[player_key]['state']
+            city = player_stats[player_key]['city']
+            
+            if state not in geo_data:
+                geo_data[state] = {}
+            if city not in geo_data[state]:
+                geo_data[state][city] = {
+                    'count': 0,
+                    'players': []
+                }
+            geo_data[state][city]['count'] += 1
+            
+            # Add player if not already there
+            existing_player = next((p for p in geo_data[state][city]['players'] if p['handle'] == username), None)
+            if not existing_player:
+                geo_data[state][city]['players'].append({
+                    'handle': username,
+                    'social_url': proof_url
+                })
+            
+            # Build mission activity
+            if mission_id not in mission_activity:
+                mission_activity[mission_id] = {
+                    'instagram': 0,
+                    'facebook': 0,
+                    'x': 0
+                }
+            
+            # Detect platform from proof URL
+            url_lower = proof_url.lower()
+            if 'instagram.com' in url_lower:
+                mission_activity[mission_id]['instagram'] += 1
+            elif 'facebook.com' in url_lower:
+                mission_activity[mission_id]['facebook'] += 1
+            elif 'x.com' in url_lower or 'twitter.com' in url_lower:
+                mission_activity[mission_id]['x'] += 1
+        
+        # Convert to final format
+        processed_data['topPlayers'] = sorted(
+            list(player_stats.values()),
+            key=lambda x: x['points'],
+            reverse=True
+        )[:10]
+        
+        processed_data['geography'] = geo_data
+        processed_data['missionActivity'] = mission_activity
+        
+        return processed_data
+        
+    except Exception as e:
+        logger.error(f"Failed to get all submissions: {e}")
+        return {
+            'topPlayers': [],
+            'geography': {},
+            'missionActivity': {},
+            'justiceCases': [],
+            'lastUpdated': datetime.now().isoformat()
+        }
+
 def get_bright_data_usage():
     """Get real Bright Data usage metrics"""
     try:
@@ -365,8 +470,31 @@ def lambda_handler(event, context):
                 'body': json.dumps({'success': False, 'error': str(e)})
             }
     
-    # Handle GET requests (admin dashboard)
+    # Handle GET requests
     try:
+        # Check if this is a submissions request
+        path = event.get('path', '')
+        if path.endswith('/submissions'):
+            logger.info("Getting all submissions for bounty hunter")
+            submissions_data = get_all_submissions()
+            
+            return {
+                'statusCode': 200,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+                    'Access-Control-Allow-Methods': 'GET,POST,OPTIONS'
+                },
+                'body': json.dumps({
+                    'success': True,
+                    'data': submissions_data,
+                    'source': 'aws_dynamodb',
+                    'timestamp': datetime.now(timezone.utc).isoformat()
+                })
+            }
+        
+        # Default admin dashboard request
         logger.info("Starting admin dashboard data collection")
         
         # Get all admin data

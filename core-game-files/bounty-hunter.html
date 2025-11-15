@@ -723,13 +723,13 @@
 
     // Initialize page
     document.addEventListener('DOMContentLoaded', function() {
-      console.log('🧪 TEST 5: Bounty hunter loading with UI fix');
+      console.log('🚀 Phase 2: AWS sync enabled - Global multiplayer data');
       loadBountyHunterData();
       setupPlatformHovers();
       
-      // Set up 3 AM PST scheduling note
-      console.log('🕰️ BULLETPROOF: Automated 3:00 AM PST collection with three-layer failover');
-      console.log('📅 Schedule updated: cron(0 11 * * ? *) = 3:00 AM PST');
+      // Set up weekly Sunday scheduling note
+      console.log('🕰️ PHASE 2: Weekly Sunday research scraping for proof-of-concept validation');
+      console.log('📅 Schedule: Sundays 3:00 AM PST for academic comparison');
     });
     
     function setupPlatformHovers() {
@@ -748,50 +748,78 @@
       updateScrapeStatus('active', 'Loading submissions...');
       
       try {
-        // Try to load direct submissions first
-        const directSubmissions = loadDirectSubmissions();
+        // Try AWS submissions endpoint first (Phase 2)
+        const awsResponse = await fetch('https://4q1ybupwm0.execute-api.us-east-1.amazonaws.com/prod/submissions');
         
-        if (directSubmissions.length > 0) {
-          console.log('✅ Direct submissions loaded:', directSubmissions.length);
-          processDirectSubmissions(directSubmissions);
-          updateScrapeStatus('active', 'Direct submissions loaded');
-        } else {
-        
-          // Fallback to premium API if available
-          if (typeof premiumApi !== 'undefined') {
-            const data = await premiumApi.getData();
-        
-        if (data && data.leaderboard) {
-          console.log('✅ Premium API data loaded successfully');
-          const mergedData = data;
-        
-          // Update real data
-          realData.topPlayers = mergedData.leaderboard || [];
-          realData.missionActivity = mergedData.missions || {};
-          realData.geography = mergedData.geography || {};
-          realData.justiceCases = mergedData.justice || [];
-          realData.lastUpdated = mergedData.lastUpdated || new Date().toISOString();
-          
-          updateScrapeStatus('automated', `3:00 AM PST (Premium API)`);
-          console.log('✅ Premium API data loaded:', mergedData.source);
-        } else {
-          throw new Error('No data received from premium API');
-        }
+        if (awsResponse.ok) {
+          const awsData = await awsResponse.json();
+          if (awsData.success && awsData.data) {
+            console.log('✅ AWS submissions loaded from DynamoDB');
+            
+            // Use AWS data directly
+            realData.topPlayers = awsData.data.topPlayers || [];
+            realData.missionActivity = awsData.data.missionActivity || {};
+            realData.geography = awsData.data.geography || {};
+            realData.justiceCases = awsData.data.justiceCases || [];
+            realData.lastUpdated = awsData.data.lastUpdated || new Date().toISOString();
+            
+            updateScrapeStatus('active', 'AWS DynamoDB data loaded');
+            console.log('🌐 Global multiplayer data loaded:', awsData.source);
           } else {
-            throw new Error('Premium API not available');
+            throw new Error('Invalid AWS response format');
           }
+        } else {
+          throw new Error(`AWS endpoint returned ${awsResponse.status}`);
         }
         
-      } catch (error) {
-        console.error('❌ API failed:', error.message);
-        updateScrapeStatus('warning', 'Using fallback data');
-        realData.lastUpdated = 'Direct Submissions Only - ' + new Date().toLocaleString();
+      } catch (awsError) {
+        console.log('⚠️ AWS failed, trying localStorage fallback:', awsError.message);
         
-        // Use fallback empty data
-        realData.topPlayers = [];
-        realData.missionActivity = {};
-        realData.geography = {};
-        realData.justiceCases = [];
+        try {
+          // Fallback to localStorage (Phase 1)
+          const directSubmissions = loadDirectSubmissions();
+          
+          if (directSubmissions.length > 0) {
+            console.log('✅ Direct submissions loaded from localStorage:', directSubmissions.length);
+            processDirectSubmissions(directSubmissions);
+            updateScrapeStatus('warning', 'localStorage only (AWS offline)');
+          } else {
+            // Final fallback to premium API if available
+            if (typeof premiumApi !== 'undefined') {
+              const data = await premiumApi.getData();
+              
+              if (data && data.leaderboard) {
+                console.log('✅ Premium API data loaded successfully');
+                const mergedData = data;
+                
+                // Update real data
+                realData.topPlayers = mergedData.leaderboard || [];
+                realData.missionActivity = mergedData.missions || {};
+                realData.geography = mergedData.geography || {};
+                realData.justiceCases = mergedData.justice || [];
+                realData.lastUpdated = mergedData.lastUpdated || new Date().toISOString();
+                
+                updateScrapeStatus('automated', `Weekly Sunday scraping (Research)`);
+                console.log('✅ Premium API data loaded:', mergedData.source);
+              } else {
+                throw new Error('No data received from premium API');
+              }
+            } else {
+              throw new Error('No data sources available');
+            }
+          }
+          
+        } catch (fallbackError) {
+          console.error('❌ All data sources failed:', fallbackError.message);
+          updateScrapeStatus('warning', 'Using empty data');
+          realData.lastUpdated = 'No Data Available - ' + new Date().toLocaleString();
+          
+          // Use fallback empty data
+          realData.topPlayers = [];
+          realData.missionActivity = {};
+          realData.geography = {};
+          realData.justiceCases = [];
+        }
       }
       
       // Update UI with processed data
