@@ -1217,6 +1217,7 @@
       // Create leaderboard from submissions
       const playerStats = {};
       const geoData = {};
+      const missionActivity = {};
       
       submissions.forEach(sub => {
         // Build player stats
@@ -1252,6 +1253,25 @@
             social_url: sub.proofUrl
           });
         }
+        
+        // Build mission activity data
+        if (!missionActivity[sub.missionId]) {
+          missionActivity[sub.missionId] = {
+            instagram: 0,
+            facebook: 0,
+            x: 0
+          };
+        }
+        
+        // Detect platform from proof URL
+        const url = sub.proofUrl.toLowerCase();
+        if (url.includes('instagram.com')) {
+          missionActivity[sub.missionId].instagram++;
+        } else if (url.includes('facebook.com')) {
+          missionActivity[sub.missionId].facebook++;
+        } else if (url.includes('x.com') || url.includes('twitter.com')) {
+          missionActivity[sub.missionId].x++;
+        }
       });
       
       // Convert to arrays and sort
@@ -1260,7 +1280,7 @@
         .slice(0, 10);
       
       realData.geography = geoData;
-      realData.missionActivity = {}; // Empty for now
+      realData.missionActivity = missionActivity;
       realData.justiceCases = []; // Empty for now
       
       console.log('🏆 Processed submissions:', {
