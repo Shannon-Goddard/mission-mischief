@@ -1,93 +1,72 @@
 /**
  * Mission Mischief - Direct Submission System
- * Week 1: Instant mission completion with optional URL protection
+ * Instant mission completion with optional URL protection
  */
 
 const DirectSubmission = {
   
-  // Submit mission with instant feedback
-  submitMission(missionId, points = 0, proofUrl = null) {
-    try {
-      const user = Storage.submitMission(missionId, points, proofUrl);
-      
-      // Show instant feedback
-      this.showSubmissionSuccess(missionId, points);
-      
-      // Update UI immediately
-      this.updateMissionCard(missionId, 'submitted');
-      this.updateUserStats();
-      
-      // Award badge if applicable
-      const mission = Missions.getMission(missionId);
-      if (mission.badgeId) {
-        this.awardBadge(mission.badgeId);
-      }
-      
-      return { success: true, user };
-    } catch (error) {
-      console.error('Submission failed:', error);
-      this.showSubmissionError(missionId, error.message);
-      return { success: false, error: error.message };
-    }
-  },
-  
-  // Show submission form for mission
+  // Show submission form modal
   showSubmissionForm(missionId) {
     const mission = Missions.getMission(missionId);
-    if (!mission) return;
+    const user = Storage.getUser();
+    
+    if (!Storage.canStartTrial()) {
+      showToast('Need 50+ Honor to submit missions. Build reputation first!', 'warning');
+      return;
+    }
     
     const modal = document.createElement('div');
     modal.id = 'submissionModal';
     modal.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.95);
-      z-index: 2000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.95); z-index: 2000;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px; overflow-y: auto;
     `;
     
     modal.innerHTML = `
-      <div style="background: #222; border-radius: 8px; padding: 20px; width: 100%; max-width: 500px; color: #fff;">
-        <h3 style="color: #04aa6d; margin-bottom: 15px;">Submit Mission ${mission.id}</h3>
-        <p style="margin-bottom: 20px;">${mission.title}</p>
+      <div style="background: #222; border-radius: 8px; padding: 20px; width: 100%; max-width: 500px; border: 2px solid #04aa6d;">
+        <div style="text-align: center; margin-bottom: 20px;">
+          <h2 style="color: #04aa6d; margin: 0 0 10px 0;">⚡ Submit Mission ${mission.id}</h2>
+          <h3 style="color: #fff; margin: 0 0 10px 0; font-size: 16px;">${mission.title}</h3>
+          <p style="color: #ccc; margin: 0; font-size: 14px;">${mission.description}</p>
+        </div>
         
         <div style="margin-bottom: 15px;">
-          <label style="display: block; color: #04aa6d; margin-bottom: 5px; font-weight: bold;">Points Earned:</label>
+          <label style="display: block; color: #04aa6d; margin-bottom: 8px; font-weight: bold;">Points Earned:</label>
           <select id="submissionPoints" style="width: 100%; padding: 8px; background: #333; color: #fff; border: 1px solid #04aa6d; border-radius: 4px;">
             ${this.getPointsOptions(mission)}
           </select>
         </div>
         
-        <div style="margin-bottom: 20px;">
-          <label style="display: block; color: #04aa6d; margin-bottom: 5px; font-weight: bold;">
-            Social Media Post URL (Required):
-          </label>
-          <input type="url" id="submissionUrl" placeholder="https://instagram.com/p/..." required
-                 style="width: 100%; padding: 8px; background: #333; color: #fff; border: 1px solid #04aa6d; border-radius: 4px; box-sizing: border-box;">
-          <small style="color: #999; font-size: 12px; margin-top: 5px; display: block;">
-            Paste the URL of your social media post with overlays and hashtags (mandatory for community validation)
+        <div style="margin-bottom: 15px;">
+          <label style="display: block; color: #04aa6d; margin-bottom: 8px; font-weight: bold;">Post URL (Optional):</label>
+          <input type="url" id="submissionURL" placeholder="https://instagram.com/p/..." 
+                 style="width: 100%; padding: 8px; background: #333; color: #fff; border: 1px solid #555; border-radius: 4px;">
+          <small style="color: #999; font-size: 12px; display: block; margin-top: 5px;">
+            🛡️ For dispute protection only - not required for submission
           </small>
         </div>
         
+        <div style="background: rgba(4, 170, 109, 0.1); padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+          <h4 style="color: #04aa6d; margin: 0 0 10px 0; font-size: 14px;">⚡ INSTANT SUBMISSION</h4>
+          <ul style="color: #ccc; font-size: 13px; margin: 0; padding-left: 20px;">
+            <li>Get points immediately - no waiting!</li>
+            <li>Optional URL protects against disputes</li>
+            <li>Community can challenge suspicious submissions</li>
+            <li>False accusations cost 3 beers ($15)</li>
+          </ul>
+        </div>
+        
         <div style="display: flex; gap: 10px;">
-          <button onclick="DirectSubmission.processSubmission(${missionId})" 
+          <button onclick="DirectSubmission.submitMission(${mission.id})" 
                   style="flex: 1; background: #04aa6d; color: #000; padding: 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
-            ⚡ SUBMIT MISSION
+            ⚡ SUBMIT NOW
           </button>
-          <button onclick="DirectSubmission.closeSubmissionForm()" 
+          <button onclick="DirectSubmission.closeModal()" 
                   style="background: #666; color: #fff; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer;">
             Cancel
           </button>
-        </div>
-        
-        <div style="margin-top: 15px; padding: 10px; background: rgba(4, 170, 109, 0.1); border-radius: 4px; font-size: 13px;">
-          <strong>🚀 Direct Submission:</strong> Post your overlaid photo/video with hashtags to social media first, then paste the URL here for instant points!
         </div>
       </div>
     `;
@@ -95,62 +74,66 @@ const DirectSubmission = {
     document.body.appendChild(modal);
   },
   
-  // Process the submission
-  processSubmission(missionId) {
-    const pointsSelect = document.getElementById('submissionPoints');
-    const urlInput = document.getElementById('submissionUrl');
+  // Submit mission directly
+  submitMission(missionId) {
+    const points = parseInt(document.getElementById('submissionPoints').value) || 0;
+    const proofUrl = document.getElementById('submissionURL').value.trim() || null;
     
-    const points = parseInt(pointsSelect.value) || 0;
-    const proofUrl = urlInput.value.trim();
-    
-    // Validate URL is provided and valid
-    if (!proofUrl) {
-      this.showToast('Social media post URL is required', 'error');
+    if (points === 0) {
+      showToast('Please select points earned for this mission', 'warning');
       return;
     }
     
-    if (!this.isValidUrl(proofUrl)) {
-      this.showToast('Please enter a valid social media URL', 'error');
-      return;
-    }
+    // Submit via storage system
+    const user = Storage.submitMission(missionId, points, proofUrl);
     
-    // Submit mission with required URL
-    const result = this.submitMission(missionId, points, proofUrl);
+    // Close modal
+    this.closeModal();
     
-    if (result.success) {
-      this.closeSubmissionForm();
-      
-      // Reload missions to show updated state
-      if (window.loadMissions) {
-        window.loadMissions();
-      }
-    }
+    // Update displays
+    if (window.loadUserStats) window.loadUserStats();
+    if (window.loadMissions) window.loadMissions();
+    
+    showToast(`Mission ${missionId} submitted! +${points} points 🎉`, 'success');
+    
+    // Award honor for legitimate submission
+    Storage.updateHonorScore(1, 'mission_submission');
   },
   
-  // Close submission form
-  closeSubmissionForm() {
+  // Close submission modal
+  closeModal() {
     const modal = document.getElementById('submissionModal');
-    if (modal) {
-      modal.remove();
-    }
+    if (modal) modal.remove();
   },
   
   // Generate points options for mission
   getPointsOptions(mission) {
     const points = mission.points;
-    let options = '<option value="0">0 (no points)</option>';
+    let options = '<option value="0">Select points earned...</option>';
     
     if (typeof points === 'number') {
-      options += `<option value="${points}" selected>${points}</option>`;
+      options += `<option value="${points}">${points}</option>`;
     } else if (typeof points === 'string') {
       if (points.includes('-')) {
         const [min, max] = points.split('-').map(p => parseInt(p.trim()));
         for (let i = min; i <= max; i++) {
-          options += `<option value="${i}" ${i === min ? 'selected' : ''}>${i}</option>`;
+          options += `<option value="${i}">${i}</option>`;
         }
       } else if (points === '?') {
         for (let i = 1; i <= 50; i++) {
-          options += `<option value="${i}" ${i === 1 ? 'selected' : ''}>${i}</option>`;
+          options += `<option value="${i}">${i}</option>`;
+        }
+      } else if (points.includes('/')) {
+        const pointValues = points.split('/').map(p => parseInt(p.trim())).filter(p => !isNaN(p));
+        pointValues.forEach(p => {
+          options += `<option value="${p}">${p}</option>`;
+        });
+      } else {
+        const matches = points.match(/\d+/g);
+        if (matches) {
+          matches.forEach(p => {
+            options += `<option value="${p}">${p}</option>`;
+          });
         }
       }
     }
@@ -158,158 +141,78 @@ const DirectSubmission = {
     return options;
   },
   
-  // Validate URL
-  isValidUrl(string) {
-    try {
-      new URL(string);
-      return true;
-    } catch (_) {
-      return false;
-    }
-  },
-  
-  // Show submission success
-  showSubmissionSuccess(missionId, points) {
-    const message = points > 0 
-      ? `Mission ${missionId} submitted! +${points} points 🎉`
-      : `Mission ${missionId} submitted! 🎉`;
-    this.showToast(message, 'success');
-  },
-  
-  // Show submission error
-  showSubmissionError(missionId, error) {
-    this.showToast(`Submission failed: ${error}`, 'error');
-  },
-  
-  // Update mission card UI
-  updateMissionCard(missionId, status) {
-    const card = document.querySelector(`[data-mission-id="${missionId}"]`);
-    if (card) {
-      card.classList.add('submitted');
-      
-      // Update status indicator
-      const statusElement = card.querySelector('.mission-status');
-      if (statusElement) {
-        statusElement.textContent = 'submitted';
-        statusElement.className = 'mission-status submitted';
-      }
-    }
-  },
-  
-  // Update user stats display
-  updateUserStats() {
-    if (window.loadUserStats) {
-      window.loadUserStats();
-    }
-  },
-  
-  // Award badge
-  awardBadge(badgeId) {
-    Storage.addBadge(badgeId);
-    this.showToast(`Badge earned: ${badgeId}! 🏆`, 'success');
-  },
-  
-  // Show toast notification
-  showToast(message, type = 'info') {
-    const toast = document.createElement('div');
-    toast.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: ${type === 'success' ? '#04aa6d' : type === 'error' ? '#ff6b6b' : '#333'};
-      color: ${type === 'success' ? '#000' : '#fff'};
-      padding: 12px 20px;
-      border-radius: 6px;
-      z-index: 10000;
-      font-size: 14px;
-      max-width: 300px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      animation: slideIn 0.3s ease-out;
-    `;
-    
-    // Add slide-in animation
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes slideIn {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-      }
-    `;
-    document.head.appendChild(style);
-    
-    toast.textContent = message;
-    document.body.appendChild(toast);
-    
-    setTimeout(() => {
-      toast.remove();
-      style.remove();
-    }, 4000);
-  },
-  
-  // Get submission history for user
-  getSubmissionHistory() {
-    const user = Storage.getUser();
-    return user.submissions || {};
-  },
-  
   // Show submission history
   showSubmissionHistory() {
-    const history = this.getSubmissionHistory();
-    const entries = Object.entries(history);
+    const user = Storage.getUser();
+    const submissions = user.submissions || {};
     
-    if (entries.length === 0) {
-      this.showToast('No submissions yet', 'info');
+    if (Object.keys(submissions).length === 0) {
+      showToast('No submissions yet. Complete some missions!', 'info');
       return;
     }
     
     const modal = document.createElement('div');
+    modal.id = 'historyModal';
     modal.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.95);
-      z-index: 2000;
-      padding: 20px;
-      overflow-y: auto;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.95); z-index: 2000;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px; overflow-y: auto;
     `;
     
-    modal.innerHTML = `
-      <div style="background: #222; border-radius: 8px; padding: 20px; max-width: 600px; margin: 0 auto; color: #fff;">
-        <h3 style="color: #04aa6d; margin-bottom: 20px;">Submission History</h3>
-        
-        ${entries.map(([missionId, submission]) => {
-          const mission = Missions.getMission(parseInt(missionId));
-          const date = new Date(submission.timestamp).toLocaleDateString();
-          const time = new Date(submission.timestamp).toLocaleTimeString();
-          
-          return `
-            <div style="background: #333; padding: 15px; border-radius: 6px; margin-bottom: 10px;">
-              <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 8px;">
-                <strong style="color: #04aa6d;">Mission ${missionId}: ${mission?.title || 'Unknown'}</strong>
-                <span style="color: #999; font-size: 12px;">${date} ${time}</span>
-              </div>
-              <div style="font-size: 14px; margin-bottom: 5px;">
-                Points: <strong>${submission.points}</strong>
-              </div>
-              ${submission.proofUrl ? `
-                <div style="font-size: 12px; color: #999;">
-                  Proof: <a href="${submission.proofUrl}" target="_blank" style="color: #04aa6d;">${submission.proofUrl}</a>
-                </div>
-              ` : '<div style="font-size: 12px; color: #666;">No proof URL provided</div>'}
+    const submissionList = Object.entries(submissions)
+      .sort(([,a], [,b]) => new Date(b.timestamp) - new Date(a.timestamp))
+      .map(([missionId, submission]) => {
+        const mission = Missions.getMission(parseInt(missionId));
+        return `
+          <div style="background: #333; padding: 15px; border-radius: 4px; margin-bottom: 10px; border-left: 4px solid #04aa6d;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <strong style="color: #04aa6d;">Mission ${missionId}: ${mission?.title || 'Unknown'}</strong>
+              <span style="color: #04aa6d; font-weight: bold;">+${submission.points}pts</span>
             </div>
-          `;
-        }).join('')}
+            <div style="color: #ccc; font-size: 12px; margin-bottom: 5px;">
+              ${new Date(submission.timestamp).toLocaleString()}
+            </div>
+            ${submission.proofUrl ? `
+              <div style="font-size: 11px;">
+                <a href="${submission.proofUrl}" target="_blank" style="color: #04aa6d;">View Proof</a>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+    
+    modal.innerHTML = `
+      <div style="background: #222; border-radius: 8px; padding: 20px; width: 100%; max-width: 600px; max-height: 80vh; overflow-y: auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h2 style="color: #04aa6d; margin: 0;">📋 Submission History</h2>
+          <button onclick="DirectSubmission.closeHistoryModal()" 
+                  style="background: #666; color: #fff; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer;">
+            ✕
+          </button>
+        </div>
         
-        <button onclick="this.parentElement.parentElement.remove()" 
-                style="background: #04aa6d; color: #000; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin-top: 15px;">
-          Close
-        </button>
+        <div style="margin-bottom: 15px; padding: 10px; background: rgba(4, 170, 109, 0.1); border-radius: 4px;">
+          <div style="color: #04aa6d; font-weight: bold; margin-bottom: 5px;">Total Stats:</div>
+          <div style="color: #ccc; font-size: 14px;">
+            ${Object.keys(submissions).length} submissions • 
+            ${Object.values(submissions).reduce((sum, s) => sum + s.points, 0)} total points
+          </div>
+        </div>
+        
+        <div style="max-height: 400px; overflow-y: auto;">
+          ${submissionList}
+        </div>
       </div>
     `;
     
     document.body.appendChild(modal);
+  },
+  
+  // Close history modal
+  closeHistoryModal() {
+    const modal = document.getElementById('historyModal');
+    if (modal) modal.remove();
   }
 };
 

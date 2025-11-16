@@ -126,12 +126,94 @@ const Storage = {
     return user;
   },
 
-  // Update honor score
-  updateHonorScore(change) {
+  // Update honor score with reason
+  updateHonorScore(change, reason = '') {
     const user = this.getUser();
     user.honorScore = Math.max(0, user.honorScore + change);
     this.saveUser(user);
+    
+    // Show toast notification
+    if (window.showToast) {
+      window.showToast(`Honor ${change > 0 ? '+' : ''}${change}: ${reason}`, 
+                      change > 0 ? 'success' : 'warning');
+    }
     return user;
+  },
+
+  // Beer Justice System Functions
+  
+  // Get honor color for display
+  getHonorColor(score) {
+    if (score >= 90) return '#04aa6d'; // Green - Trusted
+    if (score >= 70) return '#ffd700'; // Gold - Good
+    if (score >= 50) return '#ff8c00'; // Orange - Caution
+    return '#ff4444'; // Red - Untrustworthy
+  },
+
+  // Check if user can start trials
+  canStartTrial() {
+    const user = this.getUser();
+    return user.honorScore >= 50;
+  },
+
+  // Beer debt management
+  addBeerDebt(creditor, amount, reason) {
+    const user = this.getUser();
+    if (!user.beerDebts) user.beerDebts = [];
+    
+    user.beerDebts.push({
+      creditor,
+      amount,
+      reason,
+      created: new Date().toISOString(),
+      status: 'pending'
+    });
+    
+    this.saveUser(user);
+    return user;
+  },
+
+  // Get total beer debts owed
+  getTotalBeerDebts() {
+    const user = this.getUser();
+    if (!user.beerDebts) return 0;
+    return user.beerDebts
+      .filter(debt => debt.status === 'pending')
+      .reduce((total, debt) => total + debt.amount, 0);
+  },
+
+  // Trial management
+  createTrial(trialData) {
+    let trials = JSON.parse(localStorage.getItem('missionMischiefTrials') || '[]');
+    trials.push(trialData);
+    localStorage.setItem('missionMischiefTrials', JSON.stringify(trials));
+    return trialData;
+  },
+
+  // Get active trials
+  getActiveTrials() {
+    const trials = JSON.parse(localStorage.getItem('missionMischiefTrials') || '[]');
+    const now = new Date();
+    return trials.filter(trial => 
+      trial.status === 'active' && new Date(trial.expires_at) > now
+    );
+  },
+
+  // Cast vote in trial
+  castVote(trialId, verdict, voter) {
+    let trials = JSON.parse(localStorage.getItem('missionMischiefTrials') || '[]');
+    const trialIndex = trials.findIndex(t => t.trial_id === trialId);
+    
+    if (trialIndex === -1) return null;
+    
+    const trial = trials[trialIndex];
+    if (trial.voters.includes(voter)) return null; // Already voted
+    
+    trial.votes[verdict]++;
+    trial.voters.push(voter);
+    
+    localStorage.setItem('missionMischiefTrials', JSON.stringify(trials));
+    return trial;
   },
 
   // Complete a buy-in
@@ -162,12 +244,15 @@ const Storage = {
     const totalSubmissions = Object.keys(user.submissions || {}).length;
     const totalPoints = user.totalPoints || 0;
     const completedMissions = user.completedMissions.length;
+    const beerDebts = this.getTotalBeerDebts();
     
     return {
       totalSubmissions,
       totalPoints,
       completedMissions,
-      honorScore: user.honorScore
+      honorScore: user.honorScore,
+      beerDebts,
+      honorColor: this.getHonorColor(user.honorScore)
     };
   }
 };

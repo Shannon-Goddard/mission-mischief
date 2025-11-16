@@ -83,9 +83,51 @@ function addOptionalURLField(missionId) {
 }
 ```
 
-### Phase 2: Beer Justice System (Week 2)
+### Phase 2: Beer Justice System + Honor Score (Week 2)
 
-#### 2.1 Trial Initiation with Beer Stakes
+#### 2.1 Honor Score System Integration
+```javascript
+// Add honor score to user profile (storage.js)
+const defaultUser = {
+  userHandle: '',
+  points: 0,
+  honorScore: 100, // New field - starts at 100
+  city: '',
+  state: '',
+  country: '',
+  beerDebts: 0,
+  trialsWon: 0,
+  trialsLost: 0
+};
+
+// Honor score update function
+function updateHonorScore(userHandle, change, reason) {
+  const user = Storage.getUser(userHandle);
+  user.honorScore = Math.max(0, user.honorScore + change);
+  Storage.saveUser(user);
+  
+  showToast(`Honor ${change > 0 ? '+' : ''}${change}: ${reason}`, 
+            change > 0 ? 'success' : 'warning');
+}
+
+// Honor color coding for display
+function getHonorColor(score) {
+  if (score >= 90) return '#04aa6d'; // Green - Trusted
+  if (score >= 70) return '#ffd700'; // Gold - Good
+  if (score >= 50) return '#ff8c00'; // Orange - Caution
+  return '#ff4444'; // Red - Untrustworthy
+}
+
+// Honor display in trials
+function displayHonorBadge(userHandle) {
+  const user = Storage.getUser(userHandle);
+  return `<span class="honor-badge" style="color: ${getHonorColor(user.honorScore)}">
+    ⭐ ${user.honorScore} Honor
+  </span>`;
+}
+```
+
+#### 2.2 Trial Initiation with Beer Stakes
 ```javascript
 // Enhanced bounty hunter system with beer consequences
 function reportCheater(suspiciousURL, accuserHandle, accusedHandle) {
@@ -172,10 +214,12 @@ function displayActiveTrial(trialData) {
         <div class="parties">
           <div class="accuser">
             <strong>Accuser:</strong> ${trialData.accuser}
+            ${displayHonorBadge(trialData.accuser)}
             <span class="stakes">Risks: 3 beers if wrong</span>
           </div>
           <div class="accused">
             <strong>Accused:</strong> ${trialData.accused}
+            ${displayHonorBadge(trialData.accused)}
             <span class="stakes">Risks: 1 beer if guilty</span>
           </div>
         </div>
@@ -275,6 +319,86 @@ def conclude_trial(trial_id, verdict):
         # Accuser stays at -5 points
         
         # Create beer debt: Accuser owes accused 3 beers (false accusation penalty)
+        create_beer_debt(
+            debtor=trial['accuser'],
+            creditor=trial['accused'],
+            beers_owed=3,
+            reason='false_accusation'
+        )
+        
+        verdict_message = f"{trial['accuser']} made FALSE ACCUSATION! Owes {trial['accused']} 3 beers 🍺"
+    
+    # Update honor scores based on verdict
+    if verdict == 'guilty':
+        update_honor_score(trial['accused'], -10, 'guilty_verdict')  # Serious reputation hit
+        update_honor_score(trial['accuser'], +3, 'correct_accusation')  # Reward good policing
+    else:
+        update_honor_score(trial['accuser'], -5, 'false_accusation')  # Discourage frivolous trials
+        update_honor_score(trial['accused'], +2, 'vindicated')  # Restore reputation
+    
+    # Award honor for community participation
+    for voter in trial['voters']:
+        update_honor_score(voter, +1, 'trial_participation')
+    
+    return {
+        'verdict': verdict,
+        'message': verdict_message,
+        'honor_updates': True
+    }
+```
+
+#### 2.4 Honor Score Display Integration
+```javascript
+// Leaderboard with honor scores (bounty-hunter.html)
+function displayLeaderboardPlayer(player, rank) {
+  return `
+    <div class="leaderboard-player">
+      <div class="rank">#${rank}</div>
+      <div class="player-info">
+        <strong>${player.handle}</strong>
+        <div class="player-stats">
+          <span class="points">${player.points} pts</span>
+          ${displayHonorBadge(player.handle)}
+        </div>
+        <div class="location">${player.city}, ${player.state}</div>
+      </div>
+    </div>
+  `;
+}
+
+// User dashboard honor display (app.html)
+function displayUserStats(user) {
+  return `
+    <div class="user-stats-card">
+      <h3>Your Stats</h3>
+      <div class="stat-row">
+        <span>Points:</span> <strong>${user.points}</strong>
+      </div>
+      <div class="stat-row">
+        <span>Honor Score:</span> 
+        <strong style="color: ${getHonorColor(user.honorScore)}">
+          ⭐ ${user.honorScore}
+        </strong>
+      </div>
+      <div class="stat-row">
+        <span>Beer Debts:</span> <strong>${user.beerDebts}</strong>
+      </div>
+      <div class="stat-row">
+        <span>Trials Won:</span> <strong>${user.trialsWon}</strong>
+      </div>
+    </div>
+  `;
+}
+
+// Honor requirements for trial eligibility
+function canStartTrial(userHandle) {
+  const user = Storage.getUser(userHandle);
+  if (user.honorScore < 50) {
+    showToast('Need 50+ Honor to start trials. Build reputation first!', 'warning');
+    return false;
+  }
+  return true;
+}y)
         create_beer_debt(
             debtor=trial['accuser'],
             creditor=trial['accused'],

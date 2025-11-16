@@ -661,6 +661,43 @@
         </div>
       </div>
 
+      <!-- Beer Justice Trials Section -->
+      <div class="bounty-section">
+        <div class="section-header" onclick="toggleSection('trials')">
+          <h2 class="section-title">🍺 Beer Justice Trials</h2>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span class="section-count" id="trialsCount">Loading...</span>
+            <span class="expand-icon" id="trials-icon">▼</span>
+          </div>
+        </div>
+        <div class="section-content" id="trials-content">
+          <div style="background: rgba(4, 170, 109, 0.1); padding: 15px; border-radius: 4px; margin-bottom: 20px; border: 1px solid #04aa6d;">
+            <h4 style="color: #04aa6d; margin: 0 0 10px 0;">🍺 How Beer Justice Works</h4>
+            <ul style="color: #ccc; font-size: 13px; margin: 0; padding-left: 20px;">
+              <li><strong>False Accusation:</strong> Accuser owes accused 3 beers ($15)</li>
+              <li><strong>Guilty Verdict:</strong> Cheater owes accuser 1 beer ($5)</li>
+              <li><strong>Trial Duration:</strong> 6 hours for community voting</li>
+              <li><strong>Honor Impact:</strong> Guilty = -10, False accusation = -5</li>
+              <li><strong>Voting Reward:</strong> +1 Honor for participation</li>
+            </ul>
+          </div>
+          
+          <div style="text-align: center; margin-bottom: 20px;">
+            <button onclick="BeerJustice.showReportForm()" style="background: #ff4444; color: #fff; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+              🍺 Report Cheater
+            </button>
+          </div>
+          
+          <div id="activeTrials">
+            <!-- Active trials will be loaded here -->
+          </div>
+          
+          <div id="completedTrials" style="margin-top: 30px;">
+            <!-- Completed trials will be loaded here -->
+          </div>
+        </div>
+      </div>
+
       <!-- Justice Section -->
       <div class="bounty-section">
         <div class="section-header" onclick="toggleSection('justice')">
@@ -695,6 +732,7 @@
   <!-- JS Files -->
   <script src="../assets/js/storage.js"></script>
   <script src="../assets/js/missions.js"></script>
+  <script src="../assets/js/beer-justice.js"></script>
   <script src="../assets/js/main.js"></script>
   
   <!-- Try to load premium API client -->
@@ -835,6 +873,8 @@
       loadGeography();
       console.log('🔧 TEST 5: Calling loadJusticeCases()');
       loadJusticeCases();
+      console.log('🔧 TEST 5: Calling loadBeerTrials()');
+      loadBeerTrials();
     }
     
 
