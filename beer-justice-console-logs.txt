@@ -297,3 +297,31 @@ loadBeerTrials	@	bounty-hunter.html:1180
 loadBountyHunterData	@	bounty-hunter.html:878
 await in loadBountyHunterData		
 (anonymous)	@	bounty-hunter.html:766
+//////////////////////////////////////////////////
+Test There's a syntax error in the object definition. I'm missing commas between the methods.The missing commas were causing a JavaScript syntax error, which meant the object methods weren't being defined properly. With the commas fixed, BeerJusticeAWS.getActiveTrials should now be a proper function.
+
+﻿
+beer-justice-aws-sync.js:37 Uncaught SyntaxError: Unexpected token 'async' (at beer-justice-aws-sync.js:37:5)
+bounty-hunter.html:765 🚀 Phase 2: AWS sync enabled - Global multiplayer data
+bounty-hunter.html:786 🚀 Loading bounty hunter data...
+bounty-hunter.html:770 🕰️ PHASE 2: Weekly Sunday research scraping for proof-of-concept validation
+bounty-hunter.html:771 📅 Schedule: Sundays 3:00 AM PST for academic comparison
+bounty-hunter.html:748 ✅ Premium API client loaded
+bounty-hunter.html:796 ✅ AWS submissions loaded from DynamoDB
+bounty-hunter.html:806 🌐 Global multiplayer data loaded: aws_dynamodb
+bounty-hunter.html:865 🔧 TEST 5: Updating UI sections with processed data
+bounty-hunter.html:869 🔧 TEST 5: Calling loadTopPlayers()
+bounty-hunter.html:871 🔧 TEST 5: Calling loadMissions()
+bounty-hunter.html:873 🔧 TEST 5: Calling loadGeography()
+bounty-hunter.html:875 🔧 TEST 5: Calling loadJusticeCases()
+bounty-hunter.html:877 🔧 TEST 5: Calling loadBeerTrials()
+bounty-hunter.html:1112 🍺 Loading Beer Justice trials...
+bounty-hunter.html:1113 🔍 BeerJusticeAWS available: undefined
+bounty-hunter.html:1114 Uncaught (in promise) TypeError: Cannot convert undefined or null to object
+    at Object.getOwnPropertyNames (<anonymous>)
+    at loadBeerTrials (bounty-hunter.html:1114:56)
+    at loadBountyHunterData (bounty-hunter.html:878:7)
+loadBeerTrials	@	bounty-hunter.html:1114
+loadBountyHunterData	@	bounty-hunter.html:878
+await in loadBountyHunterData		
+(anonymous)	@	bounty-hunter.html:766
