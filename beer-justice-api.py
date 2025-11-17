@@ -11,22 +11,27 @@ posts_table = dynamodb.Table('mission-mischief-posts')
 
 def lambda_handler(event, context):
     try:
-        action = event['pathParameters']['action']
+        # Handle different API Gateway formats
+        path = event.get('path', event.get('rawPath', ''))
+        method = event.get('httpMethod', event.get('requestContext', {}).get('http', {}).get('method', 'GET'))
         
-        if action == 'create-trial':
+        # Extract action from path
+        if '/create-trial' in path:
             return create_trial(json.loads(event['body']))
-        elif action == 'cast-vote':
+        elif '/cast-vote' in path:
             return cast_vote(json.loads(event['body']))
-        elif action == 'get-trials':
+        elif '/get-trials' in path:
             return get_active_trials()
-        elif action == 'get-honor':
-            return get_honor_score(event['queryStringParameters']['user'])
-        elif action == 'get-debts':
-            return get_beer_debts(event['queryStringParameters']['user'])
-        elif action == 'mark-paid':
+        elif '/get-honor' in path:
+            params = event.get('queryStringParameters') or {}
+            return get_honor_score(params.get('user'))
+        elif '/get-debts' in path:
+            params = event.get('queryStringParameters') or {}
+            return get_beer_debts(params.get('user'))
+        elif '/mark-paid' in path:
             return mark_debt_paid(json.loads(event['body']))
         else:
-            return error_response('Invalid action', 400)
+            return error_response(f'Invalid path: {path}', 400)
             
     except Exception as e:
         return error_response(str(e), 500)
@@ -209,10 +214,15 @@ def get_active_trials():
     return success_response({'trials': trials})
 
 def get_honor_score(user_handle):
+    if not user_handle:
+        return error_response('User parameter required', 400)
     honor_score = get_user_honor(user_handle)
     return success_response({'honor_score': honor_score})
 
 def get_beer_debts(user_handle):
+    if not user_handle:
+        return error_response('User parameter required', 400)
+        
     # Get debts where user is debtor
     debtor_response = debts_table.scan(
         FilterExpression='debtor = :user',

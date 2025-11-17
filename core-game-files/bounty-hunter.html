@@ -1108,6 +1108,64 @@
       `;
     }
 
+    async function loadBeerTrials() {
+      console.log('🍺 Loading Beer Justice trials...');
+      
+      try {
+        // Load active trials from AWS
+        const activeTrials = await BeerJusticeAWS.getActiveTrials();
+        
+        const activeContainer = document.getElementById('activeTrials');
+        const trialsCount = document.getElementById('trialsCount');
+        
+        if (activeTrials.length === 0) {
+          activeContainer.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">No active trials - Community is behaving! 🍺</div>';
+          trialsCount.textContent = '0';
+        } else {
+          activeContainer.innerHTML = activeTrials.map(trial => `
+            <div style="background: #111; border: 2px solid #ff4444; border-radius: 8px; padding: 20px; margin-bottom: 15px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h4 style="color: #ff4444; margin: 0;">🍺 Trial: ${trial.accuser} vs ${trial.accused}</h4>
+                <span style="color: #999; font-size: 0.9em;">${new Date(trial.created_at).toLocaleString()}</span>
+              </div>
+              
+              <div style="margin-bottom: 15px;">
+                <strong style="color: #04aa6d;">Accusation:</strong> ${trial.accusation}<br>
+                <strong style="color: #04aa6d;">Evidence:</strong> <a href="${trial.evidence_url}" target="_blank" style="color: #04aa6d;">${trial.evidence_url}</a>
+              </div>
+              
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px;">
+                <div style="text-align: center;">
+                  <div style="color: #ff4444; font-weight: bold; margin-bottom: 5px;">GUILTY</div>
+                  <div style="font-size: 1.5em; color: #fff;">${trial.votes.guilty}</div>
+                </div>
+                <div style="text-align: center;">
+                  <div style="color: #04aa6d; font-weight: bold; margin-bottom: 5px;">INNOCENT</div>
+                  <div style="font-size: 1.5em; color: #fff;">${trial.votes.innocent}</div>
+                </div>
+              </div>
+              
+              <div style="text-align: center;">
+                <button onclick="BeerJustice.castVote('${trial.trial_id}', 'guilty')" style="background: #ff4444; color: #fff; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; margin: 0 5px;">Vote Guilty</button>
+                <button onclick="BeerJustice.castVote('${trial.trial_id}', 'innocent')" style="background: #04aa6d; color: #000; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; margin: 0 5px;">Vote Innocent</button>
+              </div>
+              
+              <div style="margin-top: 10px; text-align: center; color: #999; font-size: 0.9em;">
+                Expires: ${new Date(trial.expires_at).toLocaleString()} | Voters: ${trial.voters.length}
+              </div>
+            </div>
+          `).join('');
+          
+          trialsCount.textContent = activeTrials.length;
+        }
+        
+      } catch (error) {
+        console.error('❌ Failed to load Beer Justice trials:', error);
+        document.getElementById('activeTrials').innerHTML = '<div style="text-align: center; color: #ff4444; padding: 20px;">Failed to load trials - Check connection</div>';
+        document.getElementById('trialsCount').textContent = 'Error';
+      }
+    }
+    
     function loadJusticeCases() {
       const container = document.getElementById('justiceCases');
       

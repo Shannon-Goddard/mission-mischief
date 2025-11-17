@@ -43,6 +43,7 @@
                 addResult(`✅ Honor score retrieved: ${honor}`, 'success');
             } catch (error) {
                 addResult(`❌ Honor score failed: ${error.message}`, 'error');
+                console.error('Honor score error:', error);
             }
         }
         
@@ -61,6 +62,7 @@
                 addResult(`✅ Trial created: ${JSON.stringify(result)}`, 'success');
             } catch (error) {
                 addResult(`❌ Trial creation failed: ${error.message}`, 'error');
+                console.error('Trial creation error:', error);
             }
         }
         
@@ -72,6 +74,7 @@
                 addResult(`✅ Trials retrieved: ${trials.length} active trials`, 'success');
             } catch (error) {
                 addResult(`❌ Trials retrieval failed: ${error.message}`, 'error');
+                console.error('Trials retrieval error:', error);
             }
         }
         

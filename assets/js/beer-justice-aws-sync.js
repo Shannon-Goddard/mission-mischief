@@ -139,3 +139,17 @@ class BeerJusticeAWS {
 
 // Global instance
 window.BeerJusticeAWS = new BeerJusticeAWS();
+
+// Debug function
+window.testAWSConnection = async function() {
+    console.log('🧪 Testing AWS connection...');
+    try {
+        const response = await fetch('https://ws2qwehovl.execute-api.us-east-1.amazonaws.com/prod/get-honor?user=testuser');
+        const data = await response.json();
+        console.log('✅ Direct API test:', data);
+        return data;
+    } catch (error) {
+        console.error('❌ Direct API test failed:', error);
+        throw error;
+    }
+};

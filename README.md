@@ -33,10 +33,12 @@
 
 **Think someone's cheating?** Challenge them to a trial!
 
+- **⭐ Honor Requirement**: Need 50+ Honor to start trials
 - **🍺 False Accusation**: Accuser owes accused **3 beers** ($15)
 - **🍺 Guilty Verdict**: Cheater owes accuser **1 beer** ($5)
 - **⏰ 6-Hour Trials**: Community votes to decide
-- **🗳️ Real Stakes**: Economic incentives prevent frivolous accusations
+- **🗳️ Honor Impact**: Guilty = -10, False accusation = -5, Voting = +1
+- **🌐 Global Multiplayer**: AWS-powered trials with local fallback
 
 *"Justice is served cold... and carbonated."*
 
@@ -65,10 +67,11 @@
 
 **Trust but Verify**: The community keeps everyone honest
 
-- **Spot Check System** - Random verification of submissions
+- **Beer Justice Trials** - Community votes on disputes with real stakes
+- **Honor System** - 100 starting honor, build reputation through play
 - **Evidence Requirements** - Photo/video proof for all missions
-- **Reputation Scoring** - Build trust through consistent play
-- **Bounty Hunter Mode** - Dedicated fraud detection interface
+- **Global Moderation** - AWS-powered trials sync across all players
+- **Economic Stakes** - Real beer consequences prevent frivolous accusations
 
 ### 📱 Mobile-First Experience
 
@@ -84,7 +87,8 @@
 
 **Game Layer** (Instant Experience):
 - **Direct Submissions** - No API delays, immediate feedback
-- **Local Storage** - Offline-capable, sync when connected
+- **Beer Justice Trials** - AWS-powered global community moderation
+- **Honor System** - Reputation tracking with 50+ Honor trial requirement
 - **Real-Time Updates** - Live leaderboards and trial voting
 - **Cost**: $4-15/month (85% reduction from research system)
 
@@ -139,10 +143,11 @@
 🎮 51 Unique Real-World Missions
 🎖️ 26 Collectible Achievement Badges  
 🌍 Geographic Leaderboards (City/State/Country)
-🍺 Beer Justice System (Community Trials)
+🍺 AWS-Powered Beer Justice Trials (Global Multiplayer)
+⭐ Honor System (50+ Required for Trials)
 ⚡ Instant Mission Submissions
 📱 99% Mobile Player Base
-🔍 Community-Driven Fraud Detection
+🌐 Global Community Moderation
 💰 85% Cost Reduction (vs Research System)
 🏆 Crown of Chaos Elite Recognition
 ```
@@ -314,15 +319,21 @@ function submitMission(missionId, points, optionalURL) {
 
 ### Beer Justice Trials
 ```javascript
-// Community-driven dispute resolution
-function startTrial(accusedUser, evidenceURL) {
-  const stakes = {
-    falseAccusation: 3, // beers owed if wrong
-    guiltyVerdict: 1,   // beers owed if guilty
-    trialDuration: 6    // hours for voting
+// AWS-powered global community trials
+async function startTrial(accusedUser, evidenceURL) {
+  const trialData = {
+    accuser: getCurrentUser(),
+    accused: accusedUser,
+    evidence_url: evidenceURL,
+    accusation: details
   };
   
-  createCommunityVote(accusedUser, evidenceURL, stakes);
+  // Check honor requirement (50+)
+  const honor = await BeerJusticeAWS.getHonorScore(user);
+  if (honor < 50) throw new Error('Need 50+ Honor');
+  
+  // Create global trial with AWS sync + local fallback
+  const result = await BeerJusticeAWS.createTrial(trialData);
   deductPoints(accuser, 5); // Immediate stake
   deductPoints(accused, 5);
 }
