@@ -1111,6 +1111,8 @@
     async function loadBeerTrials() {
       console.log('🍺 Loading Beer Justice trials...');
       console.log('🔍 BeerJusticeAWS available:', typeof window.BeerJusticeAWS);
+      console.log('🔍 BeerJusticeAWS methods:', Object.getOwnPropertyNames(window.BeerJusticeAWS));
+      console.log('🔍 BeerJusticeAWS prototype methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(window.BeerJusticeAWS)));
       
       if (typeof window.BeerJusticeAWS === 'undefined') {
         console.error('❌ BeerJusticeAWS not loaded!');
@@ -1120,6 +1122,13 @@
       }
       
       try {
+        // Debug: Test if method exists
+        console.log('🔍 Testing getActiveTrials method:', typeof BeerJusticeAWS.getActiveTrials);
+        
+        if (typeof BeerJusticeAWS.getActiveTrials !== 'function') {
+          throw new Error('getActiveTrials method not found');
+        }
+        
         // Load active trials from AWS
         const activeTrials = await BeerJusticeAWS.getActiveTrials();
         
