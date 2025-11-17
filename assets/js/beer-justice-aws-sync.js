@@ -32,7 +32,7 @@ const BeerJusticeAWS = {
             }
             throw error;
         }
-    }
+    },
     
     async castVote(trialId, verdict, voter) {
         try {
@@ -65,7 +65,7 @@ const BeerJusticeAWS = {
             }
             throw error;
         }
-    }
+    },
     
     async getActiveTrials() {
         try {
@@ -90,7 +90,7 @@ const BeerJusticeAWS = {
             return Storage.getActiveTrials();
         }
         return [];
-    }
+    },
     
     async getHonorScore(userHandle) {
         try {
@@ -116,7 +116,7 @@ const BeerJusticeAWS = {
             return user.honorScore || 100;
         }
         return 100;
-    }
+    },
     
     async getBeerDebts(userHandle) {
         try {
@@ -139,7 +139,7 @@ const BeerJusticeAWS = {
             return Storage.getBeerDebts(userHandle);
         }
         return [];
-    }
+    },
     
     async markDebtPaid(debtId) {
         try {

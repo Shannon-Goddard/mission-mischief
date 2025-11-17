@@ -202,3 +202,98 @@ loadBeerTrials	@	bounty-hunter.html:1180
 loadBountyHunterData	@	bounty-hunter.html:878
 await in loadBountyHunterData		
 (anonymous)	@	bounty-hunter.html:766
+///////////////////////////////////////////////////////////////
+Test objective: The fix converts the class to a simple object, which should resolve the prototype method access issues. You should now see:
+
+"🍺 Loading BeerJusticeAWS script..."
+
+"✅ BeerJusticeAWS initialized successfully"
+
+The getActiveTrials method should now be accessible directly
+console logs
+beer-justice-aws-sync.js:2 🍺 Loading BeerJusticeAWS script...
+beer-justice-aws-sync.js:170 ✅ BeerJusticeAWS initialized successfully
+beer-justice-aws-sync.js:171 📡 API Base: https://ws2qwehovl.execute-api.us-east-1.amazonaws.com/prod
+beer-justice-aws-sync.js:172 🔍 Available methods: 
+(7) ['constructor', 'createTrial', 'castVote', 'getActiveTrials', 'getHonorScore', 'getBeerDebts', 'markDebtPaid']
+0
+: 
+"constructor"
+1
+: 
+"createTrial"
+2
+: 
+"castVote"
+3
+: 
+"getActiveTrials"
+4
+: 
+"getHonorScore"
+5
+: 
+"getBeerDebts"
+6
+: 
+"markDebtPaid"
+length
+: 
+7
+[[Prototype]]
+: 
+Array(0)
+bounty-hunter.html:765 🚀 Phase 2: AWS sync enabled - Global multiplayer data
+bounty-hunter.html:786 🚀 Loading bounty hunter data...
+bounty-hunter.html:770 🕰️ PHASE 2: Weekly Sunday research scraping for proof-of-concept validation
+bounty-hunter.html:771 📅 Schedule: Sundays 3:00 AM PST for academic comparison
+bounty-hunter.html:748 ✅ Premium API client loaded
+bounty-hunter.html:796 ✅ AWS submissions loaded from DynamoDB
+bounty-hunter.html:806 🌐 Global multiplayer data loaded: aws_dynamodb
+bounty-hunter.html:865 🔧 TEST 5: Updating UI sections with processed data
+bounty-hunter.html:869 🔧 TEST 5: Calling loadTopPlayers()
+bounty-hunter.html:871 🔧 TEST 5: Calling loadMissions()
+bounty-hunter.html:873 🔧 TEST 5: Calling loadGeography()
+bounty-hunter.html:875 🔧 TEST 5: Calling loadJusticeCases()
+bounty-hunter.html:877 🔧 TEST 5: Calling loadBeerTrials()
+bounty-hunter.html:1112 🍺 Loading Beer Justice trials...
+bounty-hunter.html:1113 🔍 BeerJusticeAWS available: object
+bounty-hunter.html:1114 🔍 BeerJusticeAWS methods: 
+['apiBase']
+bounty-hunter.html:1115 🔍 BeerJusticeAWS prototype methods: 
+(7) ['constructor', 'createTrial', 'castVote', 'getActiveTrials', 'getHonorScore', 'getBeerDebts', 'markDebtPaid']
+0
+: 
+"constructor"
+1
+: 
+"createTrial"
+2
+: 
+"castVote"
+3
+: 
+"getActiveTrials"
+4
+: 
+"getHonorScore"
+5
+: 
+"getBeerDebts"
+6
+: 
+"markDebtPaid"
+length
+: 
+7
+[[Prototype]]
+: 
+Array(0)
+bounty-hunter.html:1126 🔍 Testing getActiveTrials method: undefined
+bounty-hunter.html:1180 ❌ Failed to load Beer Justice trials: Error: getActiveTrials method not found
+    at loadBeerTrials (bounty-hunter.html:1129:17)
+    at loadBountyHunterData (bounty-hunter.html:878:7)
+loadBeerTrials	@	bounty-hunter.html:1180
+loadBountyHunterData	@	bounty-hunter.html:878
+await in loadBountyHunterData		
+(anonymous)	@	bounty-hunter.html:766
