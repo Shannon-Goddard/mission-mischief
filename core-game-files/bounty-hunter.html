@@ -1110,6 +1110,14 @@
 
     async function loadBeerTrials() {
       console.log('🍺 Loading Beer Justice trials...');
+      console.log('🔍 BeerJusticeAWS available:', typeof window.BeerJusticeAWS);
+      
+      if (typeof window.BeerJusticeAWS === 'undefined') {
+        console.error('❌ BeerJusticeAWS not loaded!');
+        document.getElementById('activeTrials').innerHTML = '<div style="text-align: center; color: #ff4444; padding: 20px;">BeerJusticeAWS not loaded - Check script loading</div>';
+        document.getElementById('trialsCount').textContent = 'Error';
+        return;
+      }
       
       try {
         // Load active trials from AWS
