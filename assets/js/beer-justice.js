@@ -88,8 +88,8 @@ const BeerJustice = {
     document.body.appendChild(modal);
   },
   
-  // Start a beer trial
-  startTrial() {
+  // Start a beer trial (AWS + local)
+  async startTrial() {
     const accused = document.getElementById('accusedPlayer').value.trim();
     const evidenceURL = document.getElementById('evidenceURL').value.trim();
     const details = document.getElementById('accusationDetails').value.trim();
@@ -100,61 +100,60 @@ const BeerJustice = {
     }
     
     const user = Storage.getUser();
-    const trialId = 'trial_' + Date.now();
     
-    const trialData = {
-      trial_id: trialId,
-      accuser: user.userName,
-      accused: accused,
-      evidence_url: evidenceURL,
-      accusation_details: details,
-      created_at: new Date().toISOString(),
-      expires_at: new Date(Date.now() + 6 * 60 * 60 * 1000).toISOString(), // 6 hours
-      status: 'active',
-      votes: { guilty: 0, innocent: 0 },
-      voters: []
-    };
-    
-    // Deduct 5 points from both parties immediately
-    const accuserUser = Storage.getUser();
-    accuserUser.totalPoints = Math.max(0, (accuserUser.totalPoints || 0) - 5);
-    Storage.saveUser(accuserUser);
-    
-    // Create trial record
-    Storage.createTrial(trialData);
-    
-    // Close modal
-    this.closeModal();
-    
-    // Update displays
-    if (window.loadUserStats) window.loadUserStats();
-    loadBeerTrials();
-    
-    showToast(`Trial started! Community has 6 hours to vote. You've been charged 5 points.`, 'success');
-  },
-  
-  // Cast vote in trial
-  castVote(trialId, verdict) {
-    const user = Storage.getUser();
-    const trial = Storage.castVote(trialId, verdict, user.userName);
-    
-    if (!trial) {
-      showToast('Unable to vote - you may have already voted', 'warning');
+    // Check honor score via AWS
+    const honorScore = await BeerJusticeAWS.getHonorScore(user.userName);
+    if (honorScore < 50) {
+      showToast('Need 50+ Honor to start trials. Build reputation first!', 'warning');
       return;
     }
     
-    // Award participation honor
-    Storage.updateHonorScore(1, 'trial_participation');
+    const trialData = {
+      accuser: user.userName,
+      accused: accused,
+      evidence_url: evidenceURL,
+      accusation: details
+    };
     
-    showToast(`Vote cast: ${verdict.toUpperCase()}! 🗳️`, 'success');
-    
-    // Check if trial should conclude
-    const totalVotes = trial.votes.guilty + trial.votes.innocent;
-    if (totalVotes >= 5) { // Minimum 5 votes to conclude
-      this.concludeTrial(trial);
+    try {
+      // Create trial via AWS (with local fallback)
+      const result = await BeerJusticeAWS.createTrial(trialData);
+      
+      if (result.trial_id) {
+        showToast(`Trial started! Community has 6 hours to vote. You've been charged 5 points.`, 'success');
+        this.closeModal();
+        
+        // Update displays
+        if (window.loadUserStats) window.loadUserStats();
+        loadBeerTrials();
+      }
+    } catch (error) {
+      showToast(`Failed to start trial: ${error.message}`, 'error');
     }
+  },
+  
+  // Cast vote in trial (AWS + local)
+  async castVote(trialId, verdict) {
+    const user = Storage.getUser();
     
-    loadBeerTrials();
+    try {
+      // Cast vote via AWS (with local fallback)
+      const result = await BeerJusticeAWS.castVote(trialId, verdict, user.userName);
+      
+      if (result.message) {
+        showToast(`Vote cast: ${verdict.toUpperCase()}! 🗳️`, 'success');
+        
+        if (result.trial_concluded) {
+          showToast(`⚖️ VERDICT: ${result.verdict.toUpperCase()}! ${result.message}`, 'info');
+        }
+        
+        // Update displays
+        if (window.loadUserStats) window.loadUserStats();
+        loadBeerTrials();
+      }
+    } catch (error) {
+      showToast(`Failed to cast vote: ${error.message}`, 'error');
+    }
   },
   
   // Conclude trial with results
@@ -243,11 +242,22 @@ const BeerJustice = {
   }
 };
 
-// Load beer trials function for bounty-hunter.html
-function loadBeerTrials() {
-  const activeTrials = Storage.getActiveTrials();
-  const allTrials = JSON.parse(localStorage.getItem('missionMischiefTrials') || '[]');
-  const completedTrials = allTrials.filter(t => t.status === 'concluded');
+// Load beer trials function for bounty-hunter.html (AWS + local)
+async function loadBeerTrials() {
+  let activeTrials, completedTrials;
+  
+  try {
+    // Load trials from AWS (with local fallback)
+    activeTrials = await BeerJusticeAWS.getActiveTrials();
+    const allTrials = JSON.parse(localStorage.getItem('missionMischiefTrials') || '[]');
+    completedTrials = allTrials.filter(t => t.status === 'concluded');
+  } catch (error) {
+    console.error('Failed to load trials from AWS:', error);
+    // Fallback to local storage
+    activeTrials = Storage.getActiveTrials();
+    const allTrials = JSON.parse(localStorage.getItem('missionMischiefTrials') || '[]');
+    completedTrials = allTrials.filter(t => t.status === 'concluded');
+  }
   
   // Update count
   document.getElementById('trialsCount').textContent = activeTrials.length;

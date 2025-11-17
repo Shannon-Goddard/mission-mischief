@@ -901,4 +901,585 @@ socket.onmessage = function(event) {
 
 ---
 
+## 🔗 AWS CONNECTION IMPLEMENTATION
+
+### Current Status: Local Beer Justice ✅ → Global Beer Justice 🚀
+
+#### What's Already Connected to AWS:
+- ✅ **Mission Submissions**: Direct submissions sync to DynamoDB via aws-submission-sync.js
+- ✅ **Leaderboards**: Global player data from AWS
+- ✅ **Geographic Activity**: Cross-device player locations
+- ✅ **User Profiles**: Synced across devices
+
+#### What Needs AWS Connection:
+- ❌ **Beer Trials**: Currently localStorage only (not global)
+- ❌ **Honor Scores**: Currently localStorage only (not synced)
+- ❌ **Community Voting**: Currently localStorage only (isolated)
+- ❌ **Beer Debts**: Currently localStorage only (not tracked globally)
+
+### Phase 6: AWS Global Beer Justice Integration
+
+#### 6.1 DynamoDB Tables for Beer Justice
+```yaml
+# Add to infrastructure.yaml
+BeerTrialsTable:
+  Type: AWS::DynamoDB::Table
+  Properties:
+    TableName: mission-mischief-beer-trials
+    BillingMode: PAY_PER_REQUEST
+    AttributeDefinitions:
+      - AttributeName: trial_id
+        AttributeType: S
+      - AttributeName: status
+        AttributeType: S
+    KeySchema:
+      - AttributeName: trial_id
+        KeyType: HASH
+    GlobalSecondaryIndexes:
+      - IndexName: status-index
+        KeySchema:
+          - AttributeName: status
+            KeyType: HASH
+        Projection:
+          ProjectionType: ALL
+    TimeToLiveSpecification:
+      AttributeName: ttl
+      Enabled: true
+
+BeerDebtsTable:
+  Type: AWS::DynamoDB::Table
+  Properties:
+    TableName: mission-mischief-beer-debts
+    BillingMode: PAY_PER_REQUEST
+    AttributeDefinitions:
+      - AttributeName: debt_id
+        AttributeType: S
+      - AttributeName: debtor
+        AttributeType: S
+      - AttributeName: creditor
+        AttributeType: S
+    KeySchema:
+      - AttributeName: debt_id
+        KeyType: HASH
+    GlobalSecondaryIndexes:
+      - IndexName: debtor-index
+        KeySchema:
+          - AttributeName: debtor
+            KeyType: HASH
+        Projection:
+          ProjectionType: ALL
+      - IndexName: creditor-index
+        KeySchema:
+          - AttributeName: creditor
+            KeyType: HASH
+        Projection:
+          ProjectionType: ALL
+
+HonorScoresTable:
+  Type: AWS::DynamoDB::Table
+  Properties:
+    TableName: mission-mischief-honor-scores
+    BillingMode: PAY_PER_REQUEST
+    AttributeDefinitions:
+      - AttributeName: user_handle
+        AttributeType: S
+    KeySchema:
+      - AttributeName: user_handle
+        KeyType: HASH
+```
+
+#### 6.2 Beer Justice API Lambda Functions
+```python
+# beer-justice-api.py - New Lambda function
+import json
+import boto3
+from datetime import datetime, timedelta
+from decimal import Decimal
+
+dynamodb = boto3.resource('dynamodb')
+trials_table = dynamodb.Table('mission-mischief-beer-trials')
+debts_table = dynamodb.Table('mission-mischief-beer-debts')
+honor_table = dynamodb.Table('mission-mischief-honor-scores')
+
+def lambda_handler(event, context):
+    try:
+        action = event['pathParameters']['action']
+        
+        if action == 'create-trial':
+            return create_trial(json.loads(event['body']))
+        elif action == 'cast-vote':
+            return cast_vote(json.loads(event['body']))
+        elif action == 'get-trials':
+            return get_active_trials()
+        elif action == 'get-honor':
+            return get_honor_score(event['queryStringParameters']['user'])
+        elif action == 'get-debts':
+            return get_beer_debts(event['queryStringParameters']['user'])
+        else:
+            return error_response('Invalid action', 400)
+            
+    except Exception as e:
+        return error_response(str(e), 500)
+
+def create_trial(data):
+    # Validate honor score requirement
+    accuser_honor = get_user_honor(data['accuser'])
+    if accuser_honor < 50:
+        return error_response('Need 50+ Honor to start trials', 403)
+    
+    trial_id = f"trial_{int(datetime.now().timestamp())}"
+    expires_at = datetime.now() + timedelta(hours=6)
+    
+    trial_data = {
+        'trial_id': trial_id,
+        'accuser': data['accuser'],
+        'accused': data['accused'],
+        'evidence_url': data['evidence_url'],
+        'accusation': data.get('accusation', 'Cheating'),
+        'created_at': datetime.now().isoformat(),
+        'expires_at': expires_at.isoformat(),
+        'status': 'active',
+        'votes': {
+            'guilty': 0,
+            'innocent': 0
+        },
+        'voters': [],
+        'ttl': int((expires_at + timedelta(days=7)).timestamp())  # Keep for 7 days after expiry
+    }
+    
+    # Store trial
+    trials_table.put_item(Item=trial_data)
+    
+    # Deduct 5 points from both parties
+    deduct_points(data['accuser'], 5)
+    deduct_points(data['accused'], 5)
+    
+    return success_response({
+        'trial_id': trial_id,
+        'message': 'Trial created successfully',
+        'trial_data': trial_data
+    })
+
+def cast_vote(data):
+    trial_id = data['trial_id']
+    verdict = data['verdict']  # 'guilty' or 'innocent'
+    voter = data['voter']
+    
+    # Get trial
+    response = trials_table.get_item(Key={'trial_id': trial_id})
+    if 'Item' not in response:
+        return error_response('Trial not found', 404)
+    
+    trial = response['Item']
+    
+    # Check if trial is still active
+    if trial['status'] != 'active':
+        return error_response('Trial is no longer active', 400)
+    
+    # Check if user already voted
+    if voter in trial['voters']:
+        return error_response('You have already voted', 400)
+    
+    # Check if trial expired
+    if datetime.now() > datetime.fromisoformat(trial['expires_at']):
+        return conclude_trial(trial_id)
+    
+    # Cast vote
+    trial['votes'][verdict] += 1
+    trial['voters'].append(voter)
+    
+    # Update trial
+    trials_table.put_item(Item=trial)
+    
+    # Award participation point
+    award_points(voter, 1)
+    update_honor_score(voter, 1, 'trial_participation')
+    
+    # Check if we should conclude trial (majority reached or time expired)
+    total_votes = trial['votes']['guilty'] + trial['votes']['innocent']
+    if total_votes >= 5:  # Conclude at 5 votes minimum
+        return conclude_trial(trial_id)
+    
+    return success_response({
+        'message': 'Vote cast successfully',
+        'trial_data': trial,
+        'trial_concluded': False
+    })
+
+def conclude_trial(trial_id):
+    # Get trial
+    response = trials_table.get_item(Key={'trial_id': trial_id})
+    trial = response['Item']
+    
+    # Determine verdict
+    guilty_votes = trial['votes']['guilty']
+    innocent_votes = trial['votes']['innocent']
+    
+    if guilty_votes > innocent_votes:
+        verdict = 'guilty'
+    else:
+        verdict = 'innocent'
+    
+    # Update trial status
+    trial['status'] = 'concluded'
+    trial['final_verdict'] = verdict
+    trial['concluded_at'] = datetime.now().isoformat()
+    trials_table.put_item(Item=trial)
+    
+    # Resolve consequences
+    if verdict == 'guilty':
+        # Accused was guilty
+        award_points(trial['accuser'], 7)  # Gets 5 back + 2 bonus
+        update_honor_score(trial['accused'], -10, 'guilty_verdict')
+        update_honor_score(trial['accuser'], 3, 'correct_accusation')
+        
+        # Create beer debt: Accused owes accuser 1 beer
+        create_beer_debt(
+            debtor=trial['accused'],
+            creditor=trial['accuser'],
+            beers_owed=1,
+            reason='guilty_verdict',
+            trial_id=trial_id
+        )
+        
+        verdict_message = f"{trial['accused']} found GUILTY! Owes {trial['accuser']} 1 beer 🍺"
+        
+    else:
+        # Accused was innocent - false accusation
+        award_points(trial['accused'], 7)  # Gets 5 back + 2 bonus
+        update_honor_score(trial['accuser'], -5, 'false_accusation')
+        update_honor_score(trial['accused'], 2, 'vindicated')
+        
+        # Create beer debt: Accuser owes accused 3 beers
+        create_beer_debt(
+            debtor=trial['accuser'],
+            creditor=trial['accused'],
+            beers_owed=3,
+            reason='false_accusation',
+            trial_id=trial_id
+        )
+        
+        verdict_message = f"{trial['accused']} found INNOCENT! {trial['accuser']} owes 3 beers 🍺🍺🍺"
+    
+    return success_response({
+        'trial_concluded': True,
+        'verdict': verdict,
+        'message': verdict_message,
+        'trial_data': trial
+    })
+
+def create_beer_debt(debtor, creditor, beers_owed, reason, trial_id):
+    debt_id = f"debt_{int(datetime.now().timestamp())}"
+    due_date = datetime.now() + timedelta(days=7)
+    
+    debt_data = {
+        'debt_id': debt_id,
+        'debtor': debtor,
+        'creditor': creditor,
+        'beers_owed': beers_owed,
+        'amount_usd': beers_owed * 5,  # $5 per beer
+        'reason': reason,
+        'trial_id': trial_id,
+        'created_date': datetime.now().isoformat(),
+        'due_date': due_date.isoformat(),
+        'status': 'pending',
+        'payment_proof': None
+    }
+    
+    debts_table.put_item(Item=debt_data)
+    return debt_data
+
+def get_user_honor(user_handle):
+    try:
+        response = honor_table.get_item(Key={'user_handle': user_handle})
+        if 'Item' in response:
+            return int(response['Item']['honor_score'])
+        else:
+            # Initialize new user with 100 honor
+            honor_table.put_item(Item={
+                'user_handle': user_handle,
+                'honor_score': 100,
+                'last_updated': datetime.now().isoformat()
+            })
+            return 100
+    except:
+        return 100
+
+def update_honor_score(user_handle, change, reason):
+    current_honor = get_user_honor(user_handle)
+    new_honor = max(0, current_honor + change)
+    
+    honor_table.put_item(Item={
+        'user_handle': user_handle,
+        'honor_score': new_honor,
+        'last_updated': datetime.now().isoformat(),
+        'last_change': change,
+        'last_reason': reason
+    })
+    
+    return new_honor
+
+def success_response(data):
+    return {
+        'statusCode': 200,
+        'headers': {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Methods': 'GET,POST,OPTIONS'
+        },
+        'body': json.dumps(data, default=str)
+    }
+
+def error_response(message, status_code):
+    return {
+        'statusCode': status_code,
+        'headers': {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Methods': 'GET,POST,OPTIONS'
+        },
+        'body': json.dumps({'error': message})
+    }
+```
+
+#### 6.3 Frontend AWS Integration
+```javascript
+// beer-justice-aws-sync.js - New file for AWS integration
+class BeerJusticeAWS {
+    constructor() {
+        this.apiBase = 'https://api.missionmischief.com/beer-justice';
+    }
+    
+    async createTrial(trialData) {
+        try {
+            const response = await fetch(`${this.apiBase}/create-trial`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(trialData)
+            });
+            
+            const result = await response.json();
+            
+            if (result.trial_id) {
+                // Also store locally for offline access
+                Storage.createTrial(result.trial_data);
+                return result;
+            } else {
+                throw new Error(result.error || 'Failed to create trial');
+            }
+        } catch (error) {
+            console.error('AWS trial creation failed:', error);
+            // Fallback to local storage
+            return Storage.createTrial(trialData);
+        }
+    }
+    
+    async castVote(trialId, verdict, voter) {
+        try {
+            const response = await fetch(`${this.apiBase}/cast-vote`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    trial_id: trialId,
+                    verdict: verdict,
+                    voter: voter
+                })
+            });
+            
+            const result = await response.json();
+            
+            if (result.message) {
+                // Update local storage with AWS data
+                Storage.updateTrial(trialId, result.trial_data);
+                return result;
+            } else {
+                throw new Error(result.error || 'Failed to cast vote');
+            }
+        } catch (error) {
+            console.error('AWS vote casting failed:', error);
+            // Fallback to local storage
+            return Storage.castVote(trialId, verdict, voter);
+        }
+    }
+    
+    async getActiveTrials() {
+        try {
+            const response = await fetch(`${this.apiBase}/get-trials`);
+            const result = await response.json();
+            
+            if (result.trials) {
+                // Sync with local storage
+                result.trials.forEach(trial => {
+                    Storage.updateTrial(trial.trial_id, trial);
+                });
+                return result.trials;
+            }
+        } catch (error) {
+            console.error('AWS trials fetch failed:', error);
+        }
+        
+        // Fallback to local storage
+        return Storage.getActiveTrials();
+    }
+    
+    async getHonorScore(userHandle) {
+        try {
+            const response = await fetch(`${this.apiBase}/get-honor?user=${userHandle}`);
+            const result = await response.json();
+            
+            if (result.honor_score !== undefined) {
+                // Update local storage
+                const user = Storage.getUser(userHandle);
+                user.honorScore = result.honor_score;
+                Storage.saveUser(user);
+                return result.honor_score;
+            }
+        } catch (error) {
+            console.error('AWS honor fetch failed:', error);
+        }
+        
+        // Fallback to local storage
+        const user = Storage.getUser(userHandle);
+        return user.honorScore || 100;
+    }
+    
+    async getBeerDebts(userHandle) {
+        try {
+            const response = await fetch(`${this.apiBase}/get-debts?user=${userHandle}`);
+            const result = await response.json();
+            
+            if (result.debts) {
+                // Update local storage
+                Storage.saveBeerDebts(userHandle, result.debts);
+                return result.debts;
+            }
+        } catch (error) {
+            console.error('AWS debts fetch failed:', error);
+        }
+        
+        // Fallback to local storage
+        return Storage.getBeerDebts(userHandle);
+    }
+}
+
+// Global instance
+window.BeerJusticeAWS = new BeerJusticeAWS();
+```
+
+#### 6.4 Update Existing Beer Justice to Use AWS
+```javascript
+// Update beer-justice.js to use AWS sync
+async function startTrial(accusedUser, evidenceURL, accusation) {
+    const accuser = Storage.getUser().userHandle;
+    
+    // Check honor score via AWS
+    const honorScore = await BeerJusticeAWS.getHonorScore(accuser);
+    if (honorScore < 50) {
+        showToast('Need 50+ Honor to start trials. Build reputation first!', 'warning');
+        return;
+    }
+    
+    const trialData = {
+        accuser: accuser,
+        accused: accusedUser,
+        evidence_url: evidenceURL,
+        accusation: accusation || 'Suspicious activity'
+    };
+    
+    try {
+        // Create trial via AWS (with local fallback)
+        const result = await BeerJusticeAWS.createTrial(trialData);
+        
+        if (result.trial_id) {
+            showToast(`Trial started! Community has 6 hours to vote. You've been charged 5 points.`, 'success');
+            closeModal();
+            loadActiveTrials(); // Refresh display
+        }
+    } catch (error) {
+        showToast(`Failed to start trial: ${error.message}`, 'error');
+    }
+}
+
+async function castVote(trialId, verdict) {
+    const voter = Storage.getUser().userHandle;
+    
+    try {
+        // Cast vote via AWS (with local fallback)
+        const result = await BeerJusticeAWS.castVote(trialId, verdict, voter);
+        
+        if (result.message) {
+            showToast(`Vote cast: ${verdict.toUpperCase()}! 🗳️`, 'success');
+            
+            if (result.trial_concluded) {
+                showToast(`⚖️ VERDICT: ${result.verdict.toUpperCase()}! ${result.message}`, 'info');
+            }
+            
+            loadActiveTrials(); // Refresh display
+        }
+    } catch (error) {
+        showToast(`Failed to cast vote: ${error.message}`, 'error');
+    }
+}
+
+async function loadActiveTrials() {
+    try {
+        // Load trials from AWS (with local fallback)
+        const trials = await BeerJusticeAWS.getActiveTrials();
+        displayActiveTrials(trials);
+    } catch (error) {
+        console.error('Failed to load trials:', error);
+        // Fallback to local storage
+        const localTrials = Storage.getActiveTrials();
+        displayActiveTrials(localTrials);
+    }
+}
+```
+
+#### 6.5 API Gateway Configuration
+```yaml
+# Add to infrastructure.yaml
+BeerJusticeApi:
+  Type: AWS::ApiGateway::RestApi
+  Properties:
+    Name: mission-mischief-beer-justice-api
+    Description: Beer Justice System API
+    
+BeerJusticeResource:
+  Type: AWS::ApiGateway::Resource
+  Properties:
+    RestApiId: !Ref BeerJusticeApi
+    ParentId: !GetAtt BeerJusticeApi.RootResourceId
+    PathPart: '{action}'
+    
+BeerJusticeMethod:
+  Type: AWS::ApiGateway::Method
+  Properties:
+    RestApiId: !Ref BeerJusticeApi
+    ResourceId: !Ref BeerJusticeResource
+    HttpMethod: POST
+    AuthorizationType: NONE
+    Integration:
+      Type: AWS_PROXY
+      IntegrationHttpMethod: POST
+      Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${BeerJusticeFunction.Arn}/invocations'
+```
+
+### Implementation Steps:
+
+1. **Deploy DynamoDB Tables** - Add beer justice tables to infrastructure
+2. **Create Beer Justice Lambda** - Deploy beer-justice-api.py function
+3. **Setup API Gateway** - Configure endpoints for trial management
+4. **Update Frontend** - Add AWS sync to existing beer justice system
+5. **Test Global Sync** - Verify cross-device trial participation
+6. **Monitor Costs** - Ensure AWS usage stays within $4-15/month target
+
+### Expected Benefits:
+- ✅ **Global Trials**: Cross-device community voting
+- ✅ **Synced Honor Scores**: Reputation follows users across devices
+- ✅ **Real Multiplayer**: True community justice system
+- ✅ **Preserved UX**: Same interface, now with global data
+- ✅ **Cost Efficient**: Minimal AWS usage for maximum functionality
+
+---
+
 **This comprehensive action plan transforms Mission Mischief from an expensive proof-of-concept to a cost-effective, engaging, and scalable production system while preserving its revolutionary social verification research value and adding a unique community-driven justice system with real economic consequences.**
