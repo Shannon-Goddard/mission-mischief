@@ -38,6 +38,11 @@
         async function testHonorScore() {
             addResult('Testing honor score retrieval...', 'info');
             
+            if (typeof BeerJusticeAWS === 'undefined') {
+                addResult('❌ BeerJusticeAWS not loaded', 'error');
+                return;
+            }
+            
             try {
                 const honor = await BeerJusticeAWS.getHonorScore('testuser');
                 addResult(`✅ Honor score retrieved: ${honor}`, 'success');
@@ -49,6 +54,11 @@
         
         async function testCreateTrial() {
             addResult('Testing trial creation...', 'info');
+            
+            if (typeof BeerJusticeAWS === 'undefined') {
+                addResult('❌ BeerJusticeAWS not loaded', 'error');
+                return;
+            }
             
             const trialData = {
                 accuser: 'testaccuser',
@@ -68,6 +78,11 @@
         
         async function testGetTrials() {
             addResult('Testing trials retrieval...', 'info');
+            
+            if (typeof BeerJusticeAWS === 'undefined') {
+                addResult('❌ BeerJusticeAWS not loaded', 'error');
+                return;
+            }
             
             try {
                 const trials = await BeerJusticeAWS.getActiveTrials();
@@ -101,9 +116,16 @@
             addResult(`✅ Local fallback working: ${localTrials.length} local trials`, 'success');
         }
         
-        // Initialize test
-        addResult('🚀 Beer Justice AWS Test initialized', 'info');
-        addResult(`📡 API Base: ${BeerJusticeAWS.apiBase}`, 'info');
+        // Initialize test after scripts load
+        window.addEventListener('load', function() {
+            addResult('🚀 Beer Justice AWS Test initialized', 'info');
+            
+            if (typeof BeerJusticeAWS !== 'undefined') {
+                addResult(`📡 API Base: ${BeerJusticeAWS.apiBase}`, 'info');
+            } else {
+                addResult('❌ BeerJusticeAWS not loaded - check script path', 'error');
+            }
+        });
     </script>
 </body>
 </html>

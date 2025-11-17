@@ -16,7 +16,9 @@ class BeerJusticeAWS {
             
             if (result.trial_id) {
                 // Also store locally for offline access
-                Storage.createTrial(result.trial_data);
+                if (typeof Storage !== 'undefined') {
+                    Storage.createTrial(result.trial_data);
+                }
                 return result;
             } else {
                 throw new Error(result.error || 'Failed to create trial');
@@ -24,7 +26,10 @@ class BeerJusticeAWS {
         } catch (error) {
             console.error('AWS trial creation failed:', error);
             // Fallback to local storage
-            return Storage.createTrial(trialData);
+            if (typeof Storage !== 'undefined') {
+                return Storage.createTrial(trialData);
+            }
+            throw error;
         }
     }
     
@@ -44,7 +49,9 @@ class BeerJusticeAWS {
             
             if (result.message) {
                 // Update local storage with AWS data
-                Storage.updateTrial(trialId, result.trial_data);
+                if (typeof Storage !== 'undefined') {
+                    Storage.updateTrial(trialId, result.trial_data);
+                }
                 return result;
             } else {
                 throw new Error(result.error || 'Failed to cast vote');
@@ -52,7 +59,10 @@ class BeerJusticeAWS {
         } catch (error) {
             console.error('AWS vote casting failed:', error);
             // Fallback to local storage
-            return Storage.castVote(trialId, verdict, voter);
+            if (typeof Storage !== 'undefined') {
+                return Storage.castVote(trialId, verdict, voter);
+            }
+            throw error;
         }
     }
     
@@ -63,9 +73,11 @@ class BeerJusticeAWS {
             
             if (result.trials) {
                 // Sync with local storage
-                result.trials.forEach(trial => {
-                    Storage.updateTrial(trial.trial_id, trial);
-                });
+                if (typeof Storage !== 'undefined') {
+                    result.trials.forEach(trial => {
+                        Storage.updateTrial(trial.trial_id, trial);
+                    });
+                }
                 return result.trials;
             }
         } catch (error) {
@@ -73,7 +85,10 @@ class BeerJusticeAWS {
         }
         
         // Fallback to local storage
-        return Storage.getActiveTrials();
+        if (typeof Storage !== 'undefined') {
+            return Storage.getActiveTrials();
+        }
+        return [];
     }
     
     async getHonorScore(userHandle) {
@@ -83,9 +98,11 @@ class BeerJusticeAWS {
             
             if (result.honor_score !== undefined) {
                 // Update local storage
-                const user = Storage.getUser(userHandle);
-                user.honorScore = result.honor_score;
-                Storage.saveUser(user);
+                if (typeof Storage !== 'undefined') {
+                    const user = Storage.getUser(userHandle);
+                    user.honorScore = result.honor_score;
+                    Storage.saveUser(user);
+                }
                 return result.honor_score;
             }
         } catch (error) {
@@ -93,8 +110,11 @@ class BeerJusticeAWS {
         }
         
         // Fallback to local storage
-        const user = Storage.getUser(userHandle);
-        return user.honorScore || 100;
+        if (typeof Storage !== 'undefined') {
+            const user = Storage.getUser(userHandle);
+            return user.honorScore || 100;
+        }
+        return 100;
     }
     
     async getBeerDebts(userHandle) {
@@ -104,7 +124,9 @@ class BeerJusticeAWS {
             
             if (result.debts) {
                 // Update local storage
-                Storage.saveBeerDebts(userHandle, result.debts);
+                if (typeof Storage !== 'undefined') {
+                    Storage.saveBeerDebts(userHandle, result.debts);
+                }
                 return result.debts;
             }
         } catch (error) {
@@ -112,7 +134,10 @@ class BeerJusticeAWS {
         }
         
         // Fallback to local storage
-        return Storage.getBeerDebts(userHandle);
+        if (typeof Storage !== 'undefined') {
+            return Storage.getBeerDebts(userHandle);
+        }
+        return [];
     }
     
     async markDebtPaid(debtId) {
@@ -137,8 +162,27 @@ class BeerJusticeAWS {
     }
 }
 
-// Global instance
-window.BeerJusticeAWS = new BeerJusticeAWS();
+// Global instance - wait for Storage to be available
+if (typeof Storage !== 'undefined') {
+    window.BeerJusticeAWS = new BeerJusticeAWS();
+} else {
+    // Wait for Storage to load
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof Storage !== 'undefined') {
+            window.BeerJusticeAWS = new BeerJusticeAWS();
+        } else {
+            console.error('Storage not available - BeerJusticeAWS fallback mode');
+            // Create minimal fallback
+            window.BeerJusticeAWS = {
+                apiBase: 'https://ws2qwehovl.execute-api.us-east-1.amazonaws.com/prod',
+                async getHonorScore() { return 100; },
+                async createTrial() { throw new Error('Storage not available'); },
+                async getActiveTrials() { return []; },
+                async castVote() { throw new Error('Storage not available'); }
+            };
+        }
+    });
+}
 
 // Debug function
 window.testAWSConnection = async function() {
