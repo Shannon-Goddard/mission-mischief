@@ -20,3 +20,185 @@ bounty-hunter.html:1163 ❌ Failed to load Beer Justice trials: TypeError: BeerJ
     at loadBeerTrials (bounty-hunter.html:1116:51)
     at loadBountyHunterData (bounty-hunter.html:878:7)
 loadBeerTrials	@	bounty-hunter.html:1163
+What do you think? Ready to test the real Beer Justice system? 🍺⚖️
+
+let's test the actual Beer Justice system in bounty-hunter.html read beer-justice-console-logs.txt I just did test 1
+
+
+Context
+I can see the issue! The bounty-hunter.html is trying to call BeerJusticeAWS.getActiveTrials() but the BeerJusticeAWS object isn't loading properly.
+
+Looking at the logs, the main game systems are working fine:
+✅ Premium API client loaded
+
+✅ AWS submissions loaded from DynamoDB
+
+✅ Global multiplayer data loaded
+
+But the Beer Justice AWS sync is failing with the same error as the test file.
+
+1 file read
+bounty-hunter.html
+I can see the issue! The bounty-hunter.html is loading the beer-justice-aws-sync.js script, but it's failing to load properly. Looking at line 1116, it's trying to call BeerJusticeAWS.getActiveTrials() but getting "BeerJusticeAWS.getActiveTrials is not a function".
+
+Let me check the beer-justice-aws-sync.js file to see what's wrong:
+
+1 file read
+beer-justice-aws-sync.js
+I found the issue! The problem is in the script loading order and dependency checking. The BeerJusticeAWS object is only created if Storage is available, but the script loading is happening before Storage is fully loaded.
+
+Looking at the bounty-hunter.html, the scripts are loaded in this order:
+
+storage.js
+
+missions.js
+
+beer-justice-aws-sync.js
+
+beer-justice.js
+
+But the BeerJusticeAWS class is waiting for Storage to be available, and there might be a timing issue.
+
+Let me fix this by making the BeerJusticeAWS initialization more robust:
+
+beer-justice-aws-sync.js
++5
+-21
+
+Undo
+Now let's test the bounty-hunter.html again to see if the BeerJusticeAWS object loads properly. The issue was that the script was waiting for Storage to be available before creating the BeerJusticeAWS instance, but we can create it immediately and handle Storage fallbacks within the methods.
+
+Try testing bounty-hunter.html again and let me know what the console logs show. The BeerJusticeAWS object should now be available immediately when the script loads.
+
+bounty-hunter.html:1163 ❌ Failed to load Beer Justice trials: TypeError: BeerJusticeAWS.getActiveTrials is not a function
+at loadBeerTrials (bounty-hunter.html:1116:51)
+at loadBountyHunterData (bounty-hunter.html:878:7)
+loadBeerTrials @ bounty-hunter.html:1163
+loadBountyHunterData @ bounty-hunter.html:878
+await in loadBountyHunterData
+(anonymous) @ bounty-hunter.html:766
+
+
+Context
+I can see the issue! The BeerJusticeAWS object is still not loading. Let me check if the script is actually being loaded by looking at the browser's network tab or adding some debug logging.
+
+The problem is that the beer-justice-aws-sync.js script isn't loading properly or the BeerJusticeAWS object isn't being created. Let me add some debug logging to see what's happening:
+
+beer-justice-aws-sync.js
++2
+-0
+
+Undo
+beer-justice-aws-sync.js
++17
+-4
+
+Undo
+
+Undo all changes
+Now let's also add a check in the bounty-hunter.html to see if the BeerJusticeAWS object exists before trying to use it:
+
+bounty-hunter.html
++8
+-0
+
+Undo
+Now test bounty-hunter.html again. The console should show:
+
+"🍺 Loading BeerJusticeAWS script..." when the script starts loading
+
+"✅ BeerJusticeAWS initialized successfully" if it loads properly
+
+"🔍 BeerJusticeAWS available: [type]" when loadBeerTrials runs
+
+This will help us identify exactly where the script loading is failing.
+
+🍺 Loading Beer Justice trials...
+bounty-hunter.html:1113 🔍 BeerJusticeAWS available: object
+bounty-hunter.html:1171 ❌ Failed to load Beer Justice trials: TypeError: BeerJusticeAWS.getActiveTrials is not a function
+at loadBeerTrials (bounty-hunter.html:1124:51)
+at loadBountyHunterData (bounty-hunter.html:878:7)
+loadBeerTrials @ bounty-hunter.html:1171
+loadBountyHunterData @ bounty-hunter.html:878
+await in loadBountyHunterData
+(anonymous) @ bounty-hunter.html:766
+
+
+Context
+Great! Now I can see the issue clearly. The BeerJusticeAWS object exists ( typeof object), but it doesn't have the getActiveTrials method. This means the script is loading but the class methods aren't being created properly.
+
+Let me add more debugging to see what's actually in the BeerJusticeAWS object:
+
+bounty-hunter.html
++2
+-0
+
+Undo
+But actually, let me check if we're seeing the debug logs from the beer-justice-aws-sync.js script. I notice we're not seeing the "🍺 Loading BeerJusticeAWS script..." or "✅ BeerJusticeAWS initialized successfully" messages in the console logs.
+
+This suggests the script might not be loading at all, or there's a JavaScript error preventing it from executing. Let me check if the script path is correct in bounty-hunter.html:
+
+1 file read
+bounty-hunter.html
+I can see the script loading order in bounty-hunter.html. The issue is that the script is loading but the BeerJusticeAWS object exists but doesn't have the methods. This suggests the script is loading but there's an error in the class definition or the methods aren't being attached to the prototype.
+
+Let me check if there are any JavaScript errors preventing the script from executing properly. The fact that we're not seeing the debug logs from beer-justice-aws-sync.js ("🍺 Loading BeerJusticeAWS script...") suggests the script might have a syntax error or isn't loading at all.
+
+Let me test the script directly by adding a simple test:
+
+bounty-hunter.html
++7
+-0
+
+Undo
+Now test bounty-hunter.html again. This will tell us exactly what's happening with the BeerJusticeAWS object and its methods.
+
+The console should now show us:
+
+What methods are available on the BeerJusticeAWS object
+
+What methods are available on its prototype
+
+Whether getActiveTrials specifically exists as a function
+
+This will help us identify if it's a script loading issue or a method definition problem.
+🔍 BeerJusticeAWS available: object
+bounty-hunter.html:1114 🔍 BeerJusticeAWS methods: 
+['apiBase']
+bounty-hunter.html:1115 🔍 BeerJusticeAWS prototype methods: 
+(7) ['constructor', 'createTrial', 'castVote', 'getActiveTrials', 'getHonorScore', 'getBeerDebts', 'markDebtPaid']
+0
+: 
+"constructor"
+1
+: 
+"createTrial"
+2
+: 
+"castVote"
+3
+: 
+"getActiveTrials"
+4
+: 
+"getHonorScore"
+5
+: 
+"getBeerDebts"
+6
+: 
+"markDebtPaid"
+length
+: 
+7
+[[Prototype]]
+: 
+Array(0)
+bounty-hunter.html:1126 🔍 Testing getActiveTrials method: undefined
+bounty-hunter.html:1180 ❌ Failed to load Beer Justice trials: Error: getActiveTrials method not found
+    at loadBeerTrials (bounty-hunter.html:1129:17)
+    at loadBountyHunterData (bounty-hunter.html:878:7)
+loadBeerTrials	@	bounty-hunter.html:1180
+loadBountyHunterData	@	bounty-hunter.html:878
+await in loadBountyHunterData		
+(anonymous)	@	bounty-hunter.html:766

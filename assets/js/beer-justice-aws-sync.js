@@ -1,10 +1,9 @@
 // Beer Justice AWS Sync - Global multiplayer trials
 console.log('🍺 Loading BeerJusticeAWS script...');
 
-class BeerJusticeAWS {
-    constructor() {
-        this.apiBase = 'https://ws2qwehovl.execute-api.us-east-1.amazonaws.com/prod';
-    }
+// Simple object instead of class to avoid prototype issues
+const BeerJusticeAWS = {
+    apiBase: 'https://ws2qwehovl.execute-api.us-east-1.amazonaws.com/prod',
     
     async createTrial(trialData) {
         try {
@@ -162,26 +161,12 @@ class BeerJusticeAWS {
             throw error;
         }
     }
-}
+};
 
-// Global instance - create immediately with fallback handling
-try {
-    window.BeerJusticeAWS = new BeerJusticeAWS();
-    console.log('✅ BeerJusticeAWS initialized successfully');
-    console.log('📡 API Base:', window.BeerJusticeAWS.apiBase);
-    console.log('🔍 Available methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(window.BeerJusticeAWS)));
-} catch (error) {
-    console.error('❌ BeerJusticeAWS initialization failed:', error);
-    // Create minimal fallback
-    window.BeerJusticeAWS = {
-        apiBase: 'https://ws2qwehovl.execute-api.us-east-1.amazonaws.com/prod',
-        async getHonorScore() { return 100; },
-        async createTrial() { throw new Error('Fallback mode'); },
-        async getActiveTrials() { return []; },
-        async castVote() { throw new Error('Fallback mode'); }
-    };
-    console.log('🔄 BeerJusticeAWS fallback created');
-}
+// Set global reference
+window.BeerJusticeAWS = BeerJusticeAWS;
+console.log('✅ BeerJusticeAWS initialized successfully');
+console.log('📡 API Base:', BeerJusticeAWS.apiBase);
 
 // Debug function
 window.testAWSConnection = async function() {
