@@ -162,27 +162,11 @@ class BeerJusticeAWS {
     }
 }
 
-// Global instance - wait for Storage to be available
-if (typeof Storage !== 'undefined') {
-    window.BeerJusticeAWS = new BeerJusticeAWS();
-} else {
-    // Wait for Storage to load
-    document.addEventListener('DOMContentLoaded', function() {
-        if (typeof Storage !== 'undefined') {
-            window.BeerJusticeAWS = new BeerJusticeAWS();
-        } else {
-            console.error('Storage not available - BeerJusticeAWS fallback mode');
-            // Create minimal fallback
-            window.BeerJusticeAWS = {
-                apiBase: 'https://ws2qwehovl.execute-api.us-east-1.amazonaws.com/prod',
-                async getHonorScore() { return 100; },
-                async createTrial() { throw new Error('Storage not available'); },
-                async getActiveTrials() { return []; },
-                async castVote() { throw new Error('Storage not available'); }
-            };
-        }
-    });
-}
+// Global instance - create immediately with fallback handling
+window.BeerJusticeAWS = new BeerJusticeAWS();
+
+console.log('🍺 BeerJusticeAWS initialized:', typeof window.BeerJusticeAWS);
+console.log('📡 API Base:', window.BeerJusticeAWS.apiBase);
 
 // Debug function
 window.testAWSConnection = async function() {
