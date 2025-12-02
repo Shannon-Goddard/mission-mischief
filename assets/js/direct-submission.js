@@ -43,8 +43,8 @@ const DirectSubmission = {
           <label style="display: block; color: #04aa6d; margin-bottom: 8px; font-weight: bold;">Post URL (Optional):</label>
           <input type="url" id="submissionURL" placeholder="https://instagram.com/p/..." 
                  style="width: 100%; padding: 8px; background: #333; color: #fff; border: 1px solid #555; border-radius: 4px;">
-          <small style="color: #999; font-size: 12px; display: block; margin-top: 5px;">
-            🛡️ For dispute protection only - not required for submission
+          <small style="color: #04aa6d; font-size: 12px; display: block; margin-top: 5px;">
+            📱 Required - We need proof you actually did this!
           </small>
         </div>
         
@@ -52,7 +52,7 @@ const DirectSubmission = {
           <h4 style="color: #04aa6d; margin: 0 0 10px 0; font-size: 14px;">⚡ INSTANT SUBMISSION</h4>
           <ul style="color: #ccc; font-size: 13px; margin: 0; padding-left: 20px;">
             <li>Get points immediately - no waiting!</li>
-            <li>Optional URL protects against disputes</li>
+            <li>Proof URL required - we're not idiots!</li>
             <li>Community can challenge suspicious submissions</li>
             <li>False accusations cost 3 beers ($15)</li>
           </ul>
@@ -81,6 +81,11 @@ const DirectSubmission = {
     
     if (points === 0) {
       showToast('Please select points earned for this mission', 'warning');
+      return;
+    }
+    
+    if (!proofUrl) {
+      showToast('Please provide a link to your proof post', 'warning');
       return;
     }
     

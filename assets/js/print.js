@@ -64,24 +64,39 @@ const PrintHandler = {
       <head>
         <title>Mission Mischief Card</title>
         <style>
-          body { font-family: Arial, sans-serif; margin: 20px; }
-          .card { border: 2px solid #04aa6d; padding: 20px; border-radius: 8px; }
-          .qr-code { width: 100px; height: auto; float: right; object-fit: contain; }
-          h1 { color: #04aa6d; margin: 0; }
-          .handle { font-size: 18px; margin: 10px 0; }
+          body { font-family: Arial, sans-serif; margin: 0; padding: 10px; }
+          .sheet { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(5, 1fr); gap: 5px; width: 8.5in; height: 11in; }
+          .card { border: 2px solid #04aa6d; padding: 8px; border-radius: 4px; font-size: 8px; box-sizing: border-box; }
+          .qr-code { width: 40px; height: auto; float: right; object-fit: contain; }
+          h1 { color: #04aa6d; margin: 0; font-size: 10px; }
+          .handle { font-size: 9px; margin: 2px 0; }
+          p { margin: 1px 0; line-height: 1.1; }
+          strong { font-size: 7px; }
         </style>
       </head>
       <body>
-        <div class="card">
-          <h1>MISSION MISCHIEF</h1>
-          <div class="handle">${userData.userHandle}</div>
-          <p>Player: ${userData.userName}</p>
+        <div class="sheet">
+        ${Array(15).fill().map(() => `<div class="card">
+          <h1>🎭 MISSION MISCHIEF 🎭</h1>
+          <div class="handle">@${userData.userName.replace(/[^a-z0-9]/gi, '')}</div>
+          <p><strong>Player:</strong> ${userData.userName}</p>
+          <p><strong>Location:</strong> ${userData.city}, ${userData.state}, ${userData.country}</p>
           <img class="qr-code" src="${userData.qrCodeData}" alt="QR Code" />
-          <p><strong>IF FOUND...</strong></p>
-          <p>You have stumbled upon a game of cunning, chaos, and questionable morals.</p>
-          <p><strong>DO NOT KEEP THIS CARD.</strong></p>
-          <p>SCAN HERE to discover the Mission and join the chaos.</p>
-          <p>#MISSIONMISCHIEF</p>
+          
+          <div style="border: 2px dashed #04aa6d; padding: 10px; margin: 10px 0; text-align: center;">
+            <p><strong>🏆 FOUND A CARD? EARN REWARDS! 🏆</strong></p>
+            <p>Join Game → Scan QR → Report Card Found → Get Points!</p>
+          </div>
+          
+          <p><strong>Real-World Scavenger Hunt Game</strong></p>
+          <p>✅ Complete missions in public</p>
+          <p>📱 Post proof on social media</p>
+          <p>🎯 Find cards for bonus points</p>
+          <p>🍺 Community justice trials</p>
+          
+          <p><strong>Join at: missionmischief.com</strong></p>
+          <p><strong>#MISSIONMISCHIEF #REALWORLDGAME</strong></p>
+        </div>`).join('')}
         </div>
       </body>
       </html>

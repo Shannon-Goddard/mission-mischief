@@ -62,8 +62,9 @@
     /* Leaderboard Styles */
     .leaderboard {
       background: #111;
-      padding: 30px 0;
+      padding: 40px 0 30px 0;
       margin-bottom: 30px;
+      overflow: visible;
     }
     
     .leaderboard-title {
@@ -72,6 +73,7 @@
       font-size: 1.8em;
       margin-bottom: 25px;
       font-weight: bold;
+      padding-top: 30px;
     }
     
     .top-players {
@@ -79,6 +81,7 @@
       justify-content: center;
       gap: 20px;
       flex-wrap: wrap;
+      margin-top: 20px;
     }
     
     .player-card {
@@ -89,6 +92,7 @@
       text-align: center;
       min-width: 200px;
       position: relative;
+      overflow: visible;
     }
     
     .player-card.rank-1 {
@@ -121,6 +125,7 @@
       justify-content: center;
       font-weight: bold;
       font-size: 1.2em;
+      z-index: 10;
     }
     
     .player-card.rank-1 .player-rank {
@@ -510,11 +515,25 @@
       .top-players {
         flex-direction: column;
         align-items: center;
+        width: 100%;
+        overflow-x: hidden;
       }
       
       .player-card {
         width: 100%;
-        max-width: 300px;
+        max-width: 280px;
+        box-sizing: border-box;
+      }
+      
+      .leaderboard .container {
+        padding: 0 15px;
+        max-width: 100vw;
+        overflow-x: hidden;
+      }
+      
+      .leaderboard-title {
+        font-size: 1.5em;
+        word-wrap: break-word;
       }
       
       .social-platforms {
@@ -616,11 +635,11 @@
       <div class="container">
         <div style="text-align: center;">
           <h2 class="leaderboard-title" style="position: relative; display: inline-block;">
-            <img src="../assets/images/mascot/c-o-c.png" alt="Crown of Chaos" style="position: absolute; top: -60px; left: 50%; transform: translateX(-50%); height: 105px; z-index: 1;">
+            <img src="../assets/images/mascot/c-o-c.png" alt="Crown of Chaos" style="position: absolute; top: -40px; left: 50%; transform: translateX(-50%); height: 105px; z-index: 1;">
             <span style="position: relative; z-index: 0;">MAXIMUM CHAOS</span>
           </h2>
         </div>
-        <div class="top-players" id="topPlayers">
+        <div class="top-players" id="topPlayers" style="margin-top: 30px;">
           <!-- Top 3 players will be loaded here -->
         </div>
       </div>
@@ -698,18 +717,30 @@
         </div>
       </div>
 
-      <!-- Justice Section -->
+      <!-- Research-Backed Leads Section -->
       <div class="bounty-section">
-        <div class="section-header" onclick="toggleSection('justice')">
-          <h2 class="section-title">⚖️ The Accused</h2>
+        <div class="section-header" onclick="toggleSection('research-leads')">
+          <h2 class="section-title">🔍 Research-Backed Leads</h2>
           <div style="display: flex; align-items: center; gap: 10px;">
-            <span class="section-count" id="justiceCount">Loading...</span>
-            <span class="expand-icon" id="justice-icon">▼</span>
+            <span class="section-count" id="leadsCount">Loading...</span>
+            <span class="expand-icon" id="research-leads-icon">▼</span>
           </div>
         </div>
-        <div class="section-content" id="justice-content">
-          <div class="justice-cases" id="justiceCases">
-            <!-- Justice cases will be loaded here -->
+        <div class="section-content" id="research-leads-content">
+          <div style="background: rgba(4, 170, 109, 0.1); padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+            <h4 style="color: #04aa6d; margin: 0 0 10px 0;">📊 Sunday Research Validation</h4>
+            <p style="color: #ccc; font-size: 13px; margin: 0;">
+              Weekly comparison of user submissions vs social media scraping. 
+              Leads generated from discrepancies found in academic research validation.
+            </p>
+          </div>
+          
+          <div id="researchFindings">
+            <!-- Research findings will be loaded here -->
+          </div>
+          
+          <div id="bountyLeads">
+            <!-- Bounty leads will be loaded here -->
           </div>
         </div>
       </div>
@@ -872,10 +903,12 @@
       loadMissions();
       console.log('🔧 TEST 5: Calling loadGeography()');
       loadGeography();
-      console.log('🔧 TEST 5: Calling loadJusticeCases()');
-      loadJusticeCases();
+
       console.log('🔧 TEST 5: Calling loadBeerTrials()');
       loadBeerTrials();
+      
+      console.log('🔧 TEST 5: Calling loadResearchLeads()');
+      loadResearchLeads();
     }
     
 
@@ -1108,6 +1141,120 @@
       `;
     }
 
+    // Load research leads
+    async function loadResearchLeads() {
+      try {
+        const response = await fetch('https://4q1ybupwm0.execute-api.us-east-1.amazonaws.com/prod/research-leads');
+        const data = await response.json();
+        
+        if (data.success) {
+          displayResearchFindings(data.research_findings);
+          displayBountyLeads(data.bounty_leads);
+          document.getElementById('leadsCount').textContent = data.bounty_leads.length;
+        } else {
+          throw new Error('Research API failed');
+        }
+        
+      } catch (error) {
+        console.error('Failed to load research leads:', error);
+        document.getElementById('bountyLeads').innerHTML = 
+          '<div style="text-align: center; color: #04aa6d; padding: 20px;"><strong>✅ No discrepancies found!</strong><br><span style="color: #666;">All user submissions match social media data</span></div>';
+        document.getElementById('leadsCount').textContent = '0';
+      }
+    }
+
+    function displayResearchFindings(findings) {
+      const container = document.getElementById('researchFindings');
+      
+      container.innerHTML = `
+        <div class="research-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px;">
+          <div class="stat-card" style="background: #111; padding: 15px; border-radius: 6px; text-align: center;">
+            <div style="color: #04aa6d; font-size: 1.5em; font-weight: bold;">${findings.accuracy_metrics.user_accuracy_rate.toFixed(1)}%</div>
+            <div style="color: #999; font-size: 0.9em;">User Accuracy</div>
+          </div>
+          <div class="stat-card" style="background: #111; padding: 15px; border-radius: 6px; text-align: center;">
+            <div style="color: #04aa6d; font-size: 1.5em; font-weight: bold;">${findings.cost_analysis.cost_reduction_percentage}%</div>
+            <div style="color: #999; font-size: 0.9em;">Cost Reduction</div>
+          </div>
+          <div class="stat-card" style="background: #111; padding: 15px; border-radius: 6px; text-align: center;">
+            <div style="color: #04aa6d; font-size: 1.5em; font-weight: bold;">${findings.total_scraped_posts}</div>
+            <div style="color: #999; font-size: 0.9em;">Posts Scraped</div>
+          </div>
+          <div class="stat-card" style="background: #111; padding: 15px; border-radius: 6px; text-align: center;">
+            <div style="color: #04aa6d; font-size: 1.5em; font-weight: bold;">${findings.total_user_submissions}</div>
+            <div style="color: #999; font-size: 0.9em;">User Submissions</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function displayBountyLeads(leads) {
+      const container = document.getElementById('bountyLeads');
+      
+      if (leads.length === 0) {
+        container.innerHTML = '<div style="text-align: center; color: #04aa6d; padding: 20px;"><strong>✅ No discrepancies found!</strong><br><span style="color: #666;">All user submissions match social media data</span></div>';
+        return;
+      }
+      
+      container.innerHTML = leads.map(lead => `
+        <div class="lead-card" style="background: #111; border: 2px solid ${getPriorityColor(lead.priority)}; border-radius: 8px; padding: 20px; margin-bottom: 15px;">
+          <div class="lead-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <div class="lead-type" style="color: #04aa6d; font-weight: bold; font-size: 1.1em;">
+              ${formatLeadType(lead.type)}
+            </div>
+            <div class="priority-badge" style="background: ${getPriorityColor(lead.priority)}; color: #000; padding: 4px 8px; border-radius: 4px; font-size: 0.8em; font-weight: bold;">
+              ${lead.priority.toUpperCase()}
+            </div>
+          </div>
+          
+          <div class="lead-details" style="margin-bottom: 15px;">
+            <p style="margin: 5px 0;"><strong>User:</strong> ${lead.user_handle}</p>
+            <p style="margin: 5px 0;"><strong>Evidence:</strong> ${lead.evidence}</p>
+            ${lead.points_at_stake ? `<p style="margin: 5px 0;"><strong>Points at Stake:</strong> ${lead.points_at_stake}</p>` : ''}
+            ${lead.potential_points ? `<p style="margin: 5px 0;"><strong>Potential Points:</strong> ${lead.potential_points}</p>` : ''}
+            ${lead.claimed_url ? `<p style="margin: 5px 0;"><strong>Claimed URL:</strong> <a href="${lead.claimed_url}" target="_blank" style="color: #04aa6d;">View Post</a></p>` : ''}
+            ${lead.found_url ? `<p style="margin: 5px 0;"><strong>Found URL:</strong> <a href="${lead.found_url}" target="_blank" style="color: #04aa6d;">View Post</a></p>` : ''}
+          </div>
+          
+          <div class="lead-actions" style="display: flex; gap: 10px;">
+            <button onclick="investigateLead('${lead.id}')" style="background: #04aa6d; color: #000; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+              🔍 INVESTIGATE
+            </button>
+            <button onclick="startTrialFromLead('${lead.id}')" style="background: #ff4444; color: #fff; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+              🍺 START TRIAL
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function getPriorityColor(priority) {
+      switch(priority) {
+        case 'high': return '#ff4444';
+        case 'medium': return '#ffa500';
+        case 'low': return '#04aa6d';
+        default: return '#666';
+      }
+    }
+
+    function formatLeadType(type) {
+      switch(type) {
+        case 'missing_post': return '🚫 Missing Post';
+        case 'unsubmitted_post': return '📝 Unsubmitted Post';
+        case 'protocol_violation': return '⚠️ Protocol Violation';
+        default: return '❓ Unknown';
+      }
+    }
+
+    // Investigation functions
+    window.investigateLead = function(leadId) {
+      showToast('🔍 Investigation feature coming soon!', 'info');
+    };
+
+    window.startTrialFromLead = function(leadId) {
+      showToast('🍺 Trial integration coming soon!', 'info');
+    };
+
     async function loadBeerTrials() {
       console.log('🍺 Loading Beer Justice trials...');
       console.log('🔍 BeerJusticeAWS available:', typeof window.BeerJusticeAWS);
@@ -1183,54 +1330,7 @@
       }
     }
     
-    function loadJusticeCases() {
-      const container = document.getElementById('justiceCases');
-      
-      if (!realData.justiceCases || realData.justiceCases.length === 0) {
-        container.innerHTML = '<div style="text-align: center; color: #04aa6d; padding: 20px;"><strong>✅ No cheaters detected!</strong><br><span style="color: #666;">All players are following the rules</span></div>';
-        document.getElementById('justiceCount').textContent = '0';
-        return;
-      }
-      
-      container.innerHTML = realData.justiceCases.map(caseItem => `
-        <div class="case-item">
-          <div class="case-header">
-            <div class="case-title">Case #${caseItem.id}: ${caseItem.mission}</div>
-            <div class="case-date">${caseItem.date}</div>
-          </div>
-          <div class="case-content">
-            <div class="evidence-side">
-              <div class="evidence-title"><img src="../assets/images/badges/bounty-hunter-badge-color.png" alt="Bounty Hunter" style="height: 30px; vertical-align: middle; margin-right: 5px;">Bounty Hunter Evidence</div>
-              <div class="evidence-image">📸 Evidence Photo</div>
-              <div class="evidence-info">
-                <strong>Reported by:</strong> ${caseItem.accuser}<br>
-                <strong>Evidence Tag:</strong> <span style="color: #04aa6d;">${caseItem.evidenceHashtag}</span>
-              </div>
-            </div>
-            <div class="evidence-side">
-              <div class="evidence-title"><img src="../assets/images/badges/clown.png" alt="Clown" style="height: 30px; vertical-align: middle; margin-right: 5px;">Accused Player</div>
-              <div class="evidence-image">👤 Mugshot</div>
-              <div class="evidence-info">
-                <strong>Player:</strong> ${caseItem.accused}<br>
-                <strong>Status:</strong><br>
-                ${caseItem.requirements.map(req => 
-                  `<span style="color: ${req.completed ? '#04aa6d' : '#ff6b6b'}; font-size: 0.9em;">${req.hashtag}</span>`
-                ).join('<br>')}
-              </div>
-            </div>
-            <div class="case-requirements">
-              <div class="requirements-title">⚖️ Resolution Process:</div>
-              <div class="requirements-list">
-                <strong>For Bounty Hunters:</strong> Post evidence with <span style="color: #04aa6d;">#missionmischiefevidenceyourmessage</span><br>
-                <strong>For Accused Players:</strong> <a href="app.html#cheater-redemption" style="color: #ff4444; text-decoration: none; font-weight: bold;">🤡 CHEATER REDEMPTION ZONE 🤡</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      `).join('');
-      
-      document.getElementById('justiceCount').textContent = realData.justiceCases.length;
-    }
+
 
     // Toggle functions
     function toggleSection(sectionId) {

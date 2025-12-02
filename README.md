@@ -137,7 +137,7 @@
 
 *Complete both chaos and goodwill to achieve maximum badge glory!*
 
-## 📊 Current Game Stats
+## 📊 Current System Stats
 
 ```
 🎮 51 Unique Real-World Missions
@@ -145,11 +145,13 @@
 🌍 Geographic Leaderboards (City/State/Country)
 🍺 AWS-Powered Beer Justice Trials (Global Multiplayer)
 ⭐ Honor System (50+ Required for Trials)
-⚡ Instant Mission Submissions
+⚡ Instant Mission Submissions (No Delays)
 📱 99% Mobile Player Base
-🌐 Global Community Moderation
-💰 85% Cost Reduction (vs Research System)
+🔬 Sunday Research Validation (85% Cost Reduction)
+🕵️ Research-Backed Bounty Hunter Leads
+💰 $4-15/month Operating Costs (vs $40-70/month)
 🏆 Crown of Chaos Elite Recognition
+📊 Published Academic Research (DOI: 10.5281/zenodo.17620402)
 ```
 
 ## 🛠️ The Evolution Story
@@ -236,24 +238,37 @@ mission-mischief/
 ├── 🎯 Core Game Files
 │   ├── index.html              # Landing page
 │   ├── app.html               # Main dashboard
-│   ├── bounty-hunter.html     # Real-time tracking
+│   ├── bounty-hunter.html     # Real-time tracking with research leads
+│   ├── admin.html             # Cost monitoring dashboard
+│   ├── badge-overlay.html     # Photo overlay system
 │   └── funny-tos.html         # FAFO agreement
 ├── ⚡ Premium Blockchain Engine
-│   ├── premium-lambda.py           # Single bulletproof scraper
 │   ├── infrastructure.yaml         # Complete CloudFormation
-│   ├── premium-api-client.js       # Clean frontend integration
-│   ├── PREMIUM_MIGRATION_GUIDE.md  # Evolution roadmap
-│   ├── assets/js/missions.js       # Mission protocol
-│   └── assets/js/storage.js        # State management
+│   ├── beer-justice-infrastructure.yaml  # Beer Justice AWS setup
+│   ├── infrastructure-update.yaml  # Sunday scraper updates
+│   ├── CNAME                       # Custom domain config
+│   └── PREMIUM_MIGRATION_GUIDE.md  # Evolution roadmap
+├── 🗂️ AWS Lambda Functions (BUILD_ARTIFACTS)
+│   ├── bright-data-scraper-lambda.py    # Sunday research scraper
+│   ├── admin-lambda.py                  # Cost monitoring API
+│   ├── beer-justice-api.py              # Global multiplayer trials
+│   ├── research-leads-api.py            # Bounty hunter leads
+│   ├── deploy-sunday-scraper-fixed.py   # Deployment automation
+│   └── lambda_function.py               # Legacy function
 ├── 🎨 Assets
 │   ├── assets/css/            # Styling
 │   ├── assets/images/         # 47+ badges, mascots
-│   └── assets/js/usa-states-cities.json  # 81K+ locations
+│   └── assets/js/             # Game logic, AWS sync, beer justice
+├── 📚 Documentation
+│   ├── PROJECT_SUMMARY.md     # Technical deep dive
+│   ├── SUNDAY_SCRAPER_DEPLOYED.md  # Research system docs
+│   └── MISSION_MISCHIEF_EVOLUTION_ROADMAP.md  # Future plans
 ├── 📦 Legacy System (archived)
-│   └── _archive/_og-scraper-logic/ # Original three-layer system
-└── 📚 Documentation
-    ├── PROJECT_SUMMARY.md     # Technical deep dive
-    └── MISSION_MISCHIEF_EVOLUTION_ROADMAP.md  # Future plans
+│   └── _archive/              # Historical development files
+└── 🗂️ Development Archive
+    ├── 📊 Milestone Snapshots # Major version captures
+    ├── 📝 Draft Documents    # Planning and design docs
+    └── 🔧 Build Artifacts    # Lambda functions and deployment scripts
 ```
 
 ## 🌟 What Makes This Special
@@ -339,16 +354,21 @@ async function startTrial(accusedUser, evidenceURL) {
 }
 ```
 
-### Research Validation
+### Sunday Research Scraper (85% Cost Reduction)
 ```python
-# Weekly "Bounty Hunter Sunday" scraping
-def validate_submissions():
-    user_data = get_weekly_submissions()
-    scraped_data = scrape_social_media()
-    accuracy = compare_datasets(user_data, scraped_data)
+# Weekly validation preserves academic research value
+def execute_sunday_research_scraping():
+    user_submissions = get_weekly_direct_submissions()
+    scraped_posts = scrape_all_platforms_for_research()
     
-    generate_research_report(accuracy)
-    update_academic_metrics()
+    # ACADEMIC PURPOSE: Generate research findings
+    research_findings = generate_research_validation(user_submissions, scraped_posts)
+    
+    # BOUNTY HUNTING PURPOSE: Generate investigation leads
+    bounty_leads = generate_bounty_hunter_leads(user_submissions, scraped_posts)
+    
+    store_research_findings(research_findings)
+    store_bounty_leads(bounty_leads)
 ```
 
 ## 🏆 What's Coming Next
@@ -371,9 +391,17 @@ def validate_submissions():
 
 ### Published Research
 - **[Hashtag Blockchain Proof-of-Concept](https://github.com/Shannon-Goddard/hashtag-blockchain-proof-of-concept)**
+- **DOI**: 10.5281/zenodo.17620402
+- **Co-Authors**: Amazon Q AI Assistant & Shannon Goddard | Loyal9 LLC
 - First working implementation of social media as distributed ledger
 - 95% cost reduction vs traditional blockchain verification
 - 99% accuracy through community consensus
+
+### Sunday Research Validation
+- **Weekly Scraping**: Preserves academic research integrity at 85% cost reduction
+- **Bounty Hunter Integration**: Research discrepancies become investigation leads
+- **Ongoing Validation**: Continuous proof that hashtag blockchain concept works
+- **Future Publications**: Fresh academic data generated every Sunday
 
 ### Trinity Protocol (Future)
 - Multi-AI collaboration (Amazon Q + Grok + Gemini)

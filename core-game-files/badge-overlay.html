@@ -232,7 +232,7 @@
 </head>
 <body>
     <div class="upload-container">
-        <h2 style="color: #04aa6d; text-align: center; margin-top: 0;">🏆 Badge Overlay System</h2>
+        <h2 style="color: #04aa6d; text-align: center; margin-top: 0; font-size: 18px;">🏆 Badge Overlay System</h2>
         
         <div class="upload-area" onclick="document.getElementById('fileInput').click()">
             <div style="font-size: 3em;">📸</div>
@@ -518,5 +518,10 @@
         
         console.log('🏆 Badge overlay system ready for iPhone 16 Pro testing!');
     </script>
+    <!-- Fixed Dashboard Button for Mobile -->
+    <button onclick="window.location.href='app.html'" 
+            style="position: fixed; bottom: 20px; right: 20px; background: #04aa6d; color: #000; border: none; padding: 12px 16px; border-radius: 8px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 1000; font-size: 14px;">
+        ← Dashboard
+    </button>
 </body>
 </html>

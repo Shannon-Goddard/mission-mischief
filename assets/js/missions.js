@@ -79,7 +79,7 @@ const Missions = {
   // Mission data (52 missions total)
   missionData: [
     // M1: FAFO
-    { id: 1, title: 'FAFO (F*** Around and Find Out)', location: 'Anywhere', description: 'Read funny ToS, check agreement box, take mugshot selfie with date/time sign', proof: 'Mugshot-style selfie holding sign with today\'s date and time', hashtag: '#iwillnotsuemissionmischief', badgeId: null, type: 'special', requiresBuyIn: false, points: 'PRICELESS', cardDrop: 'N/A (setup mission)', mayhem: 'EXCITED' },
+    { id: 1, title: 'FAFO (F*** Around and Find Out)', location: 'Anywhere', description: 'Read funny ToS, check agreement box, take mugshot selfie with date/time sign', proof: 'Mugshot-style selfie holding sign with today\'s date and time', hashtag: '#iwillnotsuemissionmischief', badgeId: null, type: 'special', requiresBuyIn: false, points: 1, cardDrop: 'N/A (setup mission)', mayhem: 'EXCITED' },
     
     // M2: Setup
     { id: 2, title: 'License To Ill', location: 'Anywhere', description: 'Setup business cards, print', proof: 'Selfie with business card (QR Code and details clear)', hashtag: '#missionmischieflicensetoill', badgeId: null, type: 'setup', requiresBuyIn: false, points: 1, cardDrop: 'N/A (creates your cards)', mayhem: 'EXCITED' },
