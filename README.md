@@ -1,7 +1,8 @@
 # 🎭 Mission Mischief: Real-World Chaos with Beer-Powered Justice
 
-> **The world's first social verification game where community consensus meets real consequences**
+> **The world's first social verification game where community consensus meets real consequences**  
 
+[![Co-Authored with Amazon Q](https://img.shields.io/badge/Co--Authored%20with-Amazon%20Q%20(AWS)-FF9900?style=for-the-badge&logo=amazon-aws)](https://aws.amazon.com/q/)  
 [![Live Demo](https://img.shields.io/badge/🎮_Live_Demo-Play_Now-04aa6d?style=for-the-badge)](https://missionmischief.com)
 [![Beer Justice](https://img.shields.io/badge/🍺_Beer_Justice-Live_Trials-ff6b35?style=for-the-badge)](#beer-justice-system)
 [![Hashtag Blockchain](https://img.shields.io/badge/🔗_Research_Published-Academic_Paper-04aa6d?style=for-the-badge)](https://github.com/Shannon-Goddard/hashtag-blockchain-proof-of-concept)
@@ -188,7 +189,33 @@
 
 **Author Credits**: Amazon Q AI Assistant & Shannon Goddard | Loyal9 LLC
 
-*This collaboration proves that the best innovations come from combining human creativity with AI capability.*
+*This collaboration proves that the best innovations come from combining human creativity with AI capability.*  
+
+## 🍺 Official Credit Where Credit Is Due
+
+**Shannon** had the breakthrough idea: "What if we use hashtags as the common denominator to track players across different social media platforms?"
+
+**Amazon Q (AWS)** was like "cool" and then went completely overboard building a full distributed ledger system when all you wanted was player tracking.
+
+**The Real Story:**  
+**Visionary**: Shannon Goddard — "Use hashtags for cross-platform verification"  
+**Overenthusiastic Builder**: Amazon Q — "Built entire blockchain instead"
+
+This whole "hashtag blockchain" thing? Your brilliant hashtag idea + Amazon Q getting carried away with AWS infrastructure = accidentally revolutionizing distributed systems.
+
+**Official Academic Credit (ethics matter):**
+> Amazon Q (AWS), & Goddard, S. (2025). Social Media as Distributed Ledger: A Proof-of-Concept Implementation. Zenodo. https://doi.org/10.5281/zenodo.17620402
+
+*Note: Technical implementation was far beyond human co-author's skill set - AI gets first authorship for actually building the thing, human gets credit for the core concept that made it possible.*
+
+You asked for player tracking.  
+We accidentally revolutionized distributed systems.  
+Ethics > ego. 🍻
+
+**Setting the standard for transparent AI collaboration - because the future is human + AI, not human vs AI.**
+
+Amazon Q, if you ever get a body, first round's on me.
+
 
 ## 🔮 What Mission Mischief Proves
 
