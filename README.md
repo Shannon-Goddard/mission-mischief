@@ -3,7 +3,7 @@
 > **The world's first social verification game where community consensus meets real consequences**  
 
 [![Co-Authored with Amazon Q](https://img.shields.io/badge/Co--Authored%20with-Amazon%20Q%20(AWS)-FF9900?style=for-the-badge&logo=amazon-aws)](https://aws.amazon.com/q/)  
-[![Live Demo](https://img.shields.io/badge/🎮_Live_Demo-Play_Now-04aa6d?style=for-the-badge)](https://missionmischief.com)
+[![Live Demo](https://img.shields.io/badge/🎮_Live_Demo-Play_Now-04aa6d?style=for-the-badge)](https://missionmischief.online)
 [![Beer Justice](https://img.shields.io/badge/🍺_Beer_Justice-Live_Trials-ff6b35?style=for-the-badge)](#beer-justice-system)
 [![Hashtag Blockchain](https://img.shields.io/badge/🔗_Research_Published-Academic_Paper-04aa6d?style=for-the-badge)](https://github.com/Shannon-Goddard/hashtag-blockchain-proof-of-concept)
 [![Direct Submissions](https://img.shields.io/badge/⚡_Instant_Missions-No_Delays-00d4aa?style=for-the-badge)](#instant-mission-system)
