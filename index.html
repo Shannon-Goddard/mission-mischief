@@ -4,13 +4,26 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   
-  <meta name="robots" content="noindex, nofollow, nosnippet">
-  <meta http-equiv="X-Content-Type-Options" content="nosniff">
-  <meta http-equiv="X-Frame-Options" content="DENY">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:;">
-  
-  <title>Mission Mischief - The World's Most Sociopathic Scavenger Hunt</title>
-  <meta content="Real-world social game where you compete to complete outrageous public challenges. Find cards, complete missions, expose players!" name="description">
+  <title>Mission Mischief — The World's Most Sociopathic Scavenger Hunt | $4.99</title>
+  <meta name="description" content="You found the evidence. 51 outrageous real-world missions, Beer Justice trials, and an honor system powered by $5 payments. Get Mayhem's key for $4.99.">
+  <meta name="keywords" content="real world game, scavenger hunt, social game, outdoor game, mission game, prank game, community game">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="You Found the Evidence — Mission Mischief">
+  <meta property="og:description" content="The world's most sociopathic scavenger hunt. 51 missions. Beer Justice trials. Honor payments. Get Mayhem's key for $4.99.">
+  <meta property="og:image" content="https://missionmischief.online/assets/images/ui/og-image.png">
+  <meta property="og:url" content="https://missionmischief.online">
+  <meta property="og:type" content="website">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="You Found the Evidence — Mission Mischief">
+  <meta name="twitter:description" content="The world's most sociopathic scavenger hunt. 51 missions. Beer Justice trials. Get Mayhem's key for $4.99.">
+  <meta name="twitter:image" content="https://missionmischief.online/assets/images/ui/og-image.png">
+
+  <link rel="canonical" href="https://missionmischief.online">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#04aa6d">
   
   <link href="assets/images/ui/favicon.png" rel="icon">
   <link href="assets/images/ui/apple-touch-icon.png" rel="apple-touch-icon">
@@ -80,8 +93,9 @@
             <p>By tapping the button below, you will have the opportunity to read and accepted our full, legally-binding Terms of Service and Privacy Policy. That stuff is important. This funny section is not a replacement for that.</p>
           </div>
           
-          <div class="mt-4">
-            <a href="core-game-files/funny-tos.html" class="cta-btn" aria-label="Start playing Mission Mischief">JOIN THE CHAOS</a>
+          <div class="mt-4" style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+            <a href="https://loyal9.lemonsqueezy.com/checkout/buy/8cbd6215-7a6e-413c-892b-60b9dd11d919" class="cta-btn" aria-label="Buy Mayhem's Key for $4.99">🍺 GET MAYHEM'S KEY — $4.99</a>
+            <a href="unlock.html" class="cta-btn" style="background: transparent; border: 2px solid #04aa6d; color: #04aa6d;" aria-label="Enter existing key">Already have a key?</a>
           </div>
         </div>
       </div>
@@ -107,5 +121,15 @@
 
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script src="assets/js/main.js"></script>
+  <script>
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('SW registered'))
+          .catch(err => console.log('SW failed:', err));
+      });
+    }
+  </script>
 </body>
 </html>

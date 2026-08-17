@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /core-game-files/app.html
+Disallow: /core-game-files/bounty-hunter.html
+Disallow: /core-game-files/admin.html
+Disallow: /core-game-files/funny-tos.html
+Disallow: /core-game-files/badge-overlay.html
+Disallow: /core-game-files/research-data.html
+Disallow: /unlock.html
+Disallow: /_DEVELOPMENT_ARCHIVE/
+Disallow: /BUILD_ARTIFACTS/
+
+Sitemap: https://missionmischief.online/sitemap.xml

@@ -1,0 +1,26 @@
+# Secrets — NEVER commit these
+temp-lemon-file.txt
+*.env
+.env
+.env.local
+secrets.txt
+secrets.json
+api-keys.txt
+
+# AWS
+*.pem
+*.key
+aws-credentials.txt
+
+# Build artifacts
+*.zip
+node_modules/
+__pycache__/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

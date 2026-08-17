@@ -7,21 +7,25 @@ const Storage = {
   defaultUser: {
     userName: '',
     userHandle: '',
-    qrCodeData: '', // Their existing social media QR code data
+    qrCodeData: '',
     completedMissions: [],
-    badges: [], // User's earned badges
-    badgeStates: {}, // Track badge completion states
-    completedBuyIns: [], // Track completed buy-ins for crown of chaos
-    fafoCompleted: false, // Mission 1: FAFO completion status
-    fafoCompletedDate: null, // When they agreed to ToS
+    badges: [],
+    badgeStates: {},
+    completedBuyIns: [],
+    fafoCompleted: false,
+    fafoCompletedDate: null,
     honorScore: 100,
     exposedBy: [],
     currentBuyIn: null,
     joinDate: null,
-    // Direct submission system
-    submissions: {}, // Track all mission submissions with timestamps
-    totalPoints: 0, // Real-time point tracking
-    missionPoints: {} // Points earned per mission
+    submissions: {},
+    totalPoints: 0,
+    missionPoints: {},
+    // License + cloud save
+    licenseKey: null,
+    keyValidated: false,
+    keyValidatedDate: null,
+    cloudSaveEnabled: false
   },
 
   // Get user data
@@ -231,6 +235,57 @@ const Storage = {
   // Check if user exists
   userExists() {
     return localStorage.getItem('missionMischiefUser') !== null;
+  },
+
+  // Check if user has a validated license key
+  isUnlocked() {
+    const user = this.getUser();
+    return !!(user.licenseKey && user.keyValidated);
+  },
+
+  // Save license key and all setup data at once
+  saveKey(key, profileData) {
+    const user = this.getUser();
+    const updated = {
+      ...user,
+      ...profileData,
+      licenseKey: key,
+      keyValidated: true,
+      keyValidatedDate: new Date().toISOString(),
+      cloudSaveEnabled: true,
+      joinDate: user.joinDate || new Date().toISOString()
+    };
+    this.saveUser(updated);
+    return updated;
+  },
+
+  // Push full user state to AWS cloud save
+  async syncToCloud() {
+    const user = this.getUser();
+    if (!user.licenseKey) return;
+    try {
+      await fetch('https://4q1ybupwm0.execute-api.us-east-1.amazonaws.com/prod/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: user.licenseKey, data: user })
+      });
+    } catch (e) {
+      console.log('Cloud sync offline — will retry');
+    }
+  },
+
+  // Load user data from AWS by license key
+  async loadFromCloud(key) {
+    try {
+      const response = await fetch(
+        `https://4q1ybupwm0.execute-api.us-east-1.amazonaws.com/prod/load?key=${encodeURIComponent(key)}`
+      );
+      if (!response.ok) return null;
+      const data = await response.json();
+      return data.success ? data.user : null;
+    } catch {
+      return null;
+    }
   },
 
   // Clear all data

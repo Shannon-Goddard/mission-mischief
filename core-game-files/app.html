@@ -22,6 +22,7 @@
   <!-- Favicons -->
   <link href="../assets/images/ui/favicon.png" rel="icon">
   <link href="../assets/images/ui/apple-touch-icon.png" rel="apple-touch-icon">
+  <link rel="manifest" href="../manifest.json">
   
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
@@ -231,77 +232,6 @@
   <!-- Main Content -->
   <main id="main">
     
-    <!-- User Setup Section (shown if no user) -->
-    <section id="userSetup" class="section-bg" style="display: none; padding-top: calc(100px + env(safe-area-inset-top));">
-      <div class="container">
-        <div class="row" style="margin: 0; width: 100%;">
-          <div class="col-12" style="padding: 0 20px; width: 100%;">
-            <div class="mission-card" style="padding: 30px; width: 100%; max-width: none; margin: 0; box-sizing: border-box;">
-              <h2 class="text-center mb-4">Welcome to Mission Mischief!</h2>
-              <form id="setupForm">
-                <div class="mb-3">
-                  <label for="userName" class="form-label">Your Name:</label>
-                  <input type="text" id="userName" class="form-control" required>
-                </div>
-
-                <div class="mb-3">
-                  <label for="userCountry" class="form-label">Country:</label>
-                  <select id="userCountry" class="form-control" required onchange="loadStates(); toggleCountryOther();">
-                    <option value="">Select Country</option>
-                    <option value="US">United States</option>
-                    <option value="CA">Canada</option>
-                    <option value="UK">United Kingdom</option>
-                    <option value="AU">Australia</option>
-                    <option value="OTHER">Other</option>
-                  </select>
-                  <input type="text" id="userCountryOther" class="form-control" placeholder="Enter country" style="display: none; margin-top: 10px;">
-                </div>
-                <div class="mb-3">
-                  <label for="userState" class="form-label">State/Province:</label>
-                  <select id="userState" class="form-control" required onchange="loadCities(); toggleStateOther();" disabled>
-                    <option value="">Select State/Province</option>
-                  </select>
-                  <input type="text" id="userStateOther" class="form-control" placeholder="Enter state/province" style="display: none; margin-top: 10px;">
-                </div>
-                <div class="mb-3">
-                  <label for="userCity" class="form-label">City:</label>
-                  <input type="text" id="cityFilter" class="form-control" placeholder="Type first 3 letters to filter..." style="margin-bottom: 8px; display: none;" oninput="filterCities()">
-                  <small id="cityFilterHelp" class="form-text" style="color: #04aa6d; font-size: 11px; display: none; margin-bottom: 5px;">💡 Type first 3 characters, then select from dropdown</small>
-                  <select id="userCity" class="form-control" required disabled onchange="toggleCityOther()" size="1">
-                    <option value="">Select City</option>
-                  </select>
-                  <input type="text" id="userCityOther" class="form-control" placeholder="Enter city" style="display: none; margin-top: 10px;">
-                </div>
-                <div class="mb-3">
-                  <label for="qrCode" class="form-label">Upload Your Social Media QR Code:</label>
-                  <input type="file" id="qrCode" class="form-control" accept="image/*" required onchange="showQRPreview(this)">
-                  <small class="form-text" style="color: #999;">Upload your existing social media QR code • <a href="qr-help.html" style="color: #04aa6d;">Need help?</a></small>
-                  
-                  <!-- QR Code Preview and Alignment -->
-                  <div id="qrPreview" style="display: none; margin-top: 15px;">
-                    <div id="qrContainer" style="position: relative; width: 200px; height: 200px; margin: 0 auto; border: 2px solid #04aa6d; border-radius: 8px; overflow: hidden; background: #222;">
-                      <img id="qrImage" style="position: absolute; cursor: move; transition: transform 0.1s;" draggable="false">
-                      <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: 2px dashed rgba(4, 170, 109, 0.5); pointer-events: none;"></div>
-                      <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: rgba(4, 170, 109, 0.7); font-size: 12px; pointer-events: none;">QR CODE AREA</div>
-                    </div>
-                    <div style="text-align: center; margin-top: 10px;">
-                      <button type="button" onclick="zoomQR(-0.1)" style="background: #04aa6d; color: #000; border: none; padding: 5px 10px; margin: 0 5px; border-radius: 4px; cursor: pointer;">🔍-</button>
-                      <button type="button" onclick="zoomQR(0.1)" style="background: #04aa6d; color: #000; border: none; padding: 5px 10px; margin: 0 5px; border-radius: 4px; cursor: pointer;">🔍+</button>
-                      <button type="button" onclick="resetQR()" style="background: #666; color: #fff; border: none; padding: 5px 10px; margin: 0 5px; border-radius: 4px; cursor: pointer;">Reset</button>
-                    </div>
-                    <p style="text-align: center; color: #999; font-size: 12px; margin-top: 5px;">Drag to position • Use zoom buttons to resize</p>
-                  </div>
-                </div>
-                <button type="submit" class="mission-btn w-100">START MISCHIEF</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-
-
     <!-- Dashboard Section -->
     <section id="dashboard" style="display: none; padding-top: calc(80px + env(safe-area-inset-top)); scroll-margin-top: 0 !important; scroll-behavior: auto !important; position: relative; top: 0;">
       <div class="container">
@@ -414,6 +344,7 @@
   
   <!-- JS Files -->
   <script src="../assets/js/storage.js"></script>
+  <script src="../assets/js/toast.js"></script>
   <script src="../assets/js/missions.js"></script>
   <script src="../assets/js/social.js"></script>
   <script src="../assets/js/camera.js"></script>
@@ -421,6 +352,8 @@
   <script src="../assets/js/direct-submission.js"></script>
   <script src="../assets/js/beer-justice.js"></script>
   <script src="../assets/js/aws-submission-sync.js"></script>
+  <script src="../assets/js/upload.js"></script>
+  <script src="../assets/js/cheater.js"></script>
   <script src="../assets/js/main.js"></script>
   
   <script>
@@ -454,397 +387,20 @@
         });
         
         // Check if FAFO (Mission 1) is completed first
+        // Requires license key — redirect to unlock if not set
+        if (!Storage.isUnlocked()) {
+          window.location.href = '../unlock.html';
+          return;
+        }
+
         if (!Storage.isFAFOCompleted()) {
           window.location.href = 'funny-tos.html';
           return;
         }
-        
-        if (!user.userName) {
-          showUserSetup();
-        } else {
-          showDashboard();
-        }
+
+        showDashboard();
       }, 100);
     }
-
-    function showUserSetup() {
-      document.getElementById('userSetup').style.display = 'block';
-      
-      // Force scroll to top for user setup
-      window.scrollTo(0, 0);
-      console.log('🔝 User setup shown, scrolled to top');
-      
-      document.getElementById('setupForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const userName = document.getElementById('userName').value.trim();
-
-        const userCountry = document.getElementById('userCountry').value === 'OTHER' ? 
-          document.getElementById('userCountryOther').value.trim() : document.getElementById('userCountry').value;
-        const userState = document.getElementById('userState').value === 'OTHER' ? 
-          document.getElementById('userStateOther').value.trim() : document.getElementById('userState').value;
-        const userCity = document.getElementById('userCity').value === 'OTHER' ? 
-          document.getElementById('userCityOther').value.trim() : document.getElementById('userCity').value;
-        const qrCodeFile = document.getElementById('qrCode').files[0];
-        
-        if (userName && userCountry && userState && userCity && qrCodeFile) {
-          // Use the positioned QR code data if available
-          const qrImage = document.getElementById('qrImage');
-          const qrData = qrImage ? qrImage.src : null;
-          
-          if (qrData) {
-            const existingUser = Storage.getUser();
-            const user = Storage.initUser(userName, null);
-            // Preserve FAFO completion status
-            user.fafoCompleted = existingUser.fafoCompleted || false;
-            user.fafoCompletedDate = existingUser.fafoCompletedDate || null;
-            user.qrCodeData = qrData;
-            user.country = userCountry;
-            user.state = userState;
-            user.city = userCity;
-            Storage.saveUser(user);
-            showDashboard();
-          } else {
-            // Fallback to original file
-            const reader = new FileReader();
-            reader.onload = function(e) {
-              const existingUser = Storage.getUser();
-              const user = Storage.initUser(userName, null);
-              // Preserve FAFO completion status
-              user.fafoCompleted = existingUser.fafoCompleted || false;
-              user.fafoCompletedDate = existingUser.fafoCompletedDate || null;
-              user.qrCodeData = e.target.result;
-              user.country = userCountry;
-              user.state = userState;
-              user.city = userCity;
-              Storage.saveUser(user);
-              showDashboard();
-            };
-            reader.readAsDataURL(qrCodeFile);
-          }
-        } else {
-          showToast('Please fill all fields including location and upload your QR code', 'error');
-        }
-      });
-      
-      // QR Code preview and positioning
-      let qrScale = 1;
-      let qrX = 0;
-      let qrY = 0;
-      
-      window.showQRPreview = function(input) {
-        if (input.files && input.files[0]) {
-          const reader = new FileReader();
-          reader.onload = function(e) {
-            const preview = document.getElementById('qrPreview');
-            const img = document.getElementById('qrImage');
-            img.src = e.target.result;
-            preview.style.display = 'block';
-            
-            // Reset positioning
-            qrScale = 1;
-            qrX = 0;
-            qrY = 0;
-            
-            // Set initial size to fit container
-            img.onload = function() {
-              const container = document.getElementById('qrContainer');
-              const containerWidth = container.offsetWidth;
-              const containerHeight = container.offsetHeight;
-              
-              // Scale to fit container initially
-              const scaleX = containerWidth / img.naturalWidth;
-              const scaleY = containerHeight / img.naturalHeight;
-              qrScale = Math.max(scaleX, scaleY);
-              
-              // Center the image
-              qrX = (containerWidth - img.naturalWidth * qrScale) / 2;
-              qrY = (containerHeight - img.naturalHeight * qrScale) / 2;
-              
-              updateQRTransform();
-            };
-            
-            // Trigger onload if image is already cached
-            if (img.complete) {
-              img.onload();
-            }
-            
-            // Make image draggable for positioning (mobile + desktop)
-            let isDragging = false;
-            let startX, startY;
-            
-            // Mouse events
-            img.addEventListener('mousedown', function(e) {
-              e.preventDefault();
-              isDragging = true;
-              startX = e.clientX;
-              startY = e.clientY;
-              img.style.cursor = 'grabbing';
-            });
-            
-            // Touch events for mobile
-            img.addEventListener('touchstart', function(e) {
-              e.preventDefault();
-              isDragging = true;
-              const touch = e.touches[0];
-              startX = touch.clientX;
-              startY = touch.clientY;
-            }, { passive: false });
-            
-            document.addEventListener('mousemove', function(e) {
-              if (!isDragging) return;
-              e.preventDefault();
-              const deltaX = e.clientX - startX;
-              const deltaY = e.clientY - startY;
-              qrX += deltaX;
-              qrY += deltaY;
-              startX = e.clientX;
-              startY = e.clientY;
-              updateQRTransform();
-            });
-            
-            document.addEventListener('touchmove', function(e) {
-              if (!isDragging) return;
-              e.preventDefault();
-              const touch = e.touches[0];
-              const deltaX = touch.clientX - startX;
-              const deltaY = touch.clientY - startY;
-              qrX += deltaX;
-              qrY += deltaY;
-              startX = touch.clientX;
-              startY = touch.clientY;
-              updateQRTransform();
-            }, { passive: false });
-            
-            document.addEventListener('mouseup', function() {
-              if (isDragging) {
-                isDragging = false;
-                img.style.cursor = 'move';
-              }
-            });
-            
-            document.addEventListener('touchend', function() {
-              if (isDragging) {
-                isDragging = false;
-              }
-            });
-          };
-          reader.readAsDataURL(input.files[0]);
-        }
-      };
-      
-      function updateQRTransform() {
-        const img = document.getElementById('qrImage');
-        if (img) {
-          img.style.transform = `translate(${qrX}px, ${qrY}px) scale(${qrScale})`;
-          img.style.transformOrigin = 'top left';
-        }
-      }
-      
-      window.zoomQR = function(delta) {
-        qrScale = Math.max(0.1, Math.min(3, qrScale + delta));
-        updateQRTransform();
-      };
-      
-      window.resetQR = function() {
-        const img = document.getElementById('qrImage');
-        const container = document.getElementById('qrContainer');
-        
-        qrX = 0;
-        qrY = 0;
-        
-        if (img.naturalWidth && img.naturalHeight) {
-          const containerWidth = container.offsetWidth;
-          const containerHeight = container.offsetHeight;
-          const scaleX = containerWidth / img.naturalWidth;
-          const scaleY = containerHeight / img.naturalHeight;
-          qrScale = Math.max(scaleX, scaleY);
-        } else {
-          qrScale = 1;
-        }
-        
-        updateQRTransform();
-      };
-      
-      // Location data will be loaded from JSON file
-      let locationData = {};
-      
-      // Load US states and cities from JSON file
-      fetch('../assets/js/usa-states-cities.json')
-        .then(response => {
-          if (!response.ok) throw new Error('Network response was not ok');
-          return response.json();
-        })
-        .then(data => {
-          console.log('Location data loaded successfully');
-          // Convert to our expected format
-          locationData.US = {};
-          Object.entries(data).forEach(([stateCode, stateInfo]) => {
-            locationData.US[stateInfo.name] = Object.keys(stateInfo.cities).sort();
-          });
-          console.log('States available:', Object.keys(locationData.US).length);
-        })
-        .catch(error => {
-          console.error('Failed to load location data:', error);
-          // Fallback to basic data
-          locationData = {
-            US: {
-              'California': ['Los Angeles', 'San Francisco', 'San Diego'],
-              'New York': ['New York City', 'Buffalo', 'Rochester'],
-              'Texas': ['Houston', 'Dallas', 'Austin']
-            }
-          };
-          console.log('Using fallback location data');
-        });
-      
-      window.loadStates = function() {
-        const country = document.getElementById('userCountry').value;
-        const stateSelect = document.getElementById('userState');
-        const stateOther = document.getElementById('userStateOther');
-        const citySelect = document.getElementById('userCity');
-        const cityOther = document.getElementById('userCityOther');
-        
-        // Reset state and city
-        stateSelect.innerHTML = '<option value="">Select State/Province</option>';
-        citySelect.innerHTML = '<option value="">Select City</option>';
-        citySelect.disabled = true;
-        stateOther.style.display = 'none';
-        cityOther.style.display = 'none';
-        
-        if (country === 'OTHER') {
-          stateSelect.disabled = true;
-          stateOther.style.display = 'block';
-          stateOther.required = true;
-          cityOther.style.display = 'block';
-          cityOther.required = true;
-        } else if (country && locationData[country] && Object.keys(locationData[country]).length > 0) {
-          stateSelect.disabled = false;
-          stateOther.required = false;
-          cityOther.required = false;
-          Object.keys(locationData[country]).forEach(state => {
-            const option = document.createElement('option');
-            option.value = state;
-            option.textContent = state;
-            stateSelect.appendChild(option);
-          });
-          // Add Other option
-          const otherOption = document.createElement('option');
-          otherOption.value = 'OTHER';
-          otherOption.textContent = 'Other';
-          stateSelect.appendChild(otherOption);
-        } else {
-          stateSelect.disabled = true;
-        }
-      };
-      
-      // Store all cities for filtering
-      let allCities = [];
-      
-      window.loadCities = function() {
-        const country = document.getElementById('userCountry').value;
-        const state = document.getElementById('userState').value;
-        const citySelect = document.getElementById('userCity');
-        const cityFilter = document.getElementById('cityFilter');
-        const cityOther = document.getElementById('userCityOther');
-        
-        // Reset cities
-        citySelect.innerHTML = '<option value="">Select City</option>';
-        cityOther.style.display = 'none';
-        cityFilter.style.display = 'none';
-        allCities = [];
-        
-        if (state === 'OTHER') {
-          citySelect.disabled = true;
-          cityOther.style.display = 'block';
-          cityOther.required = true;
-        } else if (country && state && locationData[country] && locationData[country][state]) {
-          citySelect.disabled = false;
-          cityOther.required = false;
-          
-          // Store all cities and show filter
-          allCities = locationData[country][state].slice();
-          cityFilter.style.display = 'block';
-          document.getElementById('cityFilterHelp').style.display = 'block';
-          cityFilter.value = ''; // Clear filter
-          
-          // Load all cities initially
-          populateCities(allCities);
-        } else {
-          citySelect.disabled = true;
-        }
-      };
-      
-      function populateCities(cities) {
-        const citySelect = document.getElementById('userCity');
-        // Keep the default option
-        citySelect.innerHTML = '<option value="">Select City</option>';
-        
-        cities.forEach(city => {
-          const option = document.createElement('option');
-          option.value = city;
-          option.textContent = city;
-          citySelect.appendChild(option);
-        });
-        
-        // Add Other option
-        const otherOption = document.createElement('option');
-        otherOption.value = 'OTHER';
-        otherOption.textContent = 'Other';
-        citySelect.appendChild(otherOption);
-      }
-      
-      window.filterCities = function() {
-        const filter = document.getElementById('cityFilter').value.toLowerCase();
-        if (filter === '') {
-          populateCities(allCities);
-        } else {
-          const filtered = allCities.filter(city => 
-            city.toLowerCase().includes(filter)
-          );
-          populateCities(filtered);
-        }
-      };
-      
-      window.toggleCountryOther = function() {
-        const countrySelect = document.getElementById('userCountry');
-        const countryOther = document.getElementById('userCountryOther');
-        
-        if (countrySelect.value === 'OTHER') {
-          countryOther.style.display = 'block';
-          countryOther.required = true;
-        } else {
-          countryOther.style.display = 'none';
-          countryOther.required = false;
-        }
-      };
-      
-      window.toggleStateOther = function() {
-        const stateSelect = document.getElementById('userState');
-        const stateOther = document.getElementById('userStateOther');
-        
-        if (stateSelect.value === 'OTHER') {
-          stateOther.style.display = 'block';
-          stateOther.required = true;
-        } else {
-          stateOther.style.display = 'none';
-          stateOther.required = false;
-        }
-      };
-      
-      window.toggleCityOther = function() {
-        const citySelect = document.getElementById('userCity');
-        const cityOther = document.getElementById('userCityOther');
-        
-        if (citySelect.value === 'OTHER') {
-          cityOther.style.display = 'block';
-          cityOther.required = true;
-        } else {
-          cityOther.style.display = 'none';
-          cityOther.required = false;
-        }
-      };
-    }
-
-
 
     function showDashboard() {
       document.getElementById('userSetup').style.display = 'none';
@@ -1949,30 +1505,6 @@
       } else {
         showToast('Manual copy: #missionmischiefpaidbail', 'info');
       }
-    }
-    
-    // Toast notification function
-    function showToast(message, type = 'info') {
-      const toast = document.createElement('div');
-      toast.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: ${type === 'success' ? '#04aa6d' : type === 'error' ? '#ff6b6b' : '#333'};
-        color: ${type === 'success' ? '#000' : '#fff'};
-        padding: 12px 20px;
-        border-radius: 6px;
-        z-index: 10000;
-        font-size: 14px;
-        max-width: 300px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      `;
-      toast.textContent = message;
-      document.body.appendChild(toast);
-      
-      setTimeout(() => {
-        toast.remove();
-      }, 3000);
     }
     
     // Buy-in selection for Mission 4
