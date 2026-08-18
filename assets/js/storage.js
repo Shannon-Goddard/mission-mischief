@@ -109,6 +109,10 @@ const Storage = {
     const user = this.getUser();
     user.fafoCompleted = true;
     user.fafoCompletedDate = new Date().toISOString();
+    // Also mark mission 1 as completed
+    if (!user.completedMissions.includes(1)) {
+      user.completedMissions.push(1);
+    }
     this.saveUser(user);
     return user;
   },

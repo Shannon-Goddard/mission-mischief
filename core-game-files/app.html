@@ -423,13 +423,17 @@
         setupFilters();
         loadCheaterMissions();
         
-        // Final aggressive scroll reset
+        // Auto-expand first mission card so dashboard never looks blank
         setTimeout(() => {
+          const firstCard = document.querySelector('.mission-card');
+          if (firstCard) {
+            const missionId = firstCard.getAttribute('data-mission-id');
+            if (missionId) toggleMissionDetails(parseInt(missionId));
+          }
           document.documentElement.scrollTop = 0;
           document.body.scrollTop = 0;
           window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-          console.log('🔝 Dashboard fully loaded, forced to top');
-        }, 100);
+        }, 150);
       });
       
       // Initialize camera overlay
