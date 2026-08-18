@@ -152,26 +152,14 @@ main {
 
 /* Apply pulse animation and standard transition/size only */
 .cta-btn {
-  /* These properties are now used to override the default styles from main.css */
   display: inline-block;
   padding: 15px 30px;
-  border-radius: 8px; /* Override the 4px from main.css */
+  border-radius: 8px;
   font-weight: bold;
   font-size: 1.1rem;
   transition: all 0.3s ease;
   text-transform: uppercase;
-  position: relative;
-  z-index: 10;
-  
-  /* The aggressive styling (background/color) is removed here and must be managed 
-     in the HTML using inline styles, or by renaming the button. 
-     We'll rely on the global main.css hover state for consistency, 
-     but ensure the pulse animation works. */
-}
-
-/* The pulse animation is unique and remains here */
-.cta-btn {
-  animation: pulse 2s infinite !important;
+  animation: pulse 2s infinite;
 }
 
 @keyframes pulse {
@@ -190,7 +178,7 @@ main {
 /* RESPONSIVE & FIXED CTA BUTTON STYLES */
 /* ------------------------------------------- */
 
-/* Mobile specific adjustments (Fixed CTA) */
+/* Mobile specific adjustments */
 @media (max-width: 767px) {
   #hero {
     align-items: flex-start;
@@ -218,21 +206,14 @@ main {
     margin: 0 auto;
   }
   
-  /* Fixed Positioning for ALL CTA buttons on mobile */
   .cta-btn {
-    position: fixed !important;
-    bottom: 100px !important;
-    right: 20px !important;
-    z-index: 1000 !important;
-  }
-  
-  /* Mobile-specific button size/shape */
-  .cta-btn {
-    padding: 12px 20px !important;
-    font-size: 0.9rem !important;
-    border-radius: 25px !important;
-    box-shadow: 0 4px 15px rgba(4, 170, 109, 0.3) !important;
-    animation: pulse 2s infinite !important;
+    display: block !important;
+    width: 100% !important;
+    text-align: center !important;
+    padding: 14px 20px !important;
+    font-size: 0.95rem !important;
+    border-radius: 8px !important;
+    position: static !important;
   }
 }
 
@@ -294,23 +275,11 @@ main {
     flex: 1;
   }
   
-  /* Fixed Positioning for ALL CTA buttons on tablet+ */
   .cta-btn {
-    position: fixed !important;
-    bottom: 80px !important;
-    right: 20px !important;
-    z-index: 1000 !important;
-    order: 4;
-  }
-  
-  /* Tablet-specific button size/shape */
- 
-  .cta-btn {
-    padding: 12px 20px !important;
-    font-size: 0.9rem !important;
-    border-radius: 25px !important;
-    box-shadow: 0 4px 15px rgba(4, 170, 109, 0.3) !important;
-    animation: pulse 2s infinite !important;
+    position: static !important;
+    padding: 14px 28px !important;
+    font-size: 1rem !important;
+    border-radius: 8px !important;
   }
 }
 
