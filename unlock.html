@@ -278,7 +278,7 @@
           <div class="key-input-wrap">
             <input type="text" id="licenseKey" placeholder="Enter your key..."
               autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-              oninput="onKeyInput()" onblur="validateKey()">
+              oninput="onKeyInput()" onblur="setTimeout(validateKey, 100)">
             <span class="key-status" id="keyStatus"></span>
           </div>
           <div class="key-message" id="keyMessage"></div>
@@ -559,6 +559,7 @@
     let dragging = false, startX, startY;
     document.addEventListener('DOMContentLoaded', () => {
       const img = document.getElementById('qrImage');
+      const container = document.getElementById('qrContainer');
 
       const onStart = (x, y) => { dragging = true; startX = x; startY = y; };
       const onMove = (x, y) => {
@@ -572,9 +573,12 @@
       img.addEventListener('mousedown', e => { e.preventDefault(); onStart(e.clientX, e.clientY); });
       img.addEventListener('touchstart', e => { e.preventDefault(); onStart(e.touches[0].clientX, e.touches[0].clientY); }, { passive: false });
       document.addEventListener('mousemove', e => onMove(e.clientX, e.clientY));
-      document.addEventListener('touchmove', e => { e.preventDefault(); onMove(e.touches[0].clientX, e.touches[0].clientY); }, { passive: false });
       document.addEventListener('mouseup', onEnd);
       document.addEventListener('touchend', onEnd);
+      // Only block scroll when actively dragging inside the QR container
+      container.addEventListener('touchmove', e => {
+        if (dragging) { e.preventDefault(); onMove(e.touches[0].clientX, e.touches[0].clientY); }
+      }, { passive: false });
     });
 
     function updateQRTransform() {
