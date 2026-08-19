@@ -1,0 +1,157 @@
+/*--------------------------------------------------------------
+# Mission Mischief - Sticky UI
+# Loaded by every inner game page.
+# Contains: sticky back button, bottom nav, back-to-top, toasts.
+--------------------------------------------------------------*/
+
+/*--------------------------------------------------------------
+# Sticky Back Button
+# Usage: <a href="javascript:history.back()" class="sticky-back">← Back</a>
+--------------------------------------------------------------*/
+.sticky-back {
+  position: fixed;
+  top: calc(68px + env(safe-area-inset-top));
+  left: 15px;
+  z-index: 998;
+  background: #04aa6d;
+  color: #000;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 13px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  text-decoration: none;
+  display: inline-block;
+  line-height: 1.4;
+  transition: background 0.2s;
+}
+
+.sticky-back:hover {
+  background: #038a5a;
+  color: #000;
+  text-decoration: none;
+}
+
+/*--------------------------------------------------------------
+# Bottom Navigation Bar
+# Add to every game page (dashboard, missions, jail, bounty)
+# Set class="active" on the current page's link
+--------------------------------------------------------------*/
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.97);
+  border-top: 1px solid #04aa6d;
+  display: flex;
+  z-index: 999;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.bottom-nav a {
+  flex: 1;
+  text-align: center;
+  padding: 10px 0;
+  color: #555;
+  font-size: 10px;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  transition: color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.bottom-nav a:hover,
+.bottom-nav a.active {
+  color: #04aa6d;
+  text-decoration: none;
+}
+
+.bottom-nav a span.nav-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.bottom-nav a span.nav-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/*--------------------------------------------------------------
+# Back to Top Button
+--------------------------------------------------------------*/
+.back-to-top {
+  position: fixed;
+  right: 15px;
+  bottom: 65px; /* sits above bottom nav */
+  z-index: 996;
+  background: #04aa6d;
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  text-decoration: none;
+  color: #000;
+  transition: background 0.2s;
+}
+
+.back-to-top:hover { background: #038a5a; }
+.back-to-top i { font-size: 24px; color: #000; line-height: 0; }
+
+/*--------------------------------------------------------------
+# Toast Notifications
+# toast.js appends .toast elements into #toastContainer
+--------------------------------------------------------------*/
+#toastContainer {
+  position: fixed;
+  top: calc(68px + env(safe-area-inset-top));
+  right: 15px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 280px;
+  pointer-events: none;
+}
+
+.toast {
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  animation: toastIn 0.3s ease;
+  pointer-events: auto;
+  line-height: 1.4;
+}
+
+.toast.success { background: #04aa6d; }
+.toast.error   { background: #ff4444; color: #fff; }
+.toast.warning { background: #ff8c00; }
+.toast.info    { background: #4a9eff; }
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/*--------------------------------------------------------------
+# Page content offset (accounts for fixed header + bottom nav)
+--------------------------------------------------------------*/
+.page-content {
+  padding-top: calc(80px + env(safe-area-inset-top));
+  padding-bottom: 80px;
+  min-height: 100vh;
+}

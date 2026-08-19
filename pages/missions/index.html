@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow, nosnippet">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#000000">
+  <title>Mission Mischief - Missions</title>
+  <link href="../../assets/images/ui/favicon.png" rel="icon">
+  <link href="../../assets/images/ui/apple-touch-icon.png" rel="apple-touch-icon">
+  <link rel="manifest" href="../../manifest.json">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700|Raleway:400,600,700|Poppins:400,600,700" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="../../assets/css/base.css" rel="stylesheet">
+  <link href="../../assets/css/components.css" rel="stylesheet">
+  <link href="../../assets/css/sticky.css" rel="stylesheet">
+</head>
+
+<body class="customBody">
+
+  <header id="header" class="fixed-top">
+    <div class="container d-flex align-items-center justify-content-between">
+      <div class="logo">
+        <a href="../../index.html">Mission <span>Mischief</span></a>
+      </div>
+      <div id="userInfo" style="color:#04aa6d; font-weight:bold; font-size:14px; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"></div>
+    </div>
+  </header>
+
+  <main class="page-content">
+    <div class="container">
+
+      <!-- Instant missions banner -->
+      <div style="background:rgba(4,170,109,0.1); border:1px solid #04aa6d; border-radius:8px; padding:12px 15px; margin-bottom:20px; text-align:center;">
+        <p style="color:#fff; margin:0; font-size:13px; line-height:1.5;">
+          ⚡ <strong>INSTANT MISSIONS</strong> — Submit with the green button, get points immediately.
+          Add a social media URL as proof. <a href="../../core-game-files/help/how-to-play.html" style="color:#04aa6d;">How to play</a>
+        </p>
+      </div>
+
+      <!-- Filters -->
+      <div style="text-align:center; margin-bottom:20px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
+        <button class="mission-btn active" id="filterAll" onclick="setFilter('all')">All</button>
+        <button class="mission-btn" id="filterAvailable" onclick="setFilter('available')">Available</button>
+        <button class="mission-btn" id="filterCompleted" onclick="setFilter('completed')">Completed</button>
+      </div>
+
+      <!-- Missions list -->
+      <div id="missionsContainer"></div>
+
+    </div>
+  </main>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <a href="../dashboard/">
+      <span class="nav-icon">📊</span>
+      <span class="nav-label">Dashboard</span>
+    </a>
+    <a href="../missions/" class="active">
+      <span class="nav-icon">🎯</span>
+      <span class="nav-label">Missions</span>
+    </a>
+    <a href="../jail/">
+      <span class="nav-icon">🤡</span>
+      <span class="nav-label">Jail</span>
+    </a>
+    <a href="../../core-game-files/bounty-hunter.html">
+      <span class="nav-icon">🕵️</span>
+      <span class="nav-label">Bounty</span>
+    </a>
+  </nav>
+
+  <a href="#" class="back-to-top" id="backToTop"><i class="bi bi-arrow-up-short"></i></a>
+  <div id="toastContainer"></div>
+
+  <script src="../../assets/js/storage.js"></script>
+  <script src="../../assets/js/toast.js"></script>
+  <script src="../../assets/js/missions.js"></script>
+  <script src="../../assets/js/direct-submission.js"></script>
+  <script src="../../assets/js/aws-submission-sync.js"></script>
+  <script src="../../assets/js/social.js"></script>
+  <script src="../../assets/js/camera.js"></script>
+  <script src="../../assets/js/print.js"></script>
+  <script src="../../assets/js/upload.js"></script>
+  <script src="missions-page.js"></script>
+</body>
+</html>

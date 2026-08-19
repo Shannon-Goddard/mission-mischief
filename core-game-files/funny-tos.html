@@ -10,6 +10,8 @@
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:;">
     <title>Mission Mischief - FAFO (Mission 1)</title>
+    <link href="../assets/css/base.css" rel="stylesheet">
+    <link href="../assets/css/sticky.css" rel="stylesheet">
     <link href="../assets/css/mugshot.css" rel="stylesheet">
     <link rel="manifest" href="../manifest.json">
     <style>
@@ -168,8 +170,9 @@
         }
     </style>
 </head>
-<body>
-    <div class="container">
+<body class="customBody">
+    <a href="javascript:history.back()" class="sticky-back">← Back</a>
+    <div class="container" style="padding-top: calc(60px + env(safe-area-inset-top));">
         <div class="mission-header">
             <h1 id="fafoTitle" style="text-align: center !important; width: 100% !important; white-space: normal !important; word-wrap: break-word; overflow-wrap: break-word;">MISSION 1: FAFO</h1>
             <p><strong>F*** Around and Find Out</strong></p>

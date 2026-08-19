@@ -1,0 +1,243 @@
+/*--------------------------------------------------------------
+# Mission Mischief - Base Styles
+# Loaded by every page. Contains reset, layout, header, footer,
+# typography, form controls, and utility classes.
+--------------------------------------------------------------*/
+
+@font-face { font-family: 'Open Sans'; font-display: swap; }
+@font-face { font-family: 'Raleway'; font-display: swap; }
+@font-face { font-family: 'Poppins'; font-display: swap; }
+
+html, body {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  position: relative;
+  box-sizing: border-box;
+}
+
+html {
+  overflow-y: scroll;
+  scroll-behavior: auto;
+}
+
+body {
+  font-family: "Open Sans", sans-serif;
+  color: #444;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  position: static;
+}
+
+.customBody {
+  background-color: #000;
+  overflow-x: hidden;
+  margin: 0;
+  padding-top: env(safe-area-inset-top, 24px);
+}
+
+::-webkit-scrollbar { width: 0; background: transparent; }
+
+a { color: #04aa6d; text-decoration: none; }
+a:hover { color: #04aa6d; text-decoration: none; }
+
+h1, h2, h3, h4, h5, h6 { font-family: "Raleway", sans-serif; }
+
+main { padding-bottom: 80px; } /* 80px = room for bottom nav */
+
+/*--------------------------------------------------------------
+# Header
+--------------------------------------------------------------*/
+#header {
+  transition: all 0.5s;
+  z-index: 997;
+  padding: 15px 0;
+  background: rgba(0, 0, 0, 0.9);
+  padding-top: calc(15px + env(safe-area-inset-top));
+  min-height: calc(60px + env(safe-area-inset-top));
+}
+
+#header.header-scrolled,
+#header.header-inner-pages {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+#header .logo {
+  font-size: 32px;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+#header .logo a { color: #fff; }
+#header .logo a span { color: #04aa6d; }
+
+.fixed-top {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1030;
+}
+
+/*--------------------------------------------------------------
+# Footer
+--------------------------------------------------------------*/
+#footer {
+  background: #000;
+  padding: 30px 0;
+  color: #fff;
+  font-size: 14px;
+  text-align: center;
+}
+
+/*--------------------------------------------------------------
+# Layout
+--------------------------------------------------------------*/
+.container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 15px;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -15px;
+}
+
+.col-lg-4, .col-lg-6, .col-lg-12,
+.col-md-6, .col-md-12, .col-12 {
+  padding: 0 15px;
+  box-sizing: border-box;
+}
+
+.col-lg-4  { flex: 0 0 33.333%; max-width: 33.333%; }
+.col-lg-6  { flex: 0 0 50%;     max-width: 50%; }
+.col-lg-12 { flex: 0 0 100%;    max-width: 100%; }
+.col-md-6  { flex: 0 0 50%;     max-width: 50%; }
+.col-md-12 { flex: 0 0 100%;    max-width: 100%; }
+.col-12    { flex: 0 0 100%;    max-width: 100%; }
+
+@media (max-width: 768px) {
+  .col-lg-4, .col-lg-6, .col-md-6 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  .container { padding: 0 15px; }
+}
+
+/*--------------------------------------------------------------
+# Form Controls
+--------------------------------------------------------------*/
+.form-control {
+  background: rgba(21, 21, 21, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 12px 15px;
+  color: #fff;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-control:focus {
+  background: rgba(21, 21, 21, 0.9);
+  border-color: #04aa6d;
+  color: #fff;
+  box-shadow: 0 0 0 0.2rem rgba(4, 170, 109, 0.25);
+  outline: none;
+}
+
+.form-control::placeholder { color: #999; }
+
+.form-label {
+  color: #ccc;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: block;
+}
+
+/*--------------------------------------------------------------
+# Utilities
+--------------------------------------------------------------*/
+.d-flex               { display: flex; }
+.align-items-center   { align-items: center; }
+.justify-content-center   { justify-content: center; }
+.justify-content-between  { justify-content: space-between; }
+.flex-wrap            { flex-wrap: wrap; }
+
+.text-center { text-align: center; }
+.text-left   { text-align: left; }
+
+.w-100  { width: 100%; }
+.mb-3   { margin-bottom: 1rem; }
+.mb-4   { margin-bottom: 1.5rem; }
+.mt-4   { margin-top: 1.5rem; }
+.mt-5   { margin-top: 3rem; }
+
+.section-bg { background: #0a0a0a; }
+
+.section-title { text-align: center; padding-bottom: 30px; }
+.section-title h2 {
+  font-size: 14px;
+  font-weight: 500;
+  padding: 0;
+  line-height: 1px;
+  margin: 0 0 5px 0;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #aaa;
+  font-family: "Poppins", sans-serif;
+}
+.section-title h2::after {
+  content: "";
+  width: 120px;
+  height: 1px;
+  display: inline-block;
+  background: #04aa6d;
+  margin: 4px 10px;
+}
+.section-title p {
+  margin: 0;
+  font-size: 36px;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-family: "Poppins", sans-serif;
+  color: #fff;
+}
+
+/*--------------------------------------------------------------
+# Preloader
+--------------------------------------------------------------*/
+#preloader {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 9999;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#preloader:before {
+  content: "";
+  width: 60px;
+  height: 60px;
+  border: 6px solid #04aa6d;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

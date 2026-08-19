@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mission-mischief-v1';
+const CACHE_NAME = 'mission-mischief-v2';
 const API_BASE = 'https://4q1ybupwm0.execute-api.us-east-1.amazonaws.com';
 
 const SHELL_ASSETS = [
@@ -9,8 +9,19 @@ const SHELL_ASSETS = [
   '/core-game-files/bounty-hunter.html',
   '/core-game-files/funny-tos.html',
   '/core-game-files/badge-overlay.html',
+  '/pages/dashboard/',
+  '/pages/dashboard/index.html',
+  '/pages/dashboard/dashboard.js',
+  '/pages/missions/',
+  '/pages/missions/index.html',
+  '/pages/missions/missions-page.js',
+  '/pages/jail/',
+  '/pages/jail/index.html',
+  '/pages/jail/jail.js',
+  '/assets/css/base.css',
   '/assets/css/main.css',
   '/assets/css/components.css',
+  '/assets/css/sticky.css',
   '/assets/css/mugshot.css',
   '/assets/css/overlay.css',
   '/assets/css/hero-styles.css',
@@ -90,7 +101,7 @@ async function cacheFirst(request) {
   } catch {
     // Offline fallback for navigation requests
     if (request.mode === 'navigate') {
-      return caches.match('/core-game-files/app.html');
+      return caches.match('/pages/dashboard/');
     }
     return new Response('Offline', { status: 503 });
   }

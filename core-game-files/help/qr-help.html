@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Code Help - Mission Mischief</title>
+    <link href="../../assets/css/base.css" rel="stylesheet">
+    <link href="../../assets/css/sticky.css" rel="stylesheet">
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -19,20 +21,7 @@
             margin: 0 auto;
         }
         
-        .back-button {
-            display: inline-block;
-            background: #04aa6d;
-            color: #000;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-            margin-bottom: 30px;
-            font-weight: bold;
-        }
-        
-        .back-button:hover {
-            background: #038a5a;
-        }
+        /* back button handled by sticky.css */
         
         h1 {
             color: #04aa6d;
@@ -143,7 +132,7 @@
 </head>
 <body>
     <div class="container">
-        <a href="../../unlock.html" class="back-button">← Back to Setup</a>
+        <a href="javascript:history.back()" class="sticky-back">← Back</a>
         
         <h1>QR Code Help</h1>
         <p class="subtitle">Get your social media QR codes for Mission Mischief</p>
@@ -288,7 +277,7 @@
         </div>
         
         <div style="text-align: center; margin-top: 40px;">
-            <a href="../../unlock.html" class="back-button">Continue Setup</a>
+            <a href="javascript:history.back()" class="sticky-back" style="position:static; display:inline-block; margin-top:10px;">← Back to Setup</a>
         </div>
         
         <div style="text-align: center; margin-top: 40px; color: #666; font-size: 12px;">
