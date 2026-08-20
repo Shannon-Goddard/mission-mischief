@@ -103,6 +103,13 @@ const DirectSubmission = {
     
     // Award honor for legitimate submission
     Storage.updateHonorScore(1, 'mission_submission');
+    
+    // Return to missions page if not already there
+    setTimeout(() => {
+      if (!window.location.pathname.includes('/missions/')) {
+        window.location.href = '../../pages/missions/';
+      }
+    }, 1500);
   },
   
   // Close submission modal
