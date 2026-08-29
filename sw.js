@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mission-mischief-v4';
+const CACHE_NAME = 'mission-mischief-v5';
 const API_BASE = 'https://4q1ybupwm0.execute-api.us-east-1.amazonaws.com';
 
 const SHELL_ASSETS = [
@@ -71,9 +71,9 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
 
-  // Network-first for API calls
+  // Network-only for API calls (never cache, never intercept preflight)
   if (url.origin === new URL(API_BASE).origin) {
-    event.respondWith(networkFirst(event.request));
+    event.respondWith(fetch(event.request));
     return;
   }
 
