@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mission-mischief-v3';
+const CACHE_NAME = 'mission-mischief-v4';
 const API_BASE = 'https://4q1ybupwm0.execute-api.us-east-1.amazonaws.com';
 
 const SHELL_ASSETS = [
@@ -36,7 +36,6 @@ const SHELL_ASSETS = [
   '/assets/js/camera.js',
   '/assets/js/camera-capture.js',
   '/assets/js/social.js',
-  '/assets/js/storage.js',
   '/assets/js/toast.js',
   '/assets/js/cheater.js',
   '/assets/js/upload.js',
