@@ -10,6 +10,7 @@ import logging
 import hmac
 import hashlib
 import uuid
+import requests
 from datetime import datetime, timezone
 from botocore.exceptions import ClientError
 
@@ -119,6 +120,34 @@ def handle_webhook(event):
         logger.error(f"Webhook processing failed: {e}")
         return response_body(500, {'error': str(e)})
 
+def handle_create_checkout_session():
+    """POST /create-checkout-session — create Stripe hosted checkout session"""
+    creds = get_stripe_credentials()
+    if not creds:
+        return response_body(500, {'error': 'Configuration error'})
+
+    try:
+        response = requests.post(
+            'https://api.stripe.com/v1/checkout/sessions',
+            auth=(creds['secret_key'], ''),
+            data={
+                'mode': 'payment',
+                'line_items[0][price]': creds['price_id'],
+                'line_items[0][quantity]': '1',
+                'success_url': 'https://missionmischief.online/unlock.html?session_id={CHECKOUT_SESSION_ID}',
+                'cancel_url': 'https://missionmischief.online/',
+            },
+            timeout=10
+        )
+        data = response.json()
+        if response.status_code == 200:
+            return response_body(200, {'url': data['url']})
+        logger.error(f"Stripe session creation failed: {data}")
+        return response_body(500, {'error': 'Failed to create checkout session'})
+    except Exception as e:
+        logger.error(f"create-checkout-session failed: {e}")
+        return response_body(500, {'error': str(e)})
+
 def handle_key_by_session(query_params):
     """GET /key-by-session?session_id=cs_... — look up key generated for a Stripe session"""
     session_id = (query_params or {}).get('session_id', '').strip()
@@ -174,6 +203,9 @@ def lambda_handler(event, context):
     try:
         if path.endswith('/webhook') and method == 'POST':
             return handle_webhook(event)
+
+        if path.endswith('/create-checkout-session') and method == 'POST':
+            return handle_create_checkout_session()
 
         if path.endswith('/key-by-session') and method == 'GET':
             params = event.get('queryStringParameters')

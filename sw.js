@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mission-mischief-v2';
+const CACHE_NAME = 'mission-mischief-v3';
 const API_BASE = 'https://4q1ybupwm0.execute-api.us-east-1.amazonaws.com';
 
 const SHELL_ASSETS = [
@@ -27,6 +27,7 @@ const SHELL_ASSETS = [
   '/assets/css/hero-styles.css',
   '/assets/js/storage.js',
   '/assets/js/missions.js',
+  '/assets/js/stripe-checkout.js',
   '/assets/js/main.js',
   '/assets/js/direct-submission.js',
   '/assets/js/beer-justice.js',
@@ -77,8 +78,8 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Network-first for Lemon Squeezy
-  if (url.hostname.includes('lemonsqueezy.com')) {
+  // Network-first for Stripe
+  if (url.hostname.includes('stripe.com')) {
     event.respondWith(fetch(event.request));
     return;
   }
