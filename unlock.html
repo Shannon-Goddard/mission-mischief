@@ -366,13 +366,15 @@
 
     <div class="no-key">
       Don't have a key?
-      <a href="https://loyal9.lemonsqueezy.com/checkout/buy/8cbd6215-7a6e-413c-892b-60b9dd11d919">
+      <a href="/" onclick="StripeCheckout.redirectToCheckout(); return false;">
         Get Mayhem's Key — $4.99
       </a>
     </div>
 
   </div>
 
+  <script src="https://js.stripe.com/v3/"></script>
+  <script src="assets/js/stripe-checkout.js"></script>
   <script src="assets/js/storage.js"></script>
   <script src="assets/js/toast.js"></script>
   <script src="assets/js/usa-states-cities.json" type="application/json" id="locationDataScript"></script>
@@ -388,19 +390,34 @@
 
     // ── Init ──────────────────────────────────────────────────────────────────
 
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       // If already unlocked, go straight to app
       if (Storage.isUnlocked()) {
         window.location.href = 'core-game-files/app.html';
         return;
       }
 
-      // Auto-fill key from URL param (Lemon Squeezy redirect)
       const params = new URLSearchParams(window.location.search);
       const keyParam = params.get('key');
+      const sessionId = params.get('session_id');
+
       if (keyParam) {
         document.getElementById('licenseKey').value = keyParam;
         validateKey();
+      } else if (sessionId) {
+        setKeyStatus('loading', '', '<span class="spinner"></span> Retrieving your key...', 'loading');
+        try {
+          const res = await fetch(`${API}/key-by-session?session_id=${encodeURIComponent(sessionId)}`);
+          const data = await res.json();
+          if (data.found && data.license_key) {
+            document.getElementById('licenseKey').value = data.license_key;
+            validateKey();
+          } else {
+            setKeyStatus('invalid', '❌', 'Key not ready yet — payment may still be processing. Try again in a moment.', 'error');
+          }
+        } catch {
+          setKeyStatus('', '⚠️', 'Could not retrieve key. Enter it manually if you have it.', 'loading');
+        }
       }
 
       loadLocationData();

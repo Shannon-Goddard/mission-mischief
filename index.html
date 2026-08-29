@@ -95,7 +95,7 @@
           </div>
           
           <div class="mt-4" style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-            <a href="https://loyal9.lemonsqueezy.com/checkout/buy/8cbd6215-7a6e-413c-892b-60b9dd11d919" class="cta-btn" aria-label="Buy Mayhem's Key for $4.99">🍺 GET MAYHEM'S KEY — $4.99</a>
+            <button id="buyBtn" onclick="StripeCheckout.redirectToCheckout()" class="cta-btn" aria-label="Buy Mayhem's Key for $4.99">🍺 GET MAYHEM'S KEY — $4.99</button>
             <a href="unlock.html" class="cta-btn" style="background: transparent; border: 2px solid #04aa6d; color: #04aa6d;" aria-label="Enter existing key">Already have a key?</a>
           </div>
         </div>
@@ -121,6 +121,8 @@
   <div id="preloader"></div>
 
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://js.stripe.com/v3/"></script>
+  <script src="assets/js/stripe-checkout.js"></script>
   <script src="assets/js/main.js"></script>
   <script>
     // Register service worker
