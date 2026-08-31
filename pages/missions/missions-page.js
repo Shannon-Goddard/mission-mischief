@@ -67,7 +67,7 @@ function createMissionCard(mission, user) {
       actions += `<button class="mission-btn" onclick="printCard()" style="background:#666; border-color:#666; color:#fff;">🖨️ Print Card</button> `;
     }
     actions += `
-      <button class="mission-btn" onclick="startMissionCapture(${mission.id})">🎭 Upload Proof</button>
+      <button class="mission-btn" onclick="copyMissionHashtags(${mission.id})">📋 Copy Hashtags</button>
       <button class="mission-btn" onclick="DirectSubmission.showSubmissionForm(${mission.id})" style="background:#04aa6d; color:#000; border-color:#04aa6d;">⚡ Submit Mission</button>
     `;
   }
@@ -168,18 +168,17 @@ window.selectBuyIn = function(buyInId) {
   }, 800);
 };
 
-function startMissionCapture(missionId) {
+function copyMissionHashtags(missionId) {
   const mission = Missions.getMission(missionId);
   const user = Storage.getUser();
-  const buyInBadges = { recycling: 'captain-planet-color.png', cleanup: 'oscar-the-grouch-color.png', referral: 'justin-timberlake-color.png' };
-  const buyInBadge = (missionId === 4 && user.currentBuyIn) ? (buyInBadges[user.currentBuyIn] || null) : null;
-  sessionStorage.setItem('currentMission', JSON.stringify({
-    id: missionId,
-    title: mission.title,
-    hashtags: generateMissionHashtags(mission, user),
-    buyInBadge
-  }));
-  window.location.href = '../../core-game-files/badge-overlay.html';
+  const hashtags = generateMissionHashtags(mission, user);
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(hashtags)
+      .then(() => showToast('Hashtags copied! Paste when posting 📋', 'success'))
+      .catch(() => showToast(hashtags, 'info'));
+  } else {
+    showToast(hashtags, 'info');
+  }
 }
 
 function generateMissionHashtags(mission, user) {

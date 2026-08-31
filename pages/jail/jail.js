@@ -51,79 +51,16 @@ window.toggleMissionCheat = function(missionId) {
 };
 
 // --- Clown Selfie ---
-let processedClownImage = null;
-
-document.addEventListener('change', e => {
-  if (e.target.id === 'clownSelfie' && e.target.files[0]) {
-    const btn = document.getElementById('clownBtn');
-    btn.disabled = false;
-    btn.style.background = '#ff4444';
-    btn.style.cursor = 'pointer';
-  }
-  if (e.target.id === 'beerProof' && e.target.files[0]) {
-    const btn = document.getElementById('beerBtn');
-    btn.disabled = false;
-    btn.style.background = '#ff4444';
-    btn.style.cursor = 'pointer';
-  }
-});
-
 window.processClownSelfie = function() {
-  const file = document.getElementById('clownSelfie').files[0];
-  if (!file) return;
-  const btn = document.getElementById('clownBtn');
-  btn.textContent = '⏳ PROCESSING...';
-  btn.disabled = true;
-
-  const img = new Image();
-  img.onload = () => {
-    const canvas = document.createElement('canvas');
-    canvas.width = img.width;
-    canvas.height = img.height;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(img, 0, 0);
-
-    const mayhemImg = new Image();
-    const finalize = () => {
-      const cx = canvas.width / 2;
-      const cy = canvas.height / 2.2;
-      const r = Math.min(canvas.width, canvas.height) / 25;
-      ctx.fillStyle = '#ff0000';
-      ctx.beginPath();
-      ctx.arc(cx, cy, r, 0, 2 * Math.PI);
-      ctx.fill();
-      ctx.font = `bold ${canvas.width / 15}px Arial`;
-      ctx.textAlign = 'center';
-      ctx.fillText('CLOWN', cx, canvas.height - 50);
-      canvas.toBlob(blob => {
-        processedClownImage = blob;
-        btn.textContent = '💾 DOWNLOAD CLOWN SELFIE';
-        btn.disabled = false;
-        btn.onclick = downloadClownSelfie;
-        showToast('Clown selfie ready!', 'success');
-      });
-    };
-
-    mayhemImg.onload = () => {
-      const size = Math.min(canvas.width, canvas.height) / 4;
-      ctx.drawImage(mayhemImg, canvas.width - size - 20, canvas.height - size - 20, size, size);
-      finalize();
-    };
-    mayhemImg.onerror = finalize;
-    mayhemImg.src = '../../assets/images/mascot/mayhem-excited.png';
-  };
-  img.src = URL.createObjectURL(file);
+  const a = document.createElement('a');
+  a.href = '../../assets/images/ui/clown-redemption.png';
+  a.download = 'mission-mischief-clown.png';
+  a.click();
+  showToast('Downloaded! Post with #missionmischiefclown 🤡', 'success');
 };
 
 function downloadClownSelfie() {
-  if (!processedClownImage) return;
-  const url = URL.createObjectURL(processedClownImage);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'mission-mischief-clown-selfie.jpg';
-  a.click();
-  URL.revokeObjectURL(url);
-  showToast('Downloaded! Post with #missionmischiefclown', 'success');
+  window.processClownSelfie();
 }
 
 // --- Beer Proof ---

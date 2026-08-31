@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mission-mischief-v5';
+const CACHE_NAME = 'mission-mischief-v6';
 const API_BASE = 'https://4q1ybupwm0.execute-api.us-east-1.amazonaws.com';
 
 const SHELL_ASSETS = [
@@ -8,7 +8,6 @@ const SHELL_ASSETS = [
   '/core-game-files/app.html',
   '/core-game-files/bounty-hunter.html',
   '/core-game-files/funny-tos.html',
-  '/core-game-files/badge-overlay.html',
   '/pages/dashboard/',
   '/pages/dashboard/index.html',
   '/pages/dashboard/dashboard.js',
