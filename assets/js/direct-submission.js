@@ -40,7 +40,7 @@ const DirectSubmission = {
         </div>
         
         <div style="margin-bottom: 15px;">
-          <label style="display: block; color: #04aa6d; margin-bottom: 8px; font-weight: bold;">Post URL (Optional):</label>
+          <label style="display: block; color: #04aa6d; margin-bottom: 8px; font-weight: bold;">Post URL (Required):</label>
           <input type="url" id="submissionURL" placeholder="https://instagram.com/p/..." 
                  style="width: 100%; padding: 8px; background: #333; color: #fff; border: 1px solid #555; border-radius: 4px;">
           <small style="color: #04aa6d; font-size: 12px; display: block; margin-top: 5px;">

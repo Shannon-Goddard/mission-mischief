@@ -64,9 +64,11 @@ const PrintHandler = {
       <head>
         <title>Mission Mischief Card</title>
         <style>
-          body { font-family: Arial, sans-serif; margin: 0; padding: 10px; }
-          .sheet { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(5, 1fr); gap: 5px; width: 8.5in; height: 11in; }
-          .card { border: 2px solid #04aa6d; padding: 8px; border-radius: 4px; font-size: 8px; box-sizing: border-box; }
+          @page { size: letter portrait; margin: 0.25in; }
+          * { box-sizing: border-box; }
+          body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+          .sheet { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(5, 1fr); gap: 5px; width: 8in; height: 10.5in; }
+          .card { border: 2px solid #04aa6d; padding: 8px; border-radius: 4px; font-size: 8px; }
           .qr-code { width: 40px; height: auto; float: right; object-fit: contain; }
           h1 { color: #04aa6d; margin: 0; font-size: 10px; }
           .handle { font-size: 9px; margin: 2px 0; }
