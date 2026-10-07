@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mission-mischief-v6';
+const CACHE_NAME = 'mission-mischief-v7';
 const API_BASE = 'https://4q1ybupwm0.execute-api.us-east-1.amazonaws.com';
 
 const SHELL_ASSETS = [
@@ -26,7 +26,6 @@ const SHELL_ASSETS = [
   '/assets/css/hero-styles.css',
   '/assets/js/storage.js',
   '/assets/js/missions.js',
-  '/assets/js/stripe-checkout.js',
   '/assets/js/main.js',
   '/assets/js/direct-submission.js',
   '/assets/js/beer-justice.js',

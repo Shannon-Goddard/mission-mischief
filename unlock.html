@@ -4,10 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="robots" content="noindex, nofollow">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#000000">
-  <title>Mission Mischief — Unlock</title>
+  <title>Mission Mischief — Join the Chaos</title>
   <link href="assets/images/ui/favicon.png" rel="icon">
   <link rel="manifest" href="manifest.json">
   <link href="https://fonts.googleapis.com/css?family=Poppins:400,600,700" rel="stylesheet">
@@ -28,16 +29,8 @@
       padding: 40px 20px 60px;
     }
 
-    .mayhem-hero {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .mayhem-hero img {
-      width: 120px;
-      height: 120px;
-      object-fit: contain;
-    }
+    .mayhem-hero { text-align: center; margin-bottom: 20px; }
+    .mayhem-hero img { width: 120px; height: 120px; object-fit: contain; }
 
     .unlock-title {
       text-align: center;
@@ -72,9 +65,7 @@
       margin-bottom: 15px;
     }
 
-    .form-group {
-      margin-bottom: 15px;
-    }
+    .form-group { margin-bottom: 15px; }
 
     label {
       display: block;
@@ -83,49 +74,22 @@
       margin-bottom: 6px;
     }
 
-    input[type="text"],
-    select {
+    input[type="text"], select {
       width: 100%;
       background: #222;
       color: #fff;
       border: 1px solid #444;
       border-radius: 6px;
       padding: 12px;
-      font-size: 16px; /* prevents iOS zoom */
+      font-size: 16px;
       font-family: inherit;
       transition: border-color 0.2s;
     }
 
-    input[type="text"]:focus,
-    select:focus {
+    input[type="text"]:focus, select:focus {
       outline: none;
       border-color: #04aa6d;
     }
-
-    input[type="text"].valid { border-color: #04aa6d; }
-    input[type="text"].invalid { border-color: #ff6b6b; }
-
-    .key-input-wrap {
-      position: relative;
-    }
-
-    .key-status {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 18px;
-    }
-
-    .key-message {
-      font-size: 0.8em;
-      margin-top: 5px;
-      min-height: 18px;
-    }
-
-    .key-message.success { color: #04aa6d; }
-    .key-message.error { color: #ff6b6b; }
-    .key-message.loading { color: #999; }
 
     input[type="file"] {
       width: 100%;
@@ -137,7 +101,6 @@
       font-size: 14px;
     }
 
-    /* QR Preview */
     #qrPreview { display: none; margin-top: 15px; }
 
     #qrContainer {
@@ -151,10 +114,7 @@
       background: #222;
     }
 
-    #qrImage {
-      position: absolute;
-      cursor: move;
-    }
+    #qrImage { position: absolute; cursor: move; }
 
     .qr-controls {
       display: flex;
@@ -175,28 +135,8 @@
     }
 
     .qr-btn.reset { background: #444; color: #fff; }
+    .qr-hint { text-align: center; color: #666; font-size: 11px; margin-top: 6px; }
 
-    .qr-hint {
-      text-align: center;
-      color: #666;
-      font-size: 11px;
-      margin-top: 6px;
-    }
-
-    /* Returning player section */
-    .returning-banner {
-      display: none;
-      background: rgba(4, 170, 109, 0.1);
-      border: 1px solid #04aa6d;
-      border-radius: 8px;
-      padding: 15px;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .returning-banner p { color: #ccc; font-size: 0.9em; margin-bottom: 12px; }
-
-    /* Submit button */
     .unlock-btn {
       width: 100%;
       background: #04aa6d;
@@ -215,24 +155,8 @@
     .unlock-btn:active { transform: scale(0.98); }
     .unlock-btn:disabled { background: #333; color: #666; cursor: not-allowed; }
 
-    .no-key {
-      text-align: center;
-      margin-top: 25px;
-      color: #666;
-      font-size: 0.9em;
-    }
-
-    .no-key a {
-      color: #04aa6d;
-      text-decoration: none;
-      font-weight: 600;
-    }
-
     select option { background: #222; }
-
-    #cityFilter {
-      margin-bottom: 8px;
-    }
+    #cityFilter { margin-bottom: 8px; }
 
     .spinner {
       display: inline-block;
@@ -257,248 +181,106 @@
       <img src="assets/images/mascot/mayhem-drunk.png" alt="Mayhem">
     </div>
 
-    <h1 class="unlock-title">🍺 MAYHEM'S KEYS</h1>
-    <p class="unlock-subtitle">"I may have traded them for a beer. Worth it. No regrets."</p>
-
-    <!-- Returning player banner (shown when valid key belongs to existing account) -->
-    <div class="returning-banner" id="returningBanner">
-      <p>👋 Welcome back! We found your account. Restore your progress?</p>
-      <button class="unlock-btn" onclick="restoreFromCloud()" style="margin-top: 0;">
-        ☁️ Restore My Progress
-      </button>
-    </div>
+    <h1 class="unlock-title">🍺 JOIN THE CHAOS</h1>
+    <p class="unlock-subtitle">"Set up your profile and start your missions."</p>
 
     <form id="unlockForm" onsubmit="handleUnlock(event)">
 
-      <!-- Key Entry -->
       <div class="card">
-        <div class="card-title">🔑 Your License Key</div>
+        <div class="card-title">👤 Your Profile</div>
+
         <div class="form-group">
-          <label for="licenseKey">License Key</label>
-          <div class="key-input-wrap">
-            <input type="text" id="licenseKey" placeholder="Enter your key..."
-              autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-              oninput="onKeyInput()" onblur="setTimeout(validateKey, 100)">
-            <span class="key-status" id="keyStatus"></span>
-          </div>
-          <div class="key-message" id="keyMessage"></div>
+          <label for="userName">Your Name</label>
+          <input type="text" id="userName" placeholder="What do we call you?" maxlength="30" required>
+        </div>
+
+        <div class="form-group">
+          <label for="userCountry">Country</label>
+          <select id="userCountry" required onchange="loadStates();">
+            <option value="">Select Country</option>
+            <option value="US">United States</option>
+            <option value="CA">Canada</option>
+            <option value="UK">United Kingdom</option>
+            <option value="AU">Australia</option>
+            <option value="OTHER">Other</option>
+          </select>
+          <input type="text" id="userCountryOther" placeholder="Enter country" style="display:none; margin-top:8px;">
+        </div>
+
+        <div class="form-group">
+          <label for="userState">State / Province</label>
+          <select id="userState" required disabled onchange="loadCities(); toggleStateOther();">
+            <option value="">Select State/Province</option>
+          </select>
+          <input type="text" id="userStateOther" placeholder="Enter state/province" style="display:none; margin-top:8px;">
+        </div>
+
+        <div class="form-group">
+          <label for="userCity">City</label>
+          <input type="text" id="cityFilter" placeholder="Type to filter cities..." style="display:none; margin-bottom:8px;" oninput="filterCities()">
+          <select id="userCity" required disabled onchange="toggleCityOther()">
+            <option value="">Select City</option>
+          </select>
+          <input type="text" id="userCityOther" placeholder="Enter city" style="display:none; margin-top:8px;">
         </div>
       </div>
 
-      <!-- Profile Setup (hidden until key is valid) -->
-      <div id="profileSection" style="display: none;">
-
-        <div class="card">
-          <div class="card-title">👤 Your Profile</div>
-
-          <div class="form-group">
-            <label for="userName">Your Name</label>
-            <input type="text" id="userName" placeholder="What do we call you?" maxlength="30" required>
-          </div>
-
-          <div class="form-group">
-            <label for="userCountry">Country</label>
-            <select id="userCountry" required onchange="loadStates(); document.getElementById('userCountryOther').style.display = this.value === 'OTHER' ? 'block' : 'none';">
-              <option value="">Select Country</option>
-              <option value="US">United States</option>
-              <option value="CA">Canada</option>
-              <option value="UK">United Kingdom</option>
-              <option value="AU">Australia</option>
-              <option value="OTHER">Other</option>
-            </select>
-            <input type="text" id="userCountryOther" placeholder="Enter country"
-              style="display: none; margin-top: 8px;">
-          </div>
-
-          <div class="form-group">
-            <label for="userState">State / Province</label>
-            <select id="userState" required disabled onchange="loadCities(); toggleStateOther();">
-              <option value="">Select State/Province</option>
-            </select>
-            <input type="text" id="userStateOther" placeholder="Enter state/province"
-              style="display: none; margin-top: 8px;">
-          </div>
-
-          <div class="form-group">
-            <label for="userCity">City</label>
-            <input type="text" id="cityFilter" placeholder="Type to filter cities..."
-              style="display: none; margin-bottom: 8px;" oninput="filterCities()">
-            <select id="userCity" required disabled onchange="toggleCityOther()">
-              <option value="">Select City</option>
-            </select>
-            <input type="text" id="userCityOther" placeholder="Enter city"
-              style="display: none; margin-top: 8px;">
-          </div>
+      <div class="card">
+        <div class="card-title">📱 Your Social QR Code</div>
+        <div class="form-group">
+          <label for="qrCode">Upload your social media QR code</label>
+          <input type="file" id="qrCode" accept="image/*" required onchange="showQRPreview(this)">
+          <small style="color:#666; font-size:11px; display:block; margin-top:5px;">
+            This links your social posts to your game profile •
+            <a href="core-game-files/help/qr-help.html" style="color:#04aa6d;">Need help?</a>
+          </small>
         </div>
 
-        <div class="card">
-          <div class="card-title">📱 Your Social QR Code</div>
-          <div class="form-group">
-            <label for="qrCode">Upload your social media QR code</label>
-            <input type="file" id="qrCode" accept="image/*" required onchange="showQRPreview(this)">
-            <small style="color: #666; font-size: 11px; display: block; margin-top: 5px;">
-              This links your social posts to your game profile •
-              <a href="core-game-files/help/qr-help.html" style="color: #04aa6d;">Need help?</a>
-            </small>
+        <div id="qrPreview">
+          <div id="qrContainer">
+            <img id="qrImage" draggable="false">
+            <div style="position:absolute; inset:0; border:2px dashed rgba(4,170,109,0.4); pointer-events:none; border-radius:6px;"></div>
           </div>
-
-          <div id="qrPreview">
-            <div id="qrContainer">
-              <img id="qrImage" draggable="false">
-              <div style="position: absolute; inset: 0; border: 2px dashed rgba(4,170,109,0.4); pointer-events: none; border-radius: 6px;"></div>
-            </div>
-            <div class="qr-controls">
-              <button type="button" class="qr-btn" onclick="zoomQR(-0.1)">🔍−</button>
-              <button type="button" class="qr-btn" onclick="zoomQR(0.1)">🔍+</button>
-              <button type="button" class="qr-btn reset" onclick="resetQR()">Reset</button>
-            </div>
-            <p class="qr-hint">Drag to position • Pinch or use buttons to zoom</p>
+          <div class="qr-controls">
+            <button type="button" class="qr-btn" onclick="zoomQR(-0.1)">🔍−</button>
+            <button type="button" class="qr-btn" onclick="zoomQR(0.1)">🔍+</button>
+            <button type="button" class="qr-btn reset" onclick="resetQR()">Reset</button>
           </div>
+          <p class="qr-hint">Drag to position • Pinch or use buttons to zoom</p>
         </div>
-
-        <button type="submit" class="unlock-btn" id="unlockBtn">
-          🍺 UNLOCK THE CHAOS
-        </button>
-
       </div>
+
+      <button type="submit" class="unlock-btn" id="unlockBtn">
+        🍺 UNLOCK THE CHAOS
+      </button>
 
     </form>
 
-    <div class="no-key">
-      Don't have a key?
-      <a href="/" onclick="StripeCheckout.redirectToCheckout(); return false;">
-        Get Mayhem's Key — $4.99
-      </a>
-    </div>
-
   </div>
 
-  <script src="https://js.stripe.com/v3/"></script>
-  <script src="assets/js/stripe-checkout.js"></script>
   <script src="assets/js/storage.js"></script>
   <script src="assets/js/toast.js"></script>
-  <script src="assets/js/usa-states-cities.json" type="application/json" id="locationDataScript"></script>
 
   <script>
-    const API = 'https://4q1ybupwm0.execute-api.us-east-1.amazonaws.com/prod';
-    let keyValidated = false;
-    let existingCloudUser = null;
     let locationData = {};
     let allCities = [];
     let qrScale = 1, qrX = 0, qrY = 0;
-    let keyValidateTimer = null;
 
-    // ── Init ──────────────────────────────────────────────────────────────────
-
-    document.addEventListener('DOMContentLoaded', async () => {
-      // If already unlocked, go straight to app
-      if (Storage.isUnlocked()) {
-        window.location.href = 'core-game-files/app.html';
+    document.addEventListener('DOMContentLoaded', () => {
+      if (Storage.isFAFOCompleted()) {
+        window.location.href = 'pages/dashboard/';
         return;
       }
-
-      const params = new URLSearchParams(window.location.search);
-      const keyParam = params.get('key');
-      const sessionId = params.get('session_id');
-
-      if (keyParam) {
-        document.getElementById('licenseKey').value = keyParam;
-        validateKey();
-      } else if (sessionId) {
-        setKeyStatus('loading', '', '<span class="spinner"></span> Retrieving your key...', 'loading');
-        try {
-          const res = await fetch(`${API}/key-by-session?session_id=${encodeURIComponent(sessionId)}`);
-          const data = await res.json();
-          if (data.found && data.license_key) {
-            document.getElementById('licenseKey').value = data.license_key;
-            validateKey();
-          } else {
-            setKeyStatus('invalid', '❌', 'Key not ready yet — payment may still be processing. Try again in a moment.', 'error');
-          }
-        } catch {
-          setKeyStatus('', '⚠️', 'Could not retrieve key. Enter it manually if you have it.', 'loading');
-        }
+      if (Storage.getUser().userName) {
+        window.location.href = 'core-game-files/funny-tos.html';
+        return;
       }
-
       loadLocationData();
     });
-
-    // ── Key Validation ────────────────────────────────────────────────────────
-
-    function onKeyInput() {
-      clearTimeout(keyValidateTimer);
-      keyValidateTimer = setTimeout(validateKey, 800);
-      setKeyStatus('', '', '');
-    }
-
-    async function validateKey() {
-      const key = document.getElementById('licenseKey').value.trim();
-      if (!key || key.length < 8) return;
-
-      setKeyStatus('loading', '', '<span class="spinner"></span> Checking key...');
-
-      try {
-        const res = await fetch(`${API}/validate-key`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ license_key: key })
-        });
-        const data = await res.json();
-
-        if (data.valid) {
-          keyValidated = true;
-          setKeyStatus('valid', '✅', 'Key valid!', 'success');
-          document.getElementById('licenseKey').classList.add('valid');
-          document.getElementById('licenseKey').classList.remove('invalid');
-
-          // Check if returning player
-          if (data.existing_user) {
-            existingCloudUser = data.existing_user;
-            document.getElementById('returningBanner').style.display = 'block';
-          } else {
-            document.getElementById('profileSection').style.display = 'block';
-          }
-        } else {
-          keyValidated = false;
-          setKeyStatus('invalid', '❌', data.error || 'Invalid key', 'error');
-          document.getElementById('licenseKey').classList.add('invalid');
-          document.getElementById('licenseKey').classList.remove('valid');
-          document.getElementById('profileSection').style.display = 'none';
-          document.getElementById('returningBanner').style.display = 'none';
-        }
-      } catch {
-        // Network error — allow offline entry, validate on submit
-        keyValidated = true;
-        setKeyStatus('', '⚠️', 'Could not verify — will check on unlock', 'loading');
-        document.getElementById('profileSection').style.display = 'block';
-      }
-    }
-
-    function setKeyStatus(state, icon, message, messageType = '') {
-      document.getElementById('keyStatus').textContent = icon;
-      const msg = document.getElementById('keyMessage');
-      msg.textContent = '';
-      msg.innerHTML = message;
-      msg.className = `key-message ${messageType}`;
-    }
-
-    // ── Returning Player ──────────────────────────────────────────────────────
-
-    window.restoreFromCloud = async function() {
-      if (!existingCloudUser) return;
-      Storage.saveUser(existingCloudUser);
-      showToast('Progress restored! Welcome back 🍺', 'success');
-      setTimeout(() => {
-        window.location.href = 'core-game-files/app.html';
-      }, 1000);
-    };
-
-    // ── Form Submit ───────────────────────────────────────────────────────────
 
     async function handleUnlock(e) {
       e.preventDefault();
 
-      const key = document.getElementById('licenseKey').value.trim();
       const userName = document.getElementById('userName').value.trim();
       const country = document.getElementById('userCountry').value === 'OTHER'
         ? document.getElementById('userCountryOther').value.trim()
@@ -511,7 +293,7 @@
         : document.getElementById('userCity').value;
       const qrImage = document.getElementById('qrImage');
 
-      if (!key || !userName || !country || !state || !city) {
+      if (!userName || !country || !state || !city) {
         showToast('Fill in all fields', 'error');
         return;
       }
@@ -525,28 +307,14 @@
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner"></span> Unlocking...';
 
-      // Save everything at once
-      Storage.saveKey(key, {
-        userName,
-        country,
-        state,
-        city,
-        qrCodeData: qrImage.src
-      });
+      Storage.saveKey('FREE', { userName, country, state, city, qrCodeData: qrImage.src });
 
-      // Sync to cloud
       await Storage.syncToCloud();
 
       showToast('🍺 Chaos unlocked!', 'success');
 
       setTimeout(() => {
-        // First time — go to FAFO
-        const user = Storage.getUser();
-        if (!user.fafoCompleted) {
-          window.location.href = 'core-game-files/funny-tos.html';
-        } else {
-          window.location.href = 'core-game-files/app.html';
-        }
+        window.location.href = 'core-game-files/funny-tos.html';
       }, 800);
     }
 
@@ -560,7 +328,6 @@
         img.src = e.target.result;
         document.getElementById('qrPreview').style.display = 'block';
         qrScale = 1; qrX = 0; qrY = 0;
-
         img.onload = () => {
           const c = document.getElementById('qrContainer');
           qrScale = Math.max(c.offsetWidth / img.naturalWidth, c.offsetHeight / img.naturalHeight);
@@ -572,12 +339,10 @@
       reader.readAsDataURL(input.files[0]);
     };
 
-    // Touch + mouse drag
     let dragging = false, startX, startY;
     document.addEventListener('DOMContentLoaded', () => {
       const img = document.getElementById('qrImage');
       const container = document.getElementById('qrContainer');
-
       const onStart = (x, y) => { dragging = true; startX = x; startY = y; };
       const onMove = (x, y) => {
         if (!dragging) return;
@@ -586,13 +351,11 @@
         updateQRTransform();
       };
       const onEnd = () => { dragging = false; };
-
       img.addEventListener('mousedown', e => { e.preventDefault(); onStart(e.clientX, e.clientY); });
       img.addEventListener('touchstart', e => { e.preventDefault(); onStart(e.touches[0].clientX, e.touches[0].clientY); }, { passive: false });
       document.addEventListener('mousemove', e => onMove(e.clientX, e.clientY));
       document.addEventListener('mouseup', onEnd);
       document.addEventListener('touchend', onEnd);
-      // Only block scroll when actively dragging inside the QR container
       container.addEventListener('touchmove', e => {
         if (dragging) { e.preventDefault(); onMove(e.touches[0].clientX, e.touches[0].clientY); }
       }, { passive: false });
@@ -650,9 +413,9 @@
       document.getElementById('cityFilter').style.display = 'none';
       document.getElementById('userStateOther').style.display = 'none';
       document.getElementById('userCityOther').style.display = 'none';
+      document.getElementById('userCountryOther').style.display = country === 'OTHER' ? 'block' : 'none';
 
       if (!country || country === 'OTHER') {
-        // No dropdown data — go straight to manual inputs
         stateSelect.style.display = 'none';
         document.getElementById('userStateOther').style.display = 'block';
         document.getElementById('userStateOther').required = true;
@@ -663,12 +426,9 @@
         stateSelect.style.display = 'block';
         stateSelect.disabled = false;
         stateSelect.required = true;
-        Object.keys(locationData[country]).sort().forEach(s => {
-          stateSelect.appendChild(new Option(s, s));
-        });
+        Object.keys(locationData[country]).sort().forEach(s => stateSelect.appendChild(new Option(s, s)));
         stateSelect.appendChild(new Option('Other (type below)', 'OTHER'));
       } else {
-        // Country selected but no dropdown data (CA, UK, AU) — manual inputs
         stateSelect.style.display = 'none';
         document.getElementById('userStateOther').style.display = 'block';
         document.getElementById('userStateOther').required = true;
@@ -683,7 +443,6 @@
       const state = document.getElementById('userState').value;
       const citySelect = document.getElementById('userCity');
       const cityFilter = document.getElementById('cityFilter');
-
       citySelect.innerHTML = '<option value="">Select City</option>';
       document.getElementById('userCityOther').style.display = 'none';
       document.getElementById('userCityOther').required = false;
@@ -715,10 +474,6 @@
     window.filterCities = function() {
       const filter = document.getElementById('cityFilter').value.toLowerCase();
       populateCities(filter ? allCities.filter(c => c.toLowerCase().includes(filter)) : allCities);
-    };
-
-    window.toggleCountryOther = function() {
-      // loadStates() handles all visibility — nothing extra needed here
     };
 
     window.toggleStateOther = function() {

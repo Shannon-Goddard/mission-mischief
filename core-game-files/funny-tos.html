@@ -340,19 +340,8 @@
         }
         
         function completeFAFOAndContinue() {
-            if (typeof Storage !== 'undefined' && Storage.completeFAFO) {
-                const user = Storage.completeFAFO();
-                console.log('FAFO completed, user data:', user);
-                // Force localStorage sync
-                localStorage.setItem('missionMischiefUser', JSON.stringify(user));
-                // Add delay to ensure localStorage is saved before redirect
-                setTimeout(() => {
-                    window.location.href = 'app.html';
-                }, 300);
-            } else {
-                // Fallback redirect without download
-                window.location.href = 'app.html';
-            }
+            Storage.completeFAFO();
+            window.location.href = '../pages/dashboard/';
         }
         
         let clockInterval;
@@ -382,18 +371,10 @@
             setTimeout(() => flash.classList.remove('active'), 300);
         }
         
-        // Complete FAFO after successful photo
         function completeFAFOMission() {
-            if (typeof Storage !== 'undefined') {
-                Storage.completeFAFO();
-                setTimeout(() => {
-                    alert('🎉 FAFO COMPLETED! You can now access Mission 2 and beyond!');
-                    // Redirect to main app with delay to ensure localStorage is saved
-                    setTimeout(() => {
-                        window.location.href = 'app.html';
-                    }, 500);
-                }, 2000);
-            }
+            Storage.completeFAFO();
+            alert('🎉 FAFO COMPLETED! You can now access Mission 2 and beyond!');
+            window.location.href = '../pages/dashboard/';
         }
         
         function shareWithHashtags() {

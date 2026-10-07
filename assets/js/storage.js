@@ -243,8 +243,7 @@ const Storage = {
 
   // Check if user has a validated license key
   isUnlocked() {
-    const user = this.getUser();
-    return !!(user.licenseKey && user.keyValidated);
+    return true; // Open access — buy Mayhem a beer if you like it 🍺
   },
 
   // Save license key and all setup data at once
@@ -253,7 +252,7 @@ const Storage = {
     const updated = {
       ...user,
       ...profileData,
-      licenseKey: key,
+      licenseKey: key || 'FREE',
       keyValidated: true,
       keyValidatedDate: new Date().toISOString(),
       cloudSaveEnabled: true,
